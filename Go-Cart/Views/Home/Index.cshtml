@@ -1,0 +1,172 @@
+﻿@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
+{
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            Product is already added to the cart.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+}
+
+
+
+<header id="Home" class="">
+    <div class=" px-5 head  headerLayover">
+
+        <div class="headCaption w-100  ">
+            <h1 class="fs-2 fw-bolder  ">Welcome To Go Cart</h1>
+            <p class="fs-3 n">
+                exclusive collection for everyone ...
+                We are one of the best sites in the Middle East for electronic sales. Visit us and try it
+            </p>
+            <div class="d-flex gap-2">
+                <button class="btn2 fw-bold">Explore Now</button>
+            </div>
+        </div>
+        <div class="headImg w-100  ">
+            <img src="./Image/home.png" class="w-100 img" alt="">
+            <!-- <img src="blob-h aikei (1).png"class="svg" alt=""> -->
+        </div>
+    </div>
+    <button class="btn rounded-3" id="btnUp">
+        <i class="fas fa-arrow-up btnUp"></i>
+    </button>
+</header>
+
+<section class="sec2 mt-5" id="sec2">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 ">
+                <div class="category  rounded-3  w-50">
+                    <div class="category1 ">
+                        <h3 class="pt-3 ms-3">All Category</h3>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <hr class="text-info">
+                            <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index">
+                                <p class=" @(category == Model.Categories.Last() ? "ms-3 pb-3 w-50" : "ms-3 w-50" )">@category.Name</p>
+                            </a>
+                        }
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-md-6 ">
+                <div class="skitter skitter-large ">
+                    <ul>
+                        <li>
+                            <a href="#blindHeight"><img src="Image/cyber-monday-shopping-sales.jpg" class="blindHeight" /></a>
+                        </li>
+                        <li>
+                            <a href="#glassCube"><img src="Image/WhatsApp Image 2023-08-08 at 9.03.15 AM.jpeg" class="glassCube" /></a>
+                        </li>
+                        <li>
+                            <a href="#cubeSpread"><img src="Image/digital-wardrobe-transparent-screen.jpg" class="cubeSpread" /></a>
+                        </li>
+                        <li>
+                            <a href="#swapBarsBack"><img src="Image/WhatsApp Image 2023-08-08 at 9.03.15 AM.jpeg" class="swapBarsBack" /></a>
+                        </li>
+                        <li>
+                            <a href="#swapBlocks"><img src="Image/digital-wardrobe-transparent-screen.jpg" class="swapBlocks" /></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<h4 class="win mt-5">Top 10 Offers <hr></h4>
+<section class="slider my-5">
+
+    <div class="container">
+        <div class="slickSlider">
+            @foreach (var category in Model.Categories)
+            {
+                <div class="item rounded-circle">
+                    <img src="@category.ImgUrl" class="rounded-circle" alt="">
+                    <div class="layer1 rounded-circle">
+                        <div class="layCard lay-icon">
+                            <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index">
+                                <i class="fa-solid fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<h4 class="win mt-5">New Arrivals <hr></h4>
+<section class="slider my-5">
+    <div class="container">
+        <div class="slickSlider">
+            @foreach (var product in Model.Products)
+            {
+                <div class="item">
+                    <img src="@product.ImgUrl" class="" alt="">
+                    <div class="layer1">
+                        <div class="layCard lay-icon">
+                            <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
+                                <i class="fa-solid shopping "></i>
+                            </a>
+                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
+                                <i class="fa-solid fa-info-circle"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section id="Works" class="py-5">
+    <div class=" pt-5">
+        <h2 class="work-after text-center fs-1">Fashion</h2>
+    </div>
+    <ul class="list-unstyled mb-3 py-5">
+        <li class="d-flex gap-2  justify-content-center align-items-center">
+            <button class="btn1 btn-color rounded-5 mixitup-control-active" data-filter="all">All</button>
+            <button class="btn1 btn-color rounded-5" data-filter=".Men">Men</button>
+            <button class="btn1 btn-color rounded-5" data-filter=".Women">Women</button>
+            <button class="btn1 btn-color rounded-5" data-filter=".Kids">Kids</button>
+        </li>
+    </ul>
+    <div class="container conRow">
+        <div class="row">
+           @foreach (var category in new[] { "Men", "Women", "Kids" })
+           {
+                @foreach (var product in Model.Products.Where(p => p.Category.Name == category))
+                {
+                    <div class="col-md-6 col-lg-4 p-2 mix @category">
+                        <div class="port">
+                            <img class="w-100" src="@product.ImgUrl" alt="">
+                            <div class="layer text-center text-white d-flex align-items-center justify-content-center">
+                                <div class="lay-text">
+                                    <h4 class="text-black">@product.Name</h4>
+                                    <div class="lay-icon">
+                                    <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
+                                        <i class="fa-solid shopping"></i>
+                                    </a>
+
+                                    <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                    </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+

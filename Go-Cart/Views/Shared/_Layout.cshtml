@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="55.ico" type="image/x-icon">
+
+
+@*    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Go-Cart.styles.css" asp-append-version="true" />*@
+
+    <link href="~/css/all.css" rel="stylesheet" />
+    <link href="~/css/slick.css" rel="stylesheet" />
+    <link href="~/css/slick-theme.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/media.css" rel="stylesheet" />
+    <link href="~/css/dark-mode.css" rel="stylesheet" id="dark-mode" />
+    <link href="~/css/skitter.css" rel="stylesheet" />
+    <link href="~/css/Style.css" rel="stylesheet" />
+    
+    <title>@ViewData["Title"] - Go_Cart</title>
+
+</head>
+<body id="body" class="Color  ofhiden">
+    <section class="loading1">
+            <span class="loader"></span>
+    </section>
+    <nav class="navbar @(Context.Request.Path == "/" ? "navbar1" : "navbar") navbar-expand-lg fixed-top  ">
+        <div class="container ">
+            <a class="navbar-brand nav-name text-white licolor" href="#">GO CART</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link licolor" aria-current="page" href="#Home">Home</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link licolor" href="#">Contact Us</a>
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link licolor" href="#">About Us</a>
+                    </li>
+                </ul>
+
+                <ul class="d-flex  gap-3 list-unstyled  licolor  my-auto  ms-auto ">
+                    <li>
+                        <a href="#" class="licolor">
+                            <i class="fas fa-search search d-block  "></i>
+                        </a>
+                        <input type="search" class="form-control d-none search1 ps-2" placeholder="search..">
+                    </li>
+                    <li class="nav-item ">
+                        <a class="nav-link licolor" href="Html/cart.html">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="Image/home.png" class="acc border" alt="">
+                        </a>
+                        <ul class="dropdown-menu licolor">
+                            <li><a class="dropdown-item " href="Html/updateProfile.html">profile</a></li>
+                            <li><a class="dropdown-item " href="#">sign out</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item mt-1">
+                        <i class="fa-solid fa-moon fs-3  d-block licolor " id="moon"></i>
+                        <i class="fa-solid fa-sun fs-3  d-none  licolor" id="sun"></i>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="updateFooter py-4">
+        <div class="container  py-5 px-5">
+            <div class="row g-3 ">
+                <div class="col-md-4">
+                    <h4>Get to Know Us</h4>
+                    <a href=""> <p class="ms-2">About Amazon</p></a>
+                    <div class="Social-Media">
+                        <h5>Social Media</h5>
+                        <div class="links d-flex gap-3 justify-content-start  ">
+
+                            <a href="https://www.facebook.com/">
+
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.twitter.com/">
+
+                                <i class="fa-brands fa-twitter"></i>
+                            </a>
+                            <a href="https://www.github.com/">
+
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                            <a href="https://www.behance.com/">
+                                <i class="fa-brands fa-behance"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Shop with Us</h4>
+                    <a href=""> <p class="ms-2">Your Account</p></a>
+                    <a href=""> <p class="ms-2">Your Orders</p></a>
+                    <a href=""> <p class="ms-2">Your Addresses</p></a>
+                    <a href=""> <p class="ms-2">profile</p></a>
+
+                </div>
+                <div class="col-md-4 ">
+                    <h4>sign information</h4>
+                    <a href=""> <p class="ms-2">profile</p></a>
+                    <a href="">       <p class="ms-2">sign up</p></a>
+                    <a href=""> <p class="ms-2">sign in</p></a>
+                    <a href="">   <p class="ms-2">sign out</p></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+    <script src="~/js/slick.js"></script>
+    <script src="~/js/mixitup.min.js"></script>
+
+    <script src="~/js/dark-mode.js"></script>
+    <script type="text/javascript" src="~/js/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="~/js/jquery.skitter.min.js"></script>
+    <script src="~/js/jq.js"></script>
+    <script src="~/js/index.js"></script>
+    
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

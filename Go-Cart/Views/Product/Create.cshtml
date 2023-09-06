@@ -1,0 +1,67 @@
+﻿@model ProductFormViewModel
+
+@{
+    ViewData["Title"] = "Product Form";
+}
+
+<h2>Create Product</h2>
+
+<hr />
+
+<section>
+    <div class="container">
+        <div class="row mt-4">
+            <h2>Create Product</h2>
+            <hr class="w-15" />
+            <form method="post" asp-action="Create" class="my-3 createprodut" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label asp-for="Name" class="fs-5">Name:</label>
+                    <input asp-for="Name" type="text" id="addProductName" class="form-control w-50 my-2">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="CategoryId" class="fs-5 me-2">Category:</label>
+                    <select asp-for="CategoryId" class="form-control w-50">
+                        <option value="">Select Category</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Value">@category.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="fs-5">Price:</label>
+                    <input asp-for="Price" type="number" id="addProductPrice" class="form-control w-50 my-2">
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Description" class="fs-5 mt-4">Description:</label>
+                    <textarea asp-for="Description" id="addProductDesc" maxlength="350" class="form-control w-75 my-2"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+
+                 <div class="productImgGroub d-flex ">
+                    <label asp-for="ImgFile"class="fs-3 mt-1"> Image:</label>
+                    <input asp-for="ImgFile"  type="file" accept=".png , .jpg" id="productImage" placeholder="Upload" class=" form-control w-50">
+                 </div>
+                <div class="d-flex justify-content-between mt-5 Grbimg-cat">
+                    <button type="submit" class="btn btn-secondary py-3 px-5">
+                        <i class="bi bi-check"></i>
+                        Save
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-x"></i>
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
