@@ -1,6 +1,8 @@
 ﻿using Go_Cart.Data;
 using Go_Cart.Models;
 using Go_Cart.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -10,14 +12,15 @@ namespace Go_Cart.Controllers
     public class HomeController : Controller
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<HomeController> _logger;
+        private readonly UserManager<ApplicationUser> _userManager;
+        //private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ApplicationDbContext context, ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _logger = logger;
+            _userManager = userManager;
         }
-
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var products = await _context.Products.ToListAsync();

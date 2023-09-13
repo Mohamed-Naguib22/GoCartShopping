@@ -34,6 +34,7 @@ namespace Go_Cart.Controllers
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
+            ViewBag.Sizes = new MultiSelectList(_context.Sizes, "Id", "Name");
             return View();
         }
         [HttpPost]
@@ -43,6 +44,7 @@ namespace Go_Cart.Controllers
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
+                ViewBag.Sizes = new MultiSelectList(_context.Sizes, "Id", "Name");
                 return View(model);
             }
 
@@ -52,6 +54,10 @@ namespace Go_Cart.Controllers
                 Price = model.Price,
                 CategoryId = model.CategoryId,
                 Description = model.Description,
+                Rating = model.Rating,
+                NumberOfItemsInStock = model.NumberOfItemsInStock,
+                NumberOfSales = 0,
+                IsActive = true,
             };
 
             _productImage.SaveImage(model.ImgFile, product);
@@ -60,15 +66,37 @@ namespace Go_Cart.Controllers
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
+            if (model.SelectedSizes != null && model.SelectedSizes.Any())
+            {
+                foreach (var selectedSizeId in model.SelectedSizes)
+                {
+                    var productSize = new ProductSize
+                    {
+                        ProductId = product.Id,
+                        SizeId = selectedSizeId
+                    };
+
+                    await _context.ProductSizes.AddAsync(productSize);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index), "Home");
         }
         public async Task<IActionResult> Details(int productId)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == product.CategoryId);
+            
             var reviews = _context.ProductReviews
                 .Where(r => r.ProductId == productId)
-                .Include(r => r.ApplicationUser); // Include ApplicationUser to retrieve user information
+                .Include(r => r.ApplicationUser);
+            
+            var Sizes = _context.ProductSizes
+                .Where(ps => ps.ProductId == productId)
+                .Include(ps => ps.Size);
 
             var reviewViewModel = reviews.Select(r => new ProductReviewViewModel
             {
@@ -78,15 +106,24 @@ namespace Go_Cart.Controllers
                 ProfilePicture = r.ApplicationUser.ImgUrl
             });
 
+            var availableSizes = new List<string>();
+
+            foreach (var size in Sizes)
+            {
+                availableSizes.Add(size.Size.Name);
+            }
+            
             var productDetails = new ProductDetailsViewModel
             {
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
+                Rating = product.Rating,
                 Description = product.Description,
                 ImgUrl = product.ImgUrl,
                 Category = category.Name,
-                ProductReviews = reviewViewModel
+                ProductReviews = reviewViewModel,
+                AvailableSizes = availableSizes
             };
 
             return View(productDetails);
@@ -100,6 +137,7 @@ namespace Go_Cart.Controllers
             var productReview = new ProductReview
             {
                 Review = review,
+                AddedOn = DateTime.Now,
                 ProductId = productId,
                 ApplicationUserId = user.Id
             };
@@ -108,7 +146,7 @@ namespace Go_Cart.Controllers
                 await _context.ProductReviews.AddAsync(productReview);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), "Home");
         }
     }
 }

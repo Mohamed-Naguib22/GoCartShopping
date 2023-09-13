@@ -125,6 +125,67 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("PlacedOn")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("TotalCost")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Payment", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("PaymentId");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -147,6 +208,9 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -154,7 +218,16 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumberOfItemsInStock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfSales")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Rating")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -164,6 +237,21 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.ProductOrder", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductOrders");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
                 {
                     b.Property<int>("Id")
@@ -171,6 +259,9 @@ namespace Go_Cart.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
@@ -190,6 +281,81 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductReviews");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
+                {
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SizeId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ShippingAddress", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RecipientName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RecipientPhone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("ShippingAddresses");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -325,6 +491,28 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("UserTokens", "security");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.Order", b =>
+                {
+                    b.HasOne("Go_Cart.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Payment", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Order", "Oder")
+                        .WithOne("Payment")
+                        .HasForeignKey("Go_Cart.Models.Payment", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Oder");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
                     b.HasOne("Go_Cart.Models.Category", "Category")
@@ -334,6 +522,25 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ProductOrder", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Order", "Order")
+                        .WithMany("ProductOrders")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("ProductOrders")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
@@ -353,6 +560,36 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("ApplicationUser");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.Size", "Size")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ShippingAddress", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Order", "Order")
+                        .WithOne("ShippingAddress")
+                        .HasForeignKey("Go_Cart.Models.ShippingAddress", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -408,6 +645,8 @@ namespace Go_Cart.Data.Migrations
 
             modelBuilder.Entity("Go_Cart.Models.ApplicationUser", b =>
                 {
+                    b.Navigation("Orders");
+
                     b.Navigation("ProductReviews");
                 });
 
@@ -416,9 +655,29 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.Order", b =>
+                {
+                    b.Navigation("Payment")
+                        .IsRequired();
+
+                    b.Navigation("ProductOrders");
+
+                    b.Navigation("ShippingAddress")
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
+                    b.Navigation("ProductOrders");
+
                     b.Navigation("ProductReviews");
+
+                    b.Navigation("ProductSizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Size", b =>
+                {
+                    b.Navigation("ProductSizes");
                 });
 #pragma warning restore 612, 618
         }

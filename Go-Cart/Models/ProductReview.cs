@@ -11,5 +11,6 @@ namespace Go_Cart.Models
         public Product Product { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
         public string Review { get; set; }
+        public DateTime AddedOn { get; set; }
     }
 }

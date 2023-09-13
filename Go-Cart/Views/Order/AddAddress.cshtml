@@ -1,0 +1,43 @@
+﻿@model OrderSubmitFormViewModel
+@{
+    ViewData["Title"] = "Add Address";
+}
+@*Product Details*@
+<p>@Model.TotalCost</p>
+<p>@Model.PlacedOn</p>
+
+@*Add Address Form*@
+<form method="post" asp-controller="Order" asp-action="AddAddress" enctype="multipart/form-data">
+    <input type="hidden" name="Id" value="@Model.Id" /> <!-- Add this input field -->
+    <div class="form-group">
+        <label asp-for="City" class="mt-4">City:</label>
+        <input asp-for="City" type="text" class="w-50">
+    </div>
+    <div class="form-group">
+        <label asp-for="State" class="mt-4">State:</label>
+        <input asp-for="State" type="text" class="w-50">
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Street" class="mt-4">Street:</label>
+        <input asp-for="Street" type="text" class="w-50">
+    </div>
+    <div class="form-group">
+        <label asp-for="ZipCode" class="mt-4">ZipCode:</label>
+        <input asp-for="ZipCode" type="text" class="w-50">
+    </div>
+    <div class="form-group">
+        <label asp-for="RecipientPhone" class="mt-4">RecipientPhone:</label>
+        <input asp-for="RecipientPhone" type="text" class="w-50">
+    </div>
+        <div class="form-group">
+        <label asp-for="RecipientName" class="mt-4">RecipientName:</label>
+        <input asp-for="RecipientName" type="text" class="w-50">
+    </div>
+
+    <div class="d-flex justify-content-between mt-5 Grbimg-cat">
+        <button type="submit">
+            Confirm
+        </button>
+    </div>
+</form>

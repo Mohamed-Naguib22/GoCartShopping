@@ -18,64 +18,115 @@
     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/css/media.css" rel="stylesheet" />
     <link href="~/css/dark-mode.css" rel="stylesheet" id="dark-mode" />
+    <link href="~/css/swiper-bundle.min.css" rel="stylesheet" />
     <link href="~/css/skitter.css" rel="stylesheet" />
     <link href="~/css/Style.css" rel="stylesheet" />
     
     <title>@ViewData["Title"] - Go_Cart</title>
 
 </head>
-<body id="body" class="Color  ofhiden">
-    <section class="loading1">
-            <span class="loader"></span>
-    </section>
-    <nav class="navbar @(Context.Request.Path == "/" ? "navbar1" : "navbar") navbar-expand-lg fixed-top  ">
-        <div class="container ">
-            <a class="navbar-brand nav-name text-white licolor" href="#">GO CART</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link licolor" aria-current="page" href="#Home">Home</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link licolor" href="#">Contact Us</a>
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link licolor" href="#">About Us</a>
-                    </li>
-                </ul>
 
-                <ul class="d-flex  gap-3 list-unstyled  licolor  my-auto  ms-auto ">
-                    <li>
-                        <a href="#" class="licolor">
-                            <i class="fas fa-search search d-block  "></i>
-                        </a>
-                        <input type="search" class="form-control d-none search1 ps-2" placeholder="search..">
-                    </li>
-                    <li class="nav-item ">
-                        <a class="nav-link licolor" href="Html/cart.html">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                        </a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img src="Image/home.png" class="acc border" alt="">
-                        </a>
-                        <ul class="dropdown-menu licolor">
-                            <li><a class="dropdown-item " href="Html/updateProfile.html">profile</a></li>
-                            <li><a class="dropdown-item " href="#">sign out</a></li>
+<body id="body" class="Color  ofhiden">
+    <!-- start loading -->
+    <section class="loading1">
+        <span class="text-white">
+            <i class="fa fa-spinner fa-spin fa-5x"></i>
+        </span>
+    </section>
+    
+        <div class="d-flex flex-column fixed-top">
+            <nav class="navbar @(Context.Request.Path == "/" ? "navbar1":"navbar3") navbar-expand-lg ">
+                <div class="container ">
+                    <div class="">
+                        <img src="Image/home.png" class="iconbg" alt="">
+                        <a class="navbar-brand nav-name" asp-controller="Home" asp-action="Index"> <span class="Go-color">Go</span> CART</a>
+                    </div>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="list-unstyled   mb-2 search-groub1">
+                            <li class=" position-relative">
+                                <i class="fas fa-search  search  position-absolute ps-2"></i>
+
+                                <input type="search" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
+                            </li>
                         </ul>
-                    </li>
-                    <li class="nav-item mt-1">
-                        <i class="fa-solid fa-moon fs-3  d-block licolor " id="moon"></i>
-                        <i class="fa-solid fa-sun fs-3  d-none  licolor" id="sun"></i>
-                    </li>
-                </ul>
+                        <div class="mt-2">
+                            <h4>My Orders</h4>
+                        </div>
+
+                        <ul class="d-flex  gap-3 list-unstyled  licolor  my-auto  ms-auto icon-groub ">
+                            <!-- <li class="search-groub1">
+                                <i class="fas fa-search search  licolor "></i>
+
+                              <input type="search" class="form-control d-none search1 ps-2" placeholder="search..">
+
+                            </li> -->
+                            <li class="nav-item ">
+                                <a class="nav-link licolor" asp-controller="Cart" asp-action="Index">
+                                    <i class="fa-solid fa-cart-shopping shop"></i>
+                                </a>
+                            </li>
+                            @{
+                                var user = await _userManager.GetUserAsync(User);
+                            }
+                            <li class="nav-item dropdown  ms-2">
+                                <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@user.ImgUrl" class="acc border" alt="">
+
+                                </a>
+                                <ul class="dropdown-menu licolor">
+                                    <li><a class="dropdown-item" href="Html/updateProfile.html">profile</a></li>
+                                    <li>
+                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item mt-1">
+                                <i class="fa-solid fa-moon fs-3  d-block licolor " id="moon"></i>
+                                <i class="fa-solid fa-sun fs-3  d-none  licolor" id="sun"></i>
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+            </nav>
+
+            <div class="@(Context.Request.Path == "/" ? "navbar2":"navbar4") navbar-expand h-25">
+                <div class="container ">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link " aria-current="page" href="#Home">Home</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link  " href="#">Contact US</a>
+                            </li>
+                            <li class="nav-item ">
+                                <a class="nav-link " href="#">About Us</a>
+                            </li>
+                        </ul>
+                        <!-- <ul class="list-unstyled m-auto  mb-2 search-groub">
+                          <li class=" position-relative  ">
+
+                          <input type="search" class="form-control rounded-0 nav1 " placeholder="search..">
+                        </li>
+                        </ul>  -->
+                        <div class=" d-flex gap-4 DTCairocolor">
+                            <div class="d-flex gap-2 ">
+                                <img src="WhatsApp Image 2023-09-04 at 8.59.10 PM.jpeg" class="egyimg mt-2" alt="">
+                                <p class=" DTCairo   pt-3">Delivery to Egypt</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
+
+
 
     <div>
         <main role="main" class="pb-3">
@@ -132,12 +183,14 @@
 
     <script src="~/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+    
     <script src="~/js/slick.js"></script>
     <script src="~/js/mixitup.min.js"></script>
 
     <script src="~/js/dark-mode.js"></script>
     <script type="text/javascript" src="~/js/jquery.easing.1.3.js"></script>
     <script type="text/javascript" src="~/js/jquery.skitter.min.js"></script>
+    <script src="~/js/swiper-bundle.min.js"></script>
     <script src="~/js/jq.js"></script>
     <script src="~/js/index.js"></script>
     

@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "New Arrivals";
+}
+
+@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        Product is already added to the cart.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="cat1" id="cat">
+    <div class="container">
+        <h3>New Arrivals</h3>
+        <hr />
+    </div>
+
+    <div class="container ">
+        <div class="row g-3" >
+            @foreach (var product in Model)
+            {
+                <div class="col-md-4 col-xl-4 col-xxl-3">
+                    <div class="card me-2">
+                        <div class="card1">
+                            <img src="@product.ImgUrl" class="card-img-top" alt="Product Image">
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@product.Name</h5>
+                            <p class="card-text">Price: $@product.Price</p>
+                            <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
+                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

@@ -29,7 +29,7 @@
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">Price: $@product.Price</p>
+                            <p class="card-text text-success">Price: $@product.Price</p>
                             <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
                             <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">View Details</a>
                         </div>

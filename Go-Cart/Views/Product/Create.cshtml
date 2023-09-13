@@ -4,10 +4,6 @@
     ViewData["Title"] = "Product Form";
 }
 
-<h2>Create Product</h2>
-
-<hr />
-
 <section>
     <div class="container">
         <div class="row mt-4">
@@ -15,13 +11,13 @@
             <hr class="w-15" />
             <form method="post" asp-action="Create" class="my-3 createprodut" role="form" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label asp-for="Name" class="fs-5">Name:</label>
-                    <input asp-for="Name" type="text" id="addProductName" class="form-control w-50 my-2">
+                    <label asp-for="Name" class="fs-5 mt-4">Name:</label>
+                    <input asp-for="Name" type="text" id="addProductName" class="form-control w-50">
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="CategoryId" class="fs-5 me-2">Category:</label>
+                    <label asp-for="CategoryId" class="fs-5 mt-4">Category:</label>
                     <select asp-for="CategoryId" class="form-control w-50">
                         <option value="">Select Category</option>
                         @foreach (var category in ViewBag.Categories)
@@ -32,27 +28,57 @@
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Price" class="fs-5">Price:</label>
-                    <input asp-for="Price" type="number" id="addProductPrice" class="form-control w-50 my-2">
+                    <label asp-for="SelectedSizes" class="fs-5 mt-4">Size:</label>
+                    <select asp-for="SelectedSizes" class="form-control w-25" multiple>
+                        @foreach (var size in ViewBag.Sizes)
+                        {
+                            <option value="@size.Value">@size.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="fs-5 mt-4">Price:</label>
+                    <input asp-for="Price" type="number" id="addProductPrice" class="form-control w-25">
                     <span asp-validation-for="Price" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
                     <label asp-for="Description" class="fs-5 mt-4">Description:</label>
-                    <textarea asp-for="Description" id="addProductDesc" maxlength="350" class="form-control w-75 my-2"></textarea>
+                    <textarea asp-for="Description" id="addProductDesc" maxlength="350" class="form-control w-25"></textarea>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                 <div class="productImgGroub d-flex ">
-                    <label asp-for="ImgFile"class="fs-3 mt-1"> Image:</label>
-                    <input asp-for="ImgFile"  type="file" accept=".png , .jpg" id="productImage" placeholder="Upload" class=" form-control w-50">
+                <div class="row mt-4">
+                    <div class="form-group col-md-4 d-flex align-items-center">
+                        <label asp-for="Rating" class="fs-5">Rating: </label>
+                        <div class="star-rating">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <span class="star" data-value="@i">&#9734;</span>
+                            }
+                            <input type="hidden" name="Rating" id="rating-value" value="" />
+                        </div>
+                        <span asp-validation-for="Rating" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group col-md-4 d-flex align-items-center">
+                        <label asp-for="NumberOfItemsInStock" class="fs-5">Number of Items: </label>
+                        <input asp-for="NumberOfItemsInStock" type="number" id="addProductItems" class="form-control w-25">
+                        <span asp-validation-for="NumberOfItemsInStock" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-4">
+                    <input asp-for="ImgFile"  type="file" accept=".webp, .png , .jpg, .jpeg" id="productImage" placeholder="Upload" class=" form-control w-25">
                  </div>
+
                 <div class="d-flex justify-content-between mt-5 Grbimg-cat">
                     <button type="submit" class="btn btn-secondary py-3 px-5">
                         <i class="bi bi-check"></i>
                         Save
                     </button>
-                    <a asp-action="Index" class="btn btn-outline-secondary">
+                    <a asp-action="Index" class="btn btn-secondary py-3 px-5">
                         <i class="bi bi-x"></i>
                         Cancel
                     </a>
@@ -62,6 +88,32 @@
     </div>
 </section>
 
+@*<script>
+    $(document).ready(function () {
+        $('#category-select').change(function () {
+            var selectedCategoryId = parseInt($(this).val());
+            var sizeSelector = $('#size-selector');
+
+            if (selectedCategoryId === 2 || selectedCategoryId === 3) {
+                sizeSelector.show();
+            } else {
+                sizeSelector.hide();
+            }
+        });
+    });
+</script>*@
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $(".star-rating .star").click(function () {
+            var value = $(this).data("value");
+            $("#rating-value").val(value);
+            $(".star-rating .star").removeClass("checked");
+            $(this).prevAll().addBack().addClass("checked");
+        });
+    });
+</script>
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

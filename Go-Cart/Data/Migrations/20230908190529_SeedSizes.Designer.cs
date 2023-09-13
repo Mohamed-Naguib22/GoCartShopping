@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Go_Cart.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230906114414_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20230908190529_SeedSizes")]
+    partial class SeedSizes
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -149,6 +149,9 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("LastUpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -156,7 +159,16 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("NumberOfItemsInStock")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumberOfSales")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("Rating")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
@@ -173,6 +185,9 @@ namespace Go_Cart.Data.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("ApplicationUserId")
                         .IsRequired()
@@ -192,6 +207,38 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductReviews");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
+                {
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SizeId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -357,6 +404,25 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.Size", "Size")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Size");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -421,6 +487,13 @@ namespace Go_Cart.Data.Migrations
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
                     b.Navigation("ProductReviews");
+
+                    b.Navigation("ProductSizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Size", b =>
+                {
+                    b.Navigation("ProductSizes");
                 });
 #pragma warning restore 612, 618
         }
