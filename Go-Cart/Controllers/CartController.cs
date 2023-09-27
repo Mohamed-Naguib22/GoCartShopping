@@ -19,7 +19,7 @@ namespace Go_Cart.Controllers
         public IActionResult Index()
         {
             var cart = GetCart();
-            cart.TotalPrice = cart.Products.Sum(p => p.Price);
+            cart.TotalPrice = cart.Products.Sum(p => p.Price * p.Quantity);
 
             return View(cart);
         }
@@ -57,12 +57,37 @@ namespace Go_Cart.Controllers
                 }
             }
 
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
-        private Product? GetProductById(int productId)
+        [HttpPost]
+        public IActionResult UpdateQuantity(int productId, int quantity)
+        {
+            var cart = GetCart();
+            if (cart != null)
+            {
+                var cartItem = cart.Products.FirstOrDefault(p => p.Id == productId);
+
+                if (cartItem != null)
+                {
+                    cartItem.Quantity = quantity;
+                    SetCart(cart);
+                }
+            }
+
+            return Ok();
+        }
+        private CartItem? GetProductById(int productId)
         {
             var product = _context.Products.FirstOrDefault(p => p.Id == productId);
-            return product;
+            var cartItem = new CartItem
+            {
+                Id = productId,
+                Name = product.Name,
+                ImgUrl = product.ImgUrl,
+                Price = product.Price,
+                Quantity = 1
+            };
+            return cartItem;
         }
         private Cart GetCart()
         {

@@ -92,7 +92,8 @@ namespace Go_Cart.Controllers
             
             var reviews = _context.ProductReviews
                 .Where(r => r.ProductId == productId)
-                .Include(r => r.ApplicationUser);
+                .Include(r => r.ApplicationUser)
+                .OrderByDescending(r => r.AddedOn);
             
             var Sizes = _context.ProductSizes
                 .Where(ps => ps.ProductId == productId)
@@ -102,9 +103,10 @@ namespace Go_Cart.Controllers
             {
                 Id = r.Id,
                 Review = r.Review,
+                ReviewDate = r.AddedOn,
                 UserName = r.ApplicationUser.FirstName + " " + r.ApplicationUser.LastName,
                 ProfilePicture = r.ApplicationUser.ImgUrl
-            });
+            });;
 
             var availableSizes = new List<string>();
 
@@ -146,7 +148,7 @@ namespace Go_Cart.Controllers
                 await _context.ProductReviews.AddAsync(productReview);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToAction(nameof(Index), "Home");
+            return Ok();
         }
     }
 }

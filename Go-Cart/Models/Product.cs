@@ -18,5 +18,6 @@
         public IEnumerable<ProductReview> ProductReviews { get; set; }
         public IEnumerable<ProductSize> ProductSizes { get; set; }
         public IEnumerable<ProductOrder> ProductOrders { get; set; }
+        public IEnumerable<WishListItem> WishListItems { get; set; }
     }
 }

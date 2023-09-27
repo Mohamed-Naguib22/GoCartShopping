@@ -27,7 +27,10 @@ namespace Go_Cart.Data
                 .HasKey(ps => new {ps.SizeId, ps.ProductId});
 
             builder.Entity<ProductOrder>()
-                .HasKey(ps => new { ps.OrderId, ps.ProductId });
+                .HasKey(po => new { po.OrderId, po.ProductId });
+
+            builder.Entity<WishListItem>()
+                .HasKey(wi => new { wi.WishListId, wi.ProductId });
 
         }
         public DbSet<Product> Products { get; set; }
@@ -36,8 +39,10 @@ namespace Go_Cart.Data
         public DbSet<ProductReview> ProductReviews { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<Payment> Payments { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ShippingAddress> ShippingAddresses { get; set; }
         public DbSet<ProductOrder> ProductOrders { get; set; }
+        public DbSet<WishList> WishLists { get; set; }
+        public DbSet<WishListItem> WishListItems { get; set; }
     }
 }

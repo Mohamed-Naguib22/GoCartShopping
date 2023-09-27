@@ -24,7 +24,7 @@ namespace Go_Cart.Controllers
         public async Task<IActionResult> Index()
         {
             var products = await _context.Products.ToListAsync();
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories.Include(c => c.Products).ToListAsync();
 
             var homeViewModel = new HomeViewModel
             {

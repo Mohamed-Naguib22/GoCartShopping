@@ -157,35 +157,6 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("Go_Cart.Models.Payment", b =>
-                {
-                    b.Property<int>("PaymentId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("PaymentDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("TransactionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("PaymentId");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -244,6 +215,12 @@ namespace Go_Cart.Data.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("SubTotalPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderId", "ProductId");
 
@@ -356,6 +333,77 @@ namespace Go_Cart.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Sizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Transaction", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("BuyerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.WishList", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
+
+                    b.ToTable("WishLists");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.WishListItem", b =>
+                {
+                    b.Property<int>("WishListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("AddedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("WishListId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("WishListItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -502,17 +550,6 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Go_Cart.Models.Payment", b =>
-                {
-                    b.HasOne("Go_Cart.Models.Order", "Oder")
-                        .WithOne("Payment")
-                        .HasForeignKey("Go_Cart.Models.Payment", "OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Oder");
-                });
-
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
                     b.HasOne("Go_Cart.Models.Category", "Category")
@@ -592,6 +629,47 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Order");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.Transaction", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Order", "Oder")
+                        .WithOne("Transaction")
+                        .HasForeignKey("Go_Cart.Models.Transaction", "OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Oder");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.WishList", b =>
+                {
+                    b.HasOne("Go_Cart.Models.ApplicationUser", "ApplicationUser")
+                        .WithOne("WishList")
+                        .HasForeignKey("Go_Cart.Models.WishList", "ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.WishListItem", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("WishListItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.WishList", "WishList")
+                        .WithMany("WishListItems")
+                        .HasForeignKey("WishListId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("WishList");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -648,6 +726,9 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("ProductReviews");
+
+                    b.Navigation("WishList")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Category", b =>
@@ -657,12 +738,12 @@ namespace Go_Cart.Data.Migrations
 
             modelBuilder.Entity("Go_Cart.Models.Order", b =>
                 {
-                    b.Navigation("Payment")
-                        .IsRequired();
-
                     b.Navigation("ProductOrders");
 
                     b.Navigation("ShippingAddress")
+                        .IsRequired();
+
+                    b.Navigation("Transaction")
                         .IsRequired();
                 });
 
@@ -673,11 +754,18 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("ProductReviews");
 
                     b.Navigation("ProductSizes");
+
+                    b.Navigation("WishListItems");
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Size", b =>
                 {
                     b.Navigation("ProductSizes");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.WishList", b =>
+                {
+                    b.Navigation("WishListItems");
                 });
 #pragma warning restore 612, 618
         }

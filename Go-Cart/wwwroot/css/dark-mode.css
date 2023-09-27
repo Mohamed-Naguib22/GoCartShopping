@@ -1,85 +1,77 @@
 body.dark-mode {
     background-color: #23272F;
-}
+  }
 
-.dark-mode .card {
+.dark-mode  .card{
     background-color: #d3d3d334;
 }
-
 .dark-mode h1 {
-    color: #ffffff;
+color: #ffffff;
 }
-
 .dark-mode h2 {
-    color: #ffffff;
+color: #ffffff;
 }
-
 .dark-mode h3 {
-    color: #ffffff;
+color: #ffffff;
 }
-
 .dark-mode h4 {
-    color: #ffffff;
+color: #ffffff;
 }
-
 .dark-mode h5 {
-    color: #ffffff;
+color: #ffffff;
 }
-
 .dark-mode p {
-    color: #ffffff;
+color: #ffffff;
+}
+.dark-mode option {
+color: #000000;
 }
 
-.dark-mode .nav-item {
-    color: #fff;
+.dark-mode .nav-item{
+color: #fff;
 }
-
-.dark-mode .slider {
+.dark-mode .dropdown-toggle1{
+color: #fff;
+}
+.dark-mode .slider{
     background-color: #41819c;
 }
-
-.dark-mode label {
-    color: #ffffff;
+.dark-mode label{
+color: #ffffff;
 }
-
-.dark-mode table {
-    color: #ffffff;
+.dark-mode table{
+color: #ffffff;
 }
-
-.dark-mode thead {
-    color: #ffffff;
+.dark-mode thead{
+color: #ffffff;
 }
-
-.dark-mode select {
-    color: #ffffff;
-    border-color: #dfdfdf;
+.dark-mode select{
+color: #ffffff;
+border-color: #dfdfdf;
 }
-
-.dark-mode .updateProfile {
-    background-color: #040404;
+.dark-mode .updateProfile{
+background-color: #040404;
 }
-
-.dark-mode .detailsBtn {
-    background-color: #8b8b8b;
+.dark-mode .detailsBtn{
+background-color: #8b8b8b;
 }
-
-.dark-mode .category1 {
-    background-color: #000000;
+.dark-mode .category1{
+background-color: #41819c;
+border-radius: 10px;
 }
-
-.dark-mode .updateProfile .darkBtn {
-    background-color: #24a1d7;
+.dark-mode .Cart-color{
+color: #000000;
 }
-
-.dark-mode #pills-tab .ll::after {
+.dark-mode .updateProfile .darkBtn{
+background-color:#24a1d7;
+}
+.dark-mode #pills-tab .ll::after{
     background-color: #dfdfdf;
 }
-
-.dark-mode #btnUp {
+.dark-mode #btnUp{
     background-color: #dfdfdf;
     color: #41819c;
 }
-
-.dark-mode .slick-prev:before, .dark-mode .slick-next:before {
+.dark-mode .slick-prev:before, .dark-mode .slick-next:before{
     color: #dfdfdf;
 }

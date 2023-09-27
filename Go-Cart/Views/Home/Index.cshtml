@@ -22,12 +22,15 @@
                 We are one of the best sites in the Middle East for electronic sales. Visit us and try it
             </p>
             <div class="d-flex gap-2">
-                <button class="btn2 fw-bold">Explore Now</button>
+                <button class="btn2 fw-bold">
+                    <a href="Html/Categories.html" class="text-decoration-none text-white">
+                        Explore Now
+                    </a>
+                </button>
             </div>
         </div>
         <div class="headImg w-100  ">
-            <img src="./Image/home.png" class="w-100 img" alt="">
-            <!-- <img src="blob-h aikei (1).png"class="svg" alt=""> -->
+            <img src="Assets/Image/logo.png" class="w-100 rounded-circle img" alt="">
         </div>
     </div>
     <button class="btn rounded-3" id="btnUp">
@@ -39,8 +42,8 @@
     <div class="container">
         <div class="d-flex justify-content-between row ">
             <div class="col-md-3">
-                <div class="category  rounded-3 w-75 ">
-                    <div class="category1 ">
+                <div class="category">
+                    <div class="category1">
                         <a href="">
                             <h3 class="pt-3 ms-3">All Category</h3>
                         </a>
@@ -48,23 +51,35 @@
                         <a asp-controller="Category" asp-action="NewArrivals">
                             <p class="ms-3 w-75">New Arrivals</p>
                         </a>
-                        <hr class="text-info">
-                        <p class="ms-3 w-75">Fashion & Clothing</p>
-                        <div id="fashionSubMenu">
-                            @foreach (var fashionCategory in Model.Categories.Where(c => c.ParentCategoryId == 1))
+
+                        @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId == null))
+                        {
+                            @if (category.Id == 1)
                             {
                                 <hr class="text-info">
-                                <a asp-route-categoryId="@fashionCategory.Id" asp-controller="Category" asp-action="Index">
-                                    <p class="ms-3 w-25">@fashionCategory.Name</p>
+                                <div class="dropdown ms-3 w-25">
+                                    <a class=" dropdown-toggle dropdown-toggle1 " href="" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Fashion
+                                    </a>
+
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                        @foreach (var fashionCategory in Model.Categories.Where(c => c.ParentCategoryId == 1))
+                                        {
+                                            <li>
+                                                <a asp-route-categoryId="@fashionCategory.Id" asp-controller="Category" asp-action="Index" class="dropdown-item">@fashionCategory.Name</a>
+                                            </li>
+
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                            else
+                            {
+                                <hr class="text-info">
+                                <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index">
+                                    <p class=" @(category == Model.Categories.Last() ? "ms-3 pb-3 w-75" : "ms-3 w-75" )">@category.Name</p>
                                 </a>
                             }
-                        </div>
-                        @foreach (var category in Model.Categories.Skip(4))
-                        {
-                            <hr class="text-info">
-                            <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index">
-                                <p class=" @(category == Model.Categories.Last() ? "ms-3 pb-3 w-75" : "ms-3 w-75" )">@category.Name</p>
-                            </a>
                         }
                     </div>
                 </div>
@@ -74,13 +89,13 @@
                     <div class="slide-swp swiper mySwiper">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide swiper-slide1">
-                                <img src="slider-01.jpg" class="w-100" alt="">
+                                <img src="Assets/Image/slider-01.jpg" class="w-100" alt="">
                             </div>
                             <div class="swiper-slide swiper-slide2">
-                                <img src="slider-02.jpg" class="w-100" alt="">
+                                <img src="Assets/Image/slider-02.jpg" class="w-100" alt="">
                             </div>
                             <div class="swiper-slide swiper-slide3">
-                                <img src="slider-03.jpg" class="w-100" alt="">
+                                <img src="Assets/Image/slider-03.jpg" class="w-100" alt="">
                             </div>
                         </div>
                         <div class="swiper-pagination"></div>
@@ -96,20 +111,16 @@
 
 <section class="slider my-5">
     <div class="container">
-        <div class="slickSlider">
+        <div class="slickSlider slickSlider1">
             @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId != 1))
             {
                 <div class="item rounded-circle">
                     <img src="@category.ImgUrl" class="rounded-circle" alt="">
-                    <div class="layer1 rounded-circle">
+                    <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index" class="layer1 rounded-circle text-decoration-none">
                         <div class="layCard lay-icon d-flex flex-column">
-                            <h4 class="licolor">@category.Name</h4>
-
-                            <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index">
-                                <i class="fa-solid fa-info-circle"></i>
-                            </a>
+                            <h4 class="text-white">@category.Name</h4>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>
@@ -124,26 +135,85 @@
         <div class="slickSlider">
             @foreach (var product in Model.Products)
             {
-                <div class="item">
-                    <img src="@product.ImgUrl" class="" alt="">
-                    <P class="mt-2 fs-5 fw-semibold">@product.Name</P>
-                    <P class="mt-1 slickPrice text-success">@product.Price$</P>
-                    <div class="layer1">
+                <div class="d-flex flex-column">
+                    <div class="item1">
+                        <img src="@product.ImgUrl" class="" alt="">
+
+                        <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="layer1"></a>
                         <div class="layCard1 lay-icon1">
                             <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
                                 <i class="fa-solid fa-cart-shopping "></i>
                             </a>
-                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
-                                <i class="fa-solid fa-info-circle"></i>
+                            <a asp-route-productId="@product.Id" asp-controller="WishList" asp-action="AddToWishList">
+                                <i class="fa-solid fa-heart"></i>
                             </a>
                         </div>
                     </div>
+                     <div class=" itemdet">
+                        <P class="mt-2 fs-5 fw-semibold">@product.Name</P>
+                        <P class="mt-1 slickPrice text-success">@product.Price$</P>
+                        <div>
+                            @for (int i = 0; i < Math.Round(product.Rating); i++)
+                            {
+                                <i class="fas fa-star" style="color:gold"></i>
+                            }
+                            @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
+                            {
+                                <i class="fas fa-star" style="color:darkgray"></i>
+                            }
+                        </div>
+                    </div>
+
                 </div>
             }
         </div>
     </div>
 </section>
 
+@*@foreach (var category in Model.Categories)
+{
+    @if (category.Products.Count() > 0)
+    {
+        <h4 class="win mt-5">@category.Name</h4>
+        <hr class="container" />
+
+        <section class="slider my-5">
+            <div class="container">
+                <div class="slickSlider">
+                    @foreach (var product in Model.Products.Where(p => p.CategoryId == category.Id))
+                    {
+                        <div class="item">
+                            <img src="@product.ImgUrl" class="" alt="">
+                            <P class="mt-2 fs-5 fw-semibold">@product.Name</P>
+                            <P class="mt-1 slickPrice text-success">@product.Price$</P>
+                            <div>
+                                @for (int i = 0; i < Math.Round(product.Rating); i++)
+                                {
+                                    <i class="fas fa-star" style="color:gold"></i>
+                                }
+                                @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
+                                {
+                                    <i class="fas fa-star" style="color:darkgray"></i>
+                                }
+                            </div>
+                            <div class="layer1">
+                                <div class="layCard1 lay-icon1">
+                                    <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
+                                        <i class="fa-solid fa-cart-shopping "></i>
+                                    </a>
+                                    <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
+                                        <i class="fa-solid fa-info-circle"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+    }
+}
+*@
 <section class="sec4">
     <div class="sec4-layover ">
         <div class="pt-5">

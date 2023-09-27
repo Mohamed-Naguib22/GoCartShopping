@@ -12,25 +12,18 @@
 }
 <section class="details font-monospace">
     <div class="container">
-        <h4 class="font-monospace ms-2">product </h4>
+        <h4 class="font-monospace ms-2">@Model.Name </h4>
         <hr class="w-100">
         <div class="d-flex ms-5 align-items-center  details-dflex">
-            <div class="det-img pe-5">
+            <div class="det-img  pe-5">
                 <img src="@Model.ImgUrl" class="w-100 h-100" alt="">
             </div>
-
             <div class="det-text w-100">
-                <div class="d-flex align-items-center">
-                    <h2>Name: </h2>
-                    <p class="mt-2 fs-3 ms-1"> @Model.Name</p>
-                </div>
-
-                <hr class="me-3">
                 <div class="d-flex align-items-center">
                     <h2>Category: </h2>
                     <p class="mt-2 fs-3 ms-1"> @Model.Category</p>
                 </div>
-
+                
                 <hr class="me-3">
                 <div class="d-flex align-items-center">
                     <h2>Rating: </h2>
@@ -47,33 +40,31 @@
                         </p>
                     }
                 </div>
-
                 <hr class="me-3">
+
                 <div class="d-flex align-items-center">
                     <h2>price: </h2>
-                    <p class="mt-3 fs-3 ms-1 text-success">@Model.Price$</p>
+                    <p class="mt-3 fs-3 ms-1 text-success"> @Model.Price</p>
                 </div>
+                <hr class="me-3">
 
-                <hr class="me-3">
                 <div class=" align-items-center">
-                    <h2 class="font-monospace">Description : </h2>
-                    <p class="mt-2 fs-3 ms-1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Excepturi rem voluptate corporis eos vitae, soluta possimus praesentium ad laudantium? Molestias.</p>
-                </div>
-                <hr class="me-3">
+                    <h2 class="font-monospace ">Description : </h2>
+                    <p class="mt-2 fs-3 ms-1">@Model.Description</p>
+                </div><hr class="me-3">
             </div>
         </div>
 
         <div class="d-flex justify-content-center">
-            <a asp-route-productId="@Model.Id" asp-controller="Cart" asp-action="AddToCart" class="btn detailsBtn px-5 py-3">Add To Cart</a>
+            <a asp-route-productId="@Model.Id" asp-controller="Cart" asp-action="AddToCart" class="btn rounded-3 border-0 detailsBtn px-5 py-3 text-white">Add To Cart</a>
         </div>
     </div>
 </section>
 
 <section class="my-5">
-    <form method="post" asp-action="AddReview" asp-route-productId="@Model.Id" class="w-75 mx-auto">
+    <input type="hidden" name="__RequestVerificationToken" value="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
     <input name="review" maxlength="200" id="coment" class="form-control w-75 mx-auto text-dark py-3" placeholder="Write a customer review" />
-        <button type="submit" class="btn btn-primary mt-2" style="display:none"></button>
-    </form>
+    <button class="addreview-btn d-none"></button>
     <div class="comment mx-auto w-75 mt-5">
         @foreach (var review in Model.ProductReviews)
         {
@@ -81,6 +72,7 @@
                 <div class="comImg d-flex ">
                     <img src="@review.ProfilePicture" alt="User Image" class=" border rounded-circle">
                     <p class="mt-2 ms-2 font-monospace">@review.UserName</p>
+                    <p class="mt-2 ms-2 font-monospace">@review.ReviewDate</p>
                 </div>
                 <div class="comText ms-4">
                     <p class="">
@@ -93,7 +85,40 @@
     </div>
 </section>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            // Submit the form using AJAX on Enter key press
+            $('#coment').keypress(function (e) {
+                if (e.keyCode == 13) { // 13 is the Enter key code
+                    e.preventDefault(); // Prevent the default form submission
+                    submitReviewForm();
+                }
+            });
+
+            function submitReviewForm() {
+                var review = $('#coment').val();
+                var productId = '@Model.Id';
+                $.ajax({
+                    url: '@Url.Action("AddReview", "Product")',
+                    type: 'POST',
+                    data: {
+                        review: review,
+                        productId: productId,
+                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                    },
+                    success: function () {
+                        location.reload(); // Refresh the page to reflect the changes
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        });
+    </script>
+}
+
+@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
         var productRating = @Model.Rating;
@@ -113,4 +138,4 @@
 
         $('#product-rating').html(filledStarsHTML + emptyStarsHTML);
     });
-</script>
+</script>*@

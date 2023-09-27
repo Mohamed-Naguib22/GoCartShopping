@@ -1,24 +1,13 @@
 
 
-$(document).ready(function(){
+  $(document).ready(function(){
     $(".loading1").fadeOut(1000,function(){
         $('body').css("overflow","auto")
         $('.loading1').remove()
     })
     
 
-    $(document).ready(function () {
-        // Hide the fashionSubMenu initially
-        $('#fashionSubMenu').hide();
-
-        // When the "Fashion" category is clicked
-        $('.category1 p').click(function () {
-            if ($(this).text().trim() === 'Fashion & Clothing') {
-                // Toggle the visibility of the fashionSubMenu
-                $('#fashionSubMenu').slideToggle();
-            }
-        });
-    });
+    
     
     let sectionOffset=$(".sec2").offset().top
     // console.log(sectionOffset);
@@ -87,7 +76,7 @@ $(document).ready(function(){
     $('.slickSlider').slick({
         infinite: true,
         // autoplay:true,
-        slidesToShow: 4,
+        slidesToShow: 5,
         slidesToScroll: 1,
         responsive: [
           {
@@ -118,6 +107,9 @@ $(document).ready(function(){
     });
   });
 
+
+
+  
 
 
   

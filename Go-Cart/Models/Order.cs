@@ -9,7 +9,7 @@
         public string Status { get; set; }
         public string ApplicationUserId { get; set; }
         public ApplicationUser ApplicationUser { get; set; }
-        public Payment Payment { get; set; }
+        public Transaction Transaction { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
         public IEnumerable<ProductOrder> ProductOrders { get; set; }
     }

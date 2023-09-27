@@ -20,8 +20,10 @@ namespace Go_Cart.Controllers
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> PlaceOrder(decimal totalCost)
+        public async Task<IActionResult> PlaceOrder()
         {
+            Cart cart = HttpContext.Session.Get<Cart>("_cart");
+            var totalCost = cart.Products.Sum(item => item.Price * item.Quantity);
             var user = await _userManager.GetUserAsync(User);
             var order = new Order
             {
@@ -30,7 +32,22 @@ namespace Go_Cart.Controllers
                 PlacedOn = DateTime.UtcNow.ToLocalTime(),
                 ApplicationUserId = user.Id
             };
+
             await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+
+            foreach (var product in cart.Products)
+            {
+                var orderItem = new ProductOrder
+                {
+                    ProductId = product.Id,
+                    OrderId = order.Id,
+                    Quantity = product.Quantity,
+                    SubTotalPrice = product.Price * product.Quantity
+                };
+                await _context.ProductOrders.AddAsync(orderItem);
+            }
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("AddAddress", new { orderId = order.Id });
@@ -38,11 +55,15 @@ namespace Go_Cart.Controllers
         public async Task<IActionResult> AddAddress(int orderId)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+
+            var orderItems = _context.ProductOrders.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
+            
             var orderSubmitFormViewModel = new OrderSubmitFormViewModel
             {
                 Id = orderId,
                 TotalCost = order.TotalCost,
                 PlacedOn = order.PlacedOn,
+                OrderItems = orderItems,
             };
             return View(orderSubmitFormViewModel);
         }
@@ -81,14 +102,13 @@ namespace Go_Cart.Controllers
                 order.IsPaid = true;
                 _context.SaveChanges();
 
-                var payment = new Payment
+                var payment = new Transaction
                 {
                     OrderId = order.Id,
-                    TransactionId = paymentResult.TransactionId,
                     Amount = order.TotalCost,
                     PaymentDate = DateTime.UtcNow.ToLocalTime()
                 };
-                _context.Payments.Add(payment);
+                _context.Transactions.Add(payment);
                 _context.SaveChanges();
 
                 return RedirectToAction("Index", "Home");

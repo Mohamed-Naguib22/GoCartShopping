@@ -4,9 +4,9 @@
     {
         public Cart()
         {
-            Products = new List<Product>();
+            Products = new List<CartItem>();
         }
-        public List<Product> Products { get; set; }
+        public List<CartItem> Products { get; set; }
         public decimal TotalPrice { get; set; }
     }
 }

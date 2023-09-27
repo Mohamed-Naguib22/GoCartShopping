@@ -1,0 +1,46 @@
+﻿@model IEnumerable<WishListItem>
+
+@{
+    ViewData["Title"] = "WishList";
+}
+
+@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        Product is already added to the cart.
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<section class="wishlist container">
+    <div class="row d-flex ">
+        @foreach (var wishListItem in Model)
+        {
+            <div class="col-11 ms-3 border rounded-2 mb-2">
+                <div class="wishimg  d-flex justify-content-between">
+                    <div class="d-flex">
+                        <img src="@wishListItem.Product.ImgUrl" class="wishimg1" alt="">
+                        <div class="mt-3 ms-3">
+                            <h4>@wishListItem.Product.Name</h4>
+                            <p class="text-success">@wishListItem.Product.Price$</p>
+                            <div style="color:gold">
+                                @for (int i = 0; i < Math.Round(wishListItem.Product.Rating); i++)
+                                {
+                                    <i class="fas fa-star"></i>
+                                }
+                                @for (int i = (int)Math.Round(wishListItem.Product.Rating); i < 5; i++)
+                                {
+                                    <i class="fas fa-star" style="color:lightgray"></i>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column gap-1 mt-4">
+                        <a asp-route-productId="@wishListItem.Product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add to cart</a>
+                        <a asp-route-productId="@wishListItem.Product.Id" asp-controller="WishList" asp-action="RemoveFromWishList" class="btn btn-danger">Remove</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
