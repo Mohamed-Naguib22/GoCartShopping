@@ -13,6 +13,7 @@ namespace Go_Cart.Models
         public string ImgUrl { get; set; }
         public WishList WishList { get; set; }
         public IEnumerable<ProductReview> ProductReviews { get; set; }
+        public IEnumerable<Rating> Ratings { get; set; }
         public IEnumerable<Order> Orders { get; set; }
     }
 }

@@ -6,5 +6,6 @@ namespace Go_Cart.ViewModels
     {
         public IEnumerable<Product> Products { get; set; }
         public IEnumerable<Category> Categories { get; set; }
+        public IEnumerable<Offer> Offers { get; set; }
     }
 }

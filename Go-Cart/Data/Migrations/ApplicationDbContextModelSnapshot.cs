@@ -122,7 +122,56 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Color", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Colors", (string)null);
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Offer", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<decimal>("DiscountPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Order", b =>
@@ -154,7 +203,36 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.OrderDetails", b =>
+                {
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Color")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Size")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("SubTotalPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("OrderId", "ProductId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderDetails", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
@@ -195,38 +273,32 @@ namespace Go_Cart.Data.Migrations
                     b.Property<int>("NumberOfSales")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<bool>("OnSale")
+                        .HasColumnType("bit");
 
-                    b.Property<decimal>("Rating")
+                    b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
-            modelBuilder.Entity("Go_Cart.Models.ProductOrder", b =>
+            modelBuilder.Entity("Go_Cart.Models.ProductColor", b =>
                 {
-                    b.Property<int>("OrderId")
+                    b.Property<int>("ColorId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("SubTotalPrice")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("OrderId", "ProductId");
+                    b.HasKey("ColorId", "ProductId");
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductOrders");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
@@ -257,7 +329,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductReviews");
+                    b.ToTable("ProductReviews", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
@@ -272,7 +344,34 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Rating", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Value")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ShippingAddress", b =>
@@ -315,7 +414,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("ShippingAddresses");
+                    b.ToTable("ShippingAddresses", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Size", b =>
@@ -332,13 +431,16 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Transaction", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<decimal>("Amount")
                         .HasColumnType("decimal(18,2)");
@@ -362,7 +464,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.WishList", b =>
@@ -385,7 +487,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("WishLists");
+                    b.ToTable("WishLists", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.WishListItem", b =>
@@ -403,7 +505,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("WishListItems");
+                    b.ToTable("WishListItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -539,6 +641,17 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("UserTokens", "security");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.Offer", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithOne("Offer")
+                        .HasForeignKey("Go_Cart.Models.Offer", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.Order", b =>
                 {
                     b.HasOne("Go_Cart.Models.ApplicationUser", "ApplicationUser")
@@ -550,18 +663,7 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Go_Cart.Models.Product", b =>
-                {
-                    b.HasOne("Go_Cart.Models.Category", "Category")
-                        .WithMany("Products")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("Go_Cart.Models.ProductOrder", b =>
+            modelBuilder.Entity("Go_Cart.Models.OrderDetails", b =>
                 {
                     b.HasOne("Go_Cart.Models.Order", "Order")
                         .WithMany("ProductOrders")
@@ -576,6 +678,36 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Product", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Category", "Category")
+                        .WithMany("Products")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.ProductColor", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Color", "Colors")
+                        .WithMany("ProductColors")
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("ProductColors")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Colors");
 
                     b.Navigation("Product");
                 });
@@ -616,6 +748,25 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Rating", b =>
+                {
+                    b.HasOne("Go_Cart.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("Ratings")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ShippingAddress", b =>
@@ -727,6 +878,8 @@ namespace Go_Cart.Data.Migrations
 
                     b.Navigation("ProductReviews");
 
+                    b.Navigation("Ratings");
+
                     b.Navigation("WishList")
                         .IsRequired();
                 });
@@ -734,6 +887,11 @@ namespace Go_Cart.Data.Migrations
             modelBuilder.Entity("Go_Cart.Models.Category", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Go_Cart.Models.Color", b =>
+                {
+                    b.Navigation("ProductColors");
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Order", b =>
@@ -749,11 +907,18 @@ namespace Go_Cart.Data.Migrations
 
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
                 {
+                    b.Navigation("Offer")
+                        .IsRequired();
+
+                    b.Navigation("ProductColors");
+
                     b.Navigation("ProductOrders");
 
                     b.Navigation("ProductReviews");
 
                     b.Navigation("ProductSizes");
+
+                    b.Navigation("Ratings");
 
                     b.Navigation("WishListItems");
                 });

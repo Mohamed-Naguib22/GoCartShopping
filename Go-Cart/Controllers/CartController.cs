@@ -23,6 +23,12 @@ namespace Go_Cart.Controllers
 
             return View(cart);
         }
+        public IActionResult GetCartItems()
+        {
+            var cart = GetCart();
+
+            return PartialView(cart.Products);
+        }
         public IActionResult AddToCart(int productId)
         {
             var product = GetProductById(productId);

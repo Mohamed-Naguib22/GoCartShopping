@@ -75,7 +75,7 @@
   $(document).ready(function(){
     $('.slickSlider').slick({
         infinite: true,
-        // autoplay:true,
+        autoplay:true,
         slidesToShow: 5,
         slidesToScroll: 1,
         responsive: [
@@ -194,10 +194,12 @@
         var swiper = new Swiper(".sale-sec", {
           slidesPerView: 5,
           spaceBetween: 30,
-            autoplay: {
-              delay: 3000,
-              disableOnInteraction: false,
-            },
+            autoplay:false
+            //  {
+            //   delay: 3000,
+            //   disableOnInteraction: false,
+            // },
+            ,
             navigation: {
               nextEl: ".swiper-button-next",
               prevEl: ".swiper-button-prev",
@@ -225,6 +227,7 @@
               
             }
         });
+      
       
       
         
@@ -263,9 +266,46 @@
             }
         });
         
- 
+        $("#cartList").slideUp(0);
+        
+      $("#Carticon").click(function(){
+        $("#cartList").slideToggle(5);
+      })
+
+      let wishlistBtn = document.querySelectorAll(".addToWL");
+      wishlistBtn.forEach(item => {
+          var productId = $(item).data('product-id');
+          var isAdded = localStorage.getItem('wishlist_' + productId);
+
+          if (isAdded && JSON.parse(isAdded)) {
+              item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
+          }
+
+          item.onclick = function () {
+              var isCurrentlyAdded = item.firstElementChild.classList.contains("text-danger");
+              var updatedIsAdded = !isCurrentlyAdded;
+
+              localStorage.setItem('wishlist_' + productId, updatedIsAdded);
+              var url = updatedIsAdded ? '/WishList/AddToWishList' : '/WishList/RemoveFromWishList';
+              var requestData = { productId: productId };
+
+              $.ajax({
+                  url: url,
+                  type: 'POST',
+                  data: requestData,
+                  success: function (response) {
+                      if (updatedIsAdded) {
+                          item.firstElementChild.classList.remove("fas", "fa-heart");
+                          item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
+                      } else {
+                          item.firstElementChild.classList.remove("fas", "fa-heart", "text-danger");
+                          item.firstElementChild.classList.add("far", "fa-heart");
+                      }
+                  },
+                  error: function (xhr) {
+                      // Handle error
+                  }
+              });
+          }
       });
-
-
-
-
+});

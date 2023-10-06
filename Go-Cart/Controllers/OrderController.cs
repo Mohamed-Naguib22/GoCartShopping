@@ -38,25 +38,25 @@ namespace Go_Cart.Controllers
 
             foreach (var product in cart.Products)
             {
-                var orderItem = new ProductOrder
+                var orderItem = new OrderDetails
                 {
                     ProductId = product.Id,
                     OrderId = order.Id,
                     Quantity = product.Quantity,
                     SubTotalPrice = product.Price * product.Quantity
                 };
-                await _context.ProductOrders.AddAsync(orderItem);
+                await _context.OrderDetails.AddAsync(orderItem);
             }
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("AddAddress", new { orderId = order.Id });
+            return RedirectToAction("Checkout", new { orderId = order.Id });
         }
-        public async Task<IActionResult> AddAddress(int orderId)
+        public async Task<IActionResult> Checkout(int orderId)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-            var orderItems = _context.ProductOrders.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
+            var orderItems = _context.OrderDetails.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
             
             var orderSubmitFormViewModel = new OrderSubmitFormViewModel
             {
@@ -84,9 +84,9 @@ namespace Go_Cart.Controllers
 
             await _context.ShippingAddresses.AddAsync(address);
             await _context.SaveChangesAsync();
-            return RedirectToAction("ProcessPayment", new { orderId = model.Id });
+            return RedirectToAction("ProcessPayment", new { orderId = model.Id, paymentMethod = model.PaymentMethod });
         }
-        public IActionResult ProcessPayment(int orderId)
+        public IActionResult ProcessPayment(int orderId, string paymentMethod)
         {
             var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
             if (order == null)
@@ -104,9 +104,11 @@ namespace Go_Cart.Controllers
 
                 var payment = new Transaction
                 {
-                    OrderId = order.Id,
+                    OrderId = orderId,
                     Amount = order.TotalCost,
-                    PaymentDate = DateTime.UtcNow.ToLocalTime()
+                    PaymentDate = DateTime.UtcNow.ToLocalTime(),
+                    PaymentMethod = paymentMethod,
+                    BuyerId = order.ApplicationUserId
                 };
                 _context.Transactions.Add(payment);
                 _context.SaveChanges();

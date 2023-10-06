@@ -13,24 +13,27 @@
 }
 
 <!-- start landing -->
-<header id="Home" class="">
+<header id="Home" class=" ">
     <div class=" px-5 head  headerLayover">
+
         <div class="headCaption w-100  ">
             <h1 class="fs-2 fw-bolder  ">Welcome To Go Cart</h1>
             <p class="fs-3 n">
-                exclusive collection for everyone ...
-                We are one of the best sites in the Middle East for electronic sales. Visit us and try it
+
+                Exclusive collection for everyone...We are  One of The best E-commerce sites in The Middle East
+                .... Try it now
             </p>
             <div class="d-flex gap-2">
                 <button class="btn2 fw-bold">
                     <a href="Html/Categories.html" class="text-decoration-none text-white">
+
                         Explore Now
                     </a>
                 </button>
             </div>
         </div>
-        <div class="headImg w-100  ">
-            <img src="Assets/Image/logo.png" class="w-100 rounded-circle img" alt="">
+        <div class="headImg w-100   ">
+            <img src="Assets/Image/logoo5.png" class="w-100 img" alt="">
         </div>
     </div>
     <button class="btn rounded-3" id="btnUp">
@@ -106,15 +109,29 @@
     </div>
 </section>
 
-<h4 class="win mt-5">Categories</h4>
-<hr class="container" />
+<div class="container d-flex gap-2 my-5">
+    <div class="position-relative">
+        <img src="Assets/Image/advertisement/banner-5.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+    </div>
 
-<section class="slider my-5">
+    <div class="position-relative">
+        <img src="Assets/Image/advertisement/banner-2.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+    </div>
+
+    <div class="position-relative">
+        <img src="Assets/Image/advertisement/banner-1.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+    </div>
+</div>
+
+<section class="slider my-5" style="background-color:#F0F2F5">
     <div class="container">
-        <div class="slickSlider slickSlider1">
+        <div class="slickSlider slickSlider1" >
             @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId != 1))
             {
-                <div class="item rounded-circle">
+                <div class="item rounded-circle" style="background-color:#fff">
                     <img src="@category.ImgUrl" class="rounded-circle" alt="">
                     <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index" class="layer1 rounded-circle text-decoration-none">
                         <div class="layCard lay-icon d-flex flex-column">
@@ -127,93 +144,127 @@
     </div>
 </section>
 
-<h4 class="win mt-5">New Arrivals</h4>
-<hr class="container" />
-
-<section class="slider my-5">
-    <div class="container">
-        <div class="slickSlider">
-            @foreach (var product in Model.Products)
-            {
-                <div class="d-flex flex-column">
-                    <div class="item1">
-                        <img src="@product.ImgUrl" class="" alt="">
-
-                        <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="layer1"></a>
-                        <div class="layCard1 lay-icon1">
-                            <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
-                                <i class="fa-solid fa-cart-shopping "></i>
-                            </a>
-                            <a asp-route-productId="@product.Id" asp-controller="WishList" asp-action="AddToWishList">
-                                <i class="fa-solid fa-heart"></i>
-                            </a>
-                        </div>
-                    </div>
-                     <div class=" itemdet">
-                        <P class="mt-2 fs-5 fw-semibold">@product.Name</P>
-                        <P class="mt-1 slickPrice text-success">@product.Price$</P>
-                        <div>
-                            @for (int i = 0; i < Math.Round(product.Rating); i++)
-                            {
-                                <i class="fas fa-star" style="color:gold"></i>
-                            }
-                            @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
-                            {
-                                <i class="fas fa-star" style="color:darkgray"></i>
-                            }
-                        </div>
-                    </div>
-
+<section class="sale-sec container swiper mySwiper">
+    <div class="section-head">
+        <h4>
+            <span class="section-onsale">
+                On Sale
+            </span>
+            Products
+        </h4>
+    </div>
+    <div class="boxs swiper-wrapper">
+        @foreach (var product in Model.Products.Where(p => p.OnSale == true))
+        {
+            <div class="box column product-item swiper-slide">
+                <div class="product-btn">
+                    <ul class="product-action">
+                        <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        <li><a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                    </ul>
                 </div>
-            }
-        </div>
+                <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
+                    <span class="discount bg-danger ">@((int)(product.Offer.DiscountPercentage * 100))%</span>
+                    <img src="@product.ImgUrl" class="img-product">
+                    <img src="@product.ImgUrl" class="hover-img">
+                </a>
+                <div class="content">
+                    <a class="product-item-link">
+                        @product.Name
+                    </a>
+                    @{
+                        var ratings = _context.Ratings.
+                            Where(r => r.ProductId == product.Id).ToList();
+                        
+                            decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
+                    }
+
+                    <div class="stars">
+                        @for (int i = 0; i < (int)Math.Round(rating); i++)
+                        {
+                            <i class="fa-solid fa-star"></i>
+                        }
+                        @for (int i = (int)Math.Round(rating); i < 5; i++)
+                        {
+                            <i class="fas fa-star" style="color:darkgray"></i>
+                        }
+                    </div>
+                    <div class="price">
+                        <span>$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
+                        <del>$@product.Price</del>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+
+    <div class="">
+        <div class="swiper-button-next swiper-btn"></div>
+        <div class="swiper-button-prev swiper-btn"></div>
     </div>
 </section>
 
-@*@foreach (var category in Model.Categories)
-{
-    @if (category.Products.Count() > 0)
-    {
-        <h4 class="win mt-5">@category.Name</h4>
-        <hr class="container" />
 
-        <section class="slider my-5">
-            <div class="container">
-                <div class="slickSlider">
-                    @foreach (var product in Model.Products.Where(p => p.CategoryId == category.Id))
-                    {
-                        <div class="item">
-                            <img src="@product.ImgUrl" class="" alt="">
-                            <P class="mt-2 fs-5 fw-semibold">@product.Name</P>
-                            <P class="mt-1 slickPrice text-success">@product.Price$</P>
-                            <div>
-                                @for (int i = 0; i < Math.Round(product.Rating); i++)
-                                {
-                                    <i class="fas fa-star" style="color:gold"></i>
-                                }
-                                @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
-                                {
-                                    <i class="fas fa-star" style="color:darkgray"></i>
-                                }
-                            </div>
-                            <div class="layer1">
-                                <div class="layCard1 lay-icon1">
-                                    <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
-                                        <i class="fa-solid fa-cart-shopping "></i>
-                                    </a>
-                                    <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
-                                        <i class="fa-solid fa-info-circle"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
+<section class="sale-sec container swiper mySwiper">
+    <div class="section-head">
+        <h4>
+            <span class="section-onsale">
+                New
+            </span>
+            Arrivals
+        </h4>
+    </div>
+    <div class="boxs swiper-wrapper">
+        @foreach (var product in Model.Products.Where(p => p.OnSale == false))
+        {
+            <div class="box column product-item swiper-slide">
+                <div class="product-btn">
+                    <ul class="product-action">
+                        <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        <li><a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                    </ul>
+                </div>
+                <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
+                    <img src="@product.ImgUrl" class="img-product">
+                    <img src="@product.ImgUrl" class="hover-img">
+                </a>
+                <div class="content">
+                    <a class="product-item-link">
+                        @product.Name
+                    </a>
+                    @{
+                        var ratings = _context.Ratings.
+                            Where(r => r.ProductId == product.Id).ToList();
+                        
+                            decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
                     }
+
+                    <div class="stars">
+                        @for (int i = 0; i < rating; i++)
+                        {
+                            <i class="fa-solid fa-star"></i>
+                        }
+                        @for (int i = (int)Math.Round(rating); i < 5; i++)
+                        {
+                            <i class="fas fa-star" style="color:darkgray"></i>
+                        }
+                    </div>
+                    <div class="price">
+                        <span>$@product.Price</span>
+                    </div>
                 </div>
             </div>
-        </section>
-    }
-}
-*@
+
+        }
+    </div>
+
+    <div class="">
+        <div class="swiper-button-next swiper-btn"></div>
+        <div class="swiper-button-prev swiper-btn"></div>
+    </div>
+</section>
+
 <section class="sec4">
     <div class="sec4-layover ">
         <div class="pt-5">

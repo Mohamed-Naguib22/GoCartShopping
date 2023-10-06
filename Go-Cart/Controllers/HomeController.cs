@@ -4,6 +4,7 @@ using Go_Cart.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
@@ -25,11 +26,13 @@ namespace Go_Cart.Controllers
         {
             var products = await _context.Products.ToListAsync();
             var categories = await _context.Categories.Include(c => c.Products).ToListAsync();
+            var offers = await _context.Offers.ToListAsync();
 
             var homeViewModel = new HomeViewModel
             {
                 Products = products,
-                Categories = categories
+                Categories = categories,
+                Offers = offers
             };
 
             return View(homeViewModel);

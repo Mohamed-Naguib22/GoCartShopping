@@ -4,7 +4,7 @@
     ViewData["Title"] = "Product Form";
 }
 
-<section>
+<section class="cat1 pt-5" id="cat">
     <div class="container">
         <div class="row mt-4">
             <h2>Create Product</h2>
@@ -38,9 +38,24 @@
                 </div>
 
                 <div class="form-group">
+                    <label asp-for="SelectedColors" class="fs-5 mt-4">Colors:</label>
+                    <select asp-for="SelectedColors" class="form-control w-25" multiple>
+                        @foreach (var color in ViewBag.Colors)
+                        {
+                            <option value="@color.Value">@color.Text</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label asp-for="Price" class="fs-5 mt-4">Price:</label>
                     <input asp-for="Price" type="number" id="addProductPrice" class="form-control w-25">
                     <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DiscountPercentage" class="fs-5 mt-4">Discount Percentage:</label>
+                    <input asp-for="DiscountPercentage" type="number" class="form-control w-25">
                 </div>
 
                 <div class="form-group">
@@ -49,24 +64,10 @@
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
 
-                <div class="row mt-4">
-                    <div class="form-group col-md-4 d-flex align-items-center">
-                        <label asp-for="Rating" class="fs-5">Rating: </label>
-                        <div class="star-rating">
-                            @for (int i = 1; i <= 5; i++)
-                            {
-                                <span class="star" data-value="@i">&#9734;</span>
-                            }
-                            <input type="hidden" name="Rating" id="rating-value" value="" />
-                        </div>
-                        <span asp-validation-for="Rating" class="text-danger"></span>
-                    </div>
-
-                    <div class="form-group col-md-4 d-flex align-items-center">
-                        <label asp-for="NumberOfItemsInStock" class="fs-5">Number of Items: </label>
-                        <input asp-for="NumberOfItemsInStock" type="number" id="addProductItems" class="form-control w-25">
-                        <span asp-validation-for="NumberOfItemsInStock" class="text-danger"></span>
-                    </div>
+                <div class="form-group col-md-4 d-flex align-items-center">
+                    <label asp-for="NumberOfItemsInStock" class="fs-5">Number of Items: </label>
+                    <input asp-for="NumberOfItemsInStock" type="number" id="addProductItems" class="form-control w-25">
+                    <span asp-validation-for="NumberOfItemsInStock" class="text-danger"></span>
                 </div>
 
                 <div class="form-group mt-4">

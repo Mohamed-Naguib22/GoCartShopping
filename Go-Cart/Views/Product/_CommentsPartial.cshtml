@@ -1,0 +1,18 @@
+﻿@model List<ProductReviewViewModel>
+
+@foreach (var review in Model)
+{
+    <div class="">
+        <div class="comImg d-flex ">
+            <img src="@review.ProfilePicture" alt="User Image" class=" border rounded-circle">
+            <p class="mt-2 ms-2 font-monospace">@review.UserName</p>
+            <p class="mt-2 mx-5 font-monospace">@review.ReviewDate</p>
+        </div>
+        <div class="comText ms-4">
+            <p class="">
+                @review.Review
+            </p>
+        </div>
+    </div>
+    <hr />
+}

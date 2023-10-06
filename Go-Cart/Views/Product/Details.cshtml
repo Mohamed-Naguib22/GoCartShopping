@@ -10,90 +10,162 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
-<section class="details font-monospace">
+
+<section class="details">
     <div class="container">
-        <h4 class="font-monospace ms-2">@Model.Name </h4>
-        <hr class="w-100">
-        <div class="d-flex ms-5 align-items-center  details-dflex">
-            <div class="det-img  pe-5">
-                <img src="@Model.ImgUrl" class="w-100 h-100" alt="">
+        <div class="row ">
+            <div class="col-md-4">
+                <div class=" d-flex flex-wrap imgDetails">
+                    <img id="imgItem" src="@Model.ImgUrl" class="" alt="">
+                    @*                    <img src="../Assets/Image/product/product-38.jpeg" class=" p-3 item" alt="">
+                    <img src="../Assets/Image/product/product-37.jpeg" class=" p-3 item" alt="">
+                    <img src="../Assets/Image/product/product-36.jpeg" class=" p-3 item" alt="">
+                    <img src="../Assets/Image/product/product-39.jpeg" class=" p-3 item" alt="">
+                    *@
+                </div>
             </div>
-            <div class="det-text w-100">
-                <div class="d-flex align-items-center">
-                    <h2>Category: </h2>
-                    <p class="mt-2 fs-3 ms-1"> @Model.Category</p>
-                </div>
-                
-                <hr class="me-3">
-                <div class="d-flex align-items-center">
-                    <h2>Rating: </h2>
-                    <div class="star-rating" id="product-rating"></div>
-                </div>
 
-                <hr class="me-3">
-                <div class="d-flex align-items-center">
-                    <h2>Available Sizes: </h2>
-                    @foreach (var size in Model.AvailableSizes)
-                    {
-                        <p class="mt-2 fs-3 ms-1">
-                            @(size == Model.AvailableSizes.Last() ? size : size + ", ")
+            <div class="col-md-6  p-1 mt-5 ">
+                <div class="">
+                    <div class="d-flex justify-content-between">
+                        <p class="text-secondary fs-4">@Model.Category</p>
+                        <h5 class="me-2 text-success">@Model.Price$</h5>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="fw-bolder fs-4">@Model.Name</span>
+                        <div id="rating-container">
+                            @Html.Partial("_RatingPartial", Model.Rating)
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <span class="fw-semibold">Available Colors: </span>
+                        <div class="mx-2">
+                            @for (int i = 0; i < Model.AvailableColors.Count; i++)
+                            {
+                                <i class="fa-solid fa-circle text-@(Model.AvailableColors.ElementAt(i))"></i>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <span class="fw-semibold">Available Sizes: </span>
+                        <p class="mx-2">
+
+                        @foreach (var size in Model.AvailableSizes)
+                        {
+                                @(size == Model.AvailableSizes.Last() ? size : size + ", ")
+                        }
                         </p>
-                    }
-                </div>
-                <hr class="me-3">
+                    </div>
 
-                <div class="d-flex align-items-center">
-                    <h2>price: </h2>
-                    <p class="mt-3 fs-3 ms-1 text-success"> @Model.Price</p>
+                    <small>@Model.Description</small>
+                    <div class="text-center">
+                        <a asp-route-productId="@Model.Id" asp-controller="Cart" asp-action="AddToCart" class="btn py-2 detailsBtn text-white border-0 w-50 px-5 rounded-0 my-4">
+                            ADD TO CART +
+                        </a>
+                    </div>
                 </div>
-                <hr class="me-3">
-
-                <div class=" align-items-center">
-                    <h2 class="font-monospace ">Description : </h2>
-                    <p class="mt-2 fs-3 ms-1">@Model.Description</p>
-                </div><hr class="me-3">
             </div>
-        </div>
-
-        <div class="d-flex justify-content-center">
-            <a asp-route-productId="@Model.Id" asp-controller="Cart" asp-action="AddToCart" class="btn rounded-3 border-0 detailsBtn px-5 py-3 text-white">Add To Cart</a>
         </div>
     </div>
 </section>
+
+<section class="container">
+    @{
+        var user = await _userManager.GetUserAsync(User);
+    }
+    <div class="d-flex">
+        <h3 class="mx-2">Rate: </h3>
+        <div class="star-rating">
+            @for (int i = 1; i <= 5; i++)
+            {
+                <span class="star" data-value="@i">&#9734;</span>
+            }
+            <input type="hidden" name="Rating" id="rating-value" value="" />
+        </div>
+    </div>
+</section>
+
 
 <section class="my-5">
     <input type="hidden" name="__RequestVerificationToken" value="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
     <input name="review" maxlength="200" id="coment" class="form-control w-75 mx-auto text-dark py-3" placeholder="Write a customer review" />
     <button class="addreview-btn d-none"></button>
-    <div class="comment mx-auto w-75 mt-5">
-        @foreach (var review in Model.ProductReviews)
-        {
-            <div class="">
-                <div class="comImg d-flex ">
-                    <img src="@review.ProfilePicture" alt="User Image" class=" border rounded-circle">
-                    <p class="mt-2 ms-2 font-monospace">@review.UserName</p>
-                    <p class="mt-2 ms-2 font-monospace">@review.ReviewDate</p>
-                </div>
-                <div class="comText ms-4">
-                    <p class="">
-                        @review.Review
-                    </p>
-                </div>
-            </div>
-            <hr/>
-        }
+    <div class="comment mx-auto w-75 mt-5" id="comments-container">
+        @Html.Partial("_CommentsPartial", Model.ProductReviews)
     </div>
 </section>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(".star-rating .star").click(function () {
+        var value = $(this).data("value");
+        $("#rating-value").val(value);
+        $(".star-rating .star").removeClass("checked");
+        $(this).prevAll().addBack().addClass("checked");
+    });
+</script>
 
 @section scripts {
     <script>
         $(document).ready(function () {
-            // Submit the form using AJAX on Enter key press
             $('#coment').keypress(function (e) {
-                if (e.keyCode == 13) { // 13 is the Enter key code
-                    e.preventDefault(); // Prevent the default form submission
+                if (e.keyCode == 13) { 
+                    e.preventDefault();
                     submitReviewForm();
                 }
+            });
+
+
+            $.ajax({
+                url: '@Url.Action("GetUserRating", "Rating")',
+                type: 'Get',
+                data: {
+                    productId: '@Model.Id',
+                },
+                success: function (result) {
+                    var requiredStars = result;
+                    console.log(requiredStars);
+                    $(".star-rating .star").slice(0, requiredStars).addClass("checked");
+                },
+                error: function () {
+                }
+            });
+
+            function refreshRating() {
+                var productId = '@Model.Id';
+                $.ajax({
+                    url: '@Url.Action("GetRating", "Rating")',
+                    type: 'GET',
+                    data: {
+                        productId: productId
+                    },
+                    success: function (result) {
+                        $('#rating-container').html(result); // Update the comments section
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+            $('.star-rating .star').click(function () {
+                var value = $(this).data('value');
+                var productId = '@Model.Id';
+                $.ajax({
+                    url: '@Url.Action("Rate", "Rating")',
+                    type: 'POST',
+                    data: {
+                        value: value,
+                        productId: productId,
+                    },
+                    success: function () {
+                        refreshRating();
+                    },
+                    error: function () {
+                    }
+                });
             });
 
             function submitReviewForm() {
@@ -108,7 +180,24 @@
                         __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
                     },
                     success: function () {
-                        location.reload(); // Refresh the page to reflect the changes
+                        refreshComments(); 
+                        $('#coment').val('');
+                    },
+                    error: function () {
+                    }
+                });
+            }
+
+            function refreshComments() {
+                var productId = '@Model.Id';
+                $.ajax({
+                    url: '@Url.Action("GetComments", "Product")',
+                    type: 'GET',
+                    data: {
+                        productId: productId
+                    },
+                    success: function (result) {
+                        $('#comments-container').html(result); // Update the comments section
                     },
                     error: function () {
                     }
@@ -117,25 +206,3 @@
         });
     </script>
 }
-
-@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function () {
-        var productRating = @Model.Rating;
-
-        var filledStars = Math.floor(productRating);
-        var emptyStars = 5 - filledStars;
-
-        var filledStarsHTML = '';
-        for (var i = 0; i < filledStars; i++) {
-            filledStarsHTML += '<span class="star checked">&#9733;</span>';
-        }
-
-        var emptyStarsHTML = '';
-        for (var i = 0; i < emptyStars; i++) {
-            emptyStarsHTML += '<span class="star">&#9734;</span>';
-        }
-
-        $('#product-rating').html(filledStarsHTML + emptyStarsHTML);
-    });
-</script>*@

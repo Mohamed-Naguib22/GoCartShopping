@@ -35,6 +35,7 @@ namespace Go_Cart.Controllers
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
             ViewBag.Sizes = new MultiSelectList(_context.Sizes, "Id", "Name");
+            ViewBag.Colors = new MultiSelectList(_context.Colors, "Id", "Name");
             return View();
         }
         [HttpPost]
@@ -45,6 +46,7 @@ namespace Go_Cart.Controllers
             {
                 ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name", model.CategoryId);
                 ViewBag.Sizes = new MultiSelectList(_context.Sizes, "Id", "Name");
+                ViewBag.Colors = new MultiSelectList(_context.Colors, "Id", "Name");
                 return View(model);
             }
 
@@ -54,7 +56,6 @@ namespace Go_Cart.Controllers
                 Price = model.Price,
                 CategoryId = model.CategoryId,
                 Description = model.Description,
-                Rating = model.Rating,
                 NumberOfItemsInStock = model.NumberOfItemsInStock,
                 NumberOfSales = 0,
                 IsActive = true,
@@ -82,13 +83,41 @@ namespace Go_Cart.Controllers
                 await _context.SaveChangesAsync();
             }
 
+            if (model.SelectedColors != null && model.SelectedColors.Any())
+            {
+                foreach (var selectedColorId in model.SelectedColors)
+                {
+                    var productColor = new ProductColor
+                    {
+                        ProductId = product.Id,
+                        ColorId = selectedColorId
+                    };
+
+                    await _context.ProductColors.AddAsync(productColor);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
+            if (model.DiscountPercentage != null)
+            {
+                var offer = new Offer
+                {
+                    DiscountPercentage = (decimal)model.DiscountPercentage,
+                    StartDate = DateTime.Now,
+                    EndDate = DateTime.Now.AddDays(30),
+                    ProductId = product.Id
+                };
+                product.OnSale = true;
+                await _context.Offers.AddAsync(offer);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index), "Home");
         }
         public async Task<IActionResult> Details(int productId)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == productId);
-            
-            var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == product.CategoryId);
+            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == productId);
             
             var reviews = _context.ProductReviews
                 .Where(r => r.ProductId == productId)
@@ -99,33 +128,49 @@ namespace Go_Cart.Controllers
                 .Where(ps => ps.ProductId == productId)
                 .Include(ps => ps.Size);
 
-            var reviewViewModel = reviews.Select(r => new ProductReviewViewModel
+            var Colors = _context.ProductColors
+                .Where(pc => pc.ProductId == productId)
+                .Include(pc => pc.Color);
+
+            var reviewViewModel = await reviews.Select(r => new ProductReviewViewModel
             {
                 Id = r.Id,
                 Review = r.Review,
                 ReviewDate = r.AddedOn,
                 UserName = r.ApplicationUser.FirstName + " " + r.ApplicationUser.LastName,
                 ProfilePicture = r.ApplicationUser.ImgUrl
-            });;
+            }).ToListAsync();
+
+            var ratings = await _context.Ratings.
+                Where(r => r.ProductId == productId).ToListAsync();
+
+            decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
 
             var availableSizes = new List<string>();
+            var availableColors = new List<string>();
 
             foreach (var size in Sizes)
             {
                 availableSizes.Add(size.Size.Name);
             }
-            
+
+            foreach (var color in Colors)
+            {
+                availableColors.Add(color.Color.Value);
+            }
+
             var productDetails = new ProductDetailsViewModel
             {
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
-                Rating = product.Rating,
+                Rating = rating,
                 Description = product.Description,
                 ImgUrl = product.ImgUrl,
-                Category = category.Name,
+                Category = product.Category.Name,
                 ProductReviews = reviewViewModel,
-                AvailableSizes = availableSizes
+                AvailableSizes = availableSizes,
+                AvailableColors = availableColors
             };
 
             return View(productDetails);
@@ -149,6 +194,41 @@ namespace Go_Cart.Controllers
                 await _context.SaveChangesAsync();
             }
             return Ok();
+        }
+        [HttpGet]
+        public IActionResult GetComments(int productId)
+        {
+            var reviews = _context.ProductReviews
+                .Where(r => r.ProductId == productId)
+                .Include(r => r.ApplicationUser)
+                .OrderByDescending(r => r.AddedOn)
+                .ToList();
+
+            var reviewViewModel = reviews.Select(r => new ProductReviewViewModel
+            {
+                Id = r.Id,
+                Review = r.Review,
+                ReviewDate = r.AddedOn,
+                UserName = r.ApplicationUser.FirstName + " " + r.ApplicationUser.LastName,
+                ProfilePicture = r.ApplicationUser.ImgUrl
+            }).ToList();
+
+            return PartialView("_CommentsPartial", reviewViewModel);
+        }
+        [HttpGet]
+        public async Task<IActionResult> AutoComplete(string searchTerm)
+        {
+            if (searchTerm is null)
+                return Ok();
+
+            var searchItemTrimed = searchTerm.Trim().ToLower();
+            var matchingProducts = await _context.Products
+                .Where(p => p.Name.ToLower().Contains(searchItemTrimed))
+                .OrderBy(p => p.Name)
+                .Select(p => p.Name)
+                .ToListAsync();
+
+            return Json(matchingProducts);
         }
     }
 }

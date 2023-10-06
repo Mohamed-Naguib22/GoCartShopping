@@ -16,6 +16,7 @@ namespace Go_Cart.ViewModels
         public string Category { get; set; }
         public string ImgUrl { get; set; }
         public List<string> AvailableSizes { get; set; }
+        public List<string> AvailableColors { get; set; }
         public IEnumerable<ProductReviewViewModel> ProductReviews { get; set; }
     }
 }

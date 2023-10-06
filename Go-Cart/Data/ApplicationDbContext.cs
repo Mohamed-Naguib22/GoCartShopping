@@ -26,23 +26,30 @@ namespace Go_Cart.Data
             builder.Entity<ProductSize>()
                 .HasKey(ps => new {ps.SizeId, ps.ProductId});
 
-            builder.Entity<ProductOrder>()
+            builder.Entity<ProductColor>()
+                .HasKey(pc => new { pc.ColorId, pc.ProductId });
+
+            builder.Entity<OrderDetails>()
                 .HasKey(po => new { po.OrderId, po.ProductId });
 
             builder.Entity<WishListItem>()
                 .HasKey(wi => new { wi.WishListId, wi.ProductId });
-
         }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Size> Sizes { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Rating> Ratings { get; set; }
         public DbSet<ProductReview> ProductReviews { get; set; }
+        public DbSet<Size> Sizes { get; set; }
         public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<Color> Colors { get; set; }
+        public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<Offer> Offers { get; set; }
         public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetails> OrderDetails { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ShippingAddress> ShippingAddresses { get; set; }
-        public DbSet<ProductOrder> ProductOrders { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<WishListItem> WishListItems { get; set; }
+
     }
 }

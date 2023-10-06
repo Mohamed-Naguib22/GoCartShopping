@@ -5,12 +5,12 @@
     <meta charset="UTF-8">
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="shortcut icon" href="Assets/Image/55.ico" type="image/x-icon">
-
+    <link rel="shortcut icon" href="~/Assets/Image/55.ico" type="image/x-icon">
     <link href="~/css/all.css" rel="stylesheet" />
     <link href="~/css/slick.css" rel="stylesheet" />
     <link href="~/css/slick-theme.css" rel="stylesheet" />
     <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
     <link href="~/css/media.css" rel="stylesheet" />
     <link href="~/css/dark-mode.css" rel="stylesheet" id="dark-mode" />
     <link href="~/css/swiper-bundle.min.css" rel="stylesheet" />
@@ -18,7 +18,6 @@
     <link href="~/css/Style.css" rel="stylesheet" />
     
     <title>@ViewData["Title"] - Go Cart</title>
-
 </head>
 
 <body id="body" class="@(Context.Request.Path == "/" ? "Color ofhiden" : "")">
@@ -32,11 +31,11 @@
         </section>
     }
     <div class="d-flex flex-column fixed-top">
-        <nav class="navbar navbar1 navbar-expand-lg ">
-            <div class="container ">
+        <nav class="navbar navbar1 navbar-expand-lg">
+            <div class="container">
                 <a asp-controller="Home" asp-action="Index" class="d-flex justify-content-center align-items-center text-decoration-none">
-                    <img src="../Assets/Image/logo.png" class="iconbg mt-1" alt="">
-                    <h1 class="navbar-brand nav-name"> <span class="Go-color">Go</span><span class="Cart-color ms-1">CART</span> </h1>
+                    <img src="Assets/Image/logoo5.png" class="iconbg mt-1" alt="">
+                    <h1 class="navbar-brand nav-name"><span class="Go-color">Go</span><span class="Cart-color ms-1">CART</span></h1>
                 </a>
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -44,11 +43,13 @@
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="list-unstyled   mb-2 search-groub1">
-                        <li class=" position-relative  ">
-                            <i class="fas fa-search  search  position-absolute ps-2"></i>
-
-                            <input type="search" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
+                    <ul class="list-unstyled mb-2 search-groub1">
+                        <li class="position-relative">
+                            <i class="fas fa-search search position-absolute ps-2"></i>
+                            <form method="post" asp-controller="Search" asp-action="Search">
+                                <input type="search" id="searchInput" name="query" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
+                                <button class="btn d-none"></button>
+                            </form>
                         </li>
                     </ul>
 
@@ -56,35 +57,57 @@
                         <a href="Html/orderhistory.html" class="nav-link licolor fs-2">order</a>
                     </div>
 
-                    <ul class="d-flex  gap-3 list-unstyled  licolor  my-auto  ms-auto icon-groub ">
-                        <li class="nav-item ">
-                            <a class="nav-link licolor" asp-controller="Cart" asp-action="Index">
+                    <ul class="d-flex gap-3 list-unstyled licolor my-auto ms-auto icon-groub">
+                        <li class="nav-item ms-2 d-flex flex-column position-relative">
+                            <a class="nav-link licolor" style="cursor:pointer" id="Carticon">
                                 <i class="fa-solid fa-cart-shopping shop"></i>
                             </a>
                         </li>
+                        @{
+                            Cart cart = HttpContextAccessor.HttpContext.Session.Get<Cart>("_cart");
+                        }
+
+                        <div class="cartList rounded-2" id="cartList" style="background-color:#F0F2F5">
+                            @if (cart == null || !cart.Products.Any())
+                            {
+                                <p>There is no items yet</p>
+                            }
+                            else
+                            {
+                                <div id="cartItems">
+
+                                </div>
+                            }
+                            <div class="d-flex justify-content-center mb-2 mt-3">
+                                <a asp-controller="Cart" asp-action="Index" class="px-3 py-2 text-decoration-none text-white" style="background-color: #41819c;">View Cart</a>
+                            </div>
+                        </div>
+
                         <li>
-                            <a asp-controller="WishList" asp-action="Index" class="text-black text-decoration-none ">
+                            <a asp-controller="WishList" asp-action="Index" class="text-black text-decoration-none">
                                 <i class="fa-solid fa-heart fs-3 ms-2 mt-2"></i>
                             </a>
+                        </li>
+
+                        <li class="nav-item mt-1 me-4">
+                            <i class="fa-solid fa-moon fs-3 d-block licolor" id="moon"></i>
+                            <i class="fa-solid fa-sun fs-3 d-none licolor" id="sun"></i>
                         </li>
                         @{
                             var user = await _userManager.GetUserAsync(User);
                         }
-                        <li class="nav-item dropdown  ms-0">
+                        <li class="nav-item dropdown ms-0">
                             <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img src="@user.ImgUrl" class="acc border" alt="">
                             </a>
                             <ul class="dropdown-menu licolor">
-                                <li><a class="dropdown-item " href="Html/updateProfile.html">profile</a></li>
+                                <li><a class="dropdown-item" href="Html/updateProfile.html">profile</a></li>
                                 <li>
                                     <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
                                         <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
                                     </form>
                                 </li>
                             </ul>
-                        <li class="nav-item mt-1">
-                            <i class="fa-solid fa-moon fs-3  d-block licolor " id="moon"></i>
-                            <i class="fa-solid fa-sun fs-3  d-none  licolor" id="sun"></i>
                         </li>
                         <li class="nav-item ms-4 pt-2">
                             <a class=" text-decoration-none text-black" href="Html/SignIn.html">
@@ -96,24 +119,24 @@
             </div>
         </nav>
 
-        <div class="@(Context.Request.Path == "/" ? "navbar2":"navbar4") navbar-expand h-25">
-            <div class="container ">
+        <div class="@(Context.Request.Path == "/" ? "navbar2" : "navbar4") navbar-expand h-25">
+            <div class="container">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" aria-current="page" href="#Home">Home</a>
                         </li>
-                        <li class="nav-item ">
-                            <a class="nav-link  " href="#">Contact US</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Html/Contact.html">Contact Us</a>
                         </li>
-                        <li class="nav-item ">
-                            <a class="nav-link " href="#">About Us</a>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Html/about.html">About Us</a>
                         </li>
                     </ul>
-                    <div class=" d-flex gap-4 DTCairocolor">
-                        <div class="d-flex gap-2 ">
+                    <div class="d-flex gap-4 DTCairocolor">
+                        <div class="d-flex gap-2">
                             <img src="Assets/Image/egypt.jpeg" class="egyimg mt-2" alt="">
-                            <p class=" DTCairo   pt-3">Delivery to Egypt</p>
+                            <p class="DTCairo pt-3">Delivery to Egypt</p>
                         </div>
                     </div>
                 </div>
@@ -173,9 +196,9 @@
             </div>
         </div>
     </footer>
-
-    <script src="~/js/bootstrap.bundle.min.js"></script>
+    
     <script src="~/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
     
     <script src="~/js/slick.js"></script>
     <script src="~/js/mixitup.min.js"></script>
@@ -184,10 +207,10 @@
     <script type="text/javascript" src="~/js/jquery.easing.1.3.js"></script>
     <script type="text/javascript" src="~/js/jquery.skitter.min.js"></script>
     <script src="~/js/swiper-bundle.min.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
     <script src="~/js/jq.js"></script>
     <script src="~/js/index.js"></script>
-    
     @await RenderSectionAsync("Scripts", required: false)
-
+    
 </body>
 </html>

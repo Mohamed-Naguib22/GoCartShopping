@@ -19,6 +19,18 @@ namespace Go_Cart.Controllers
             _context = context;
             _userManager = userManager;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetWishListItems()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var wishList = await _context.WishLists.FirstOrDefaultAsync(w => w.ApplicationUserId == user.Id);
+            var whishListItems = await _context.WishListItems
+                .Where(wi => wi.WishListId == wishList.Id)
+                .Include(wi => wi.Product)
+                .ToListAsync();
+
+            return PartialView("_WishListPartial", whishListItems);
+        }
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -44,7 +56,7 @@ namespace Go_Cart.Controllers
             await _context.WishListItems.AddAsync(wishListItem);
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
         public async Task<IActionResult> RemoveFromWishList(int productId)
         {
@@ -55,10 +67,9 @@ namespace Go_Cart.Controllers
                 .SingleOrDefaultAsync(wi => wi.WishListId == wishList.Id && wi.ProductId == productId);
 
             _context.WishListItems.Remove(wishListItem);
-
             await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return Ok();
         }
     }
 }

@@ -17,34 +17,56 @@
         <hr class="container" />
     </div>
 
-    <div class="container ">
-        <div class="row g-3">
-            @foreach (var product in Model.Products)
-            {
-                <div class="col-md-4 col-xl-4 col-xxl-3">
-                    <div class="card me-2">
-                        <div class="card1">
-                            <img src="@product.ImgUrl" class="card-img w-100" alt="...">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Filter By Price</h5>
+                        <hr />
+                        <div class="form-group">
+                            <label for="priceRange">Price Range:</label>
+                            <input type="range" class="form-range" id="priceRange" min="0" max="1000" step="10" value="500">
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">Price:<span class="text-success">$@product.Price</span></p>
-                            <div>
-                                @for (int i = 0; i < Math.Round(product.Rating); i++)
-                                {
-                                    <i class="fas fa-star" style="color:gold"></i>
-                                }
-                                @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
-                                {
-                                    <i class="fas fa-star" style="color:darkgray"></i>
-                                }
-                            </div>
-                            <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
-                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">Details</a>
+                        <div class="form-group">
+                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">500</span></label>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
+
+            <div class="col-md-9">
+                <div class="row g-3" id="filtered-products">
+                    @Html.Partial("_ProductsPartial", Model.Products)
+                </div>
+            </div>
         </div>
     </div>
 </section>
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            var priceRange = document.getElementById('priceRange');
+            var selectedPrice = document.getElementById('selectedPrice');
+
+            priceRange.addEventListener('input', function () {
+                selectedPrice.innerText = priceRange.value;
+                $.ajax({
+                    url: '@Url.Action("FilteredProducts", "Category")',
+                    type: 'GET',
+                    data: {
+                        categoryId: '@Model.Category.Id',
+                        price: priceRange.value // Update to use priceRange value
+                    },
+                    success: function (result) {
+                        $('#filtered-products').html(result);
+                    },
+                    error: function () {
+                        // Handle error
+                    }
+                });
+            });
+        });
+    </script>
+}
