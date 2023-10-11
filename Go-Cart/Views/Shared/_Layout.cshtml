@@ -67,15 +67,15 @@
                             Cart cart = HttpContextAccessor.HttpContext.Session.Get<Cart>("_cart");
                         }
 
-                        <div class="cartList rounded-2" id="cartList" style="background-color:#F0F2F5">
+                        <div class="cartList rounded-2" id="cartList">
                             @if (cart == null || !cart.Products.Any())
                             {
                                 <p>There is no items yet</p>
                             }
                             else
                             {
-                                <div id="cartItems">
-
+                                <div id="cartSlider-container">
+                                    @Html.Partial("_CartSliderPartial", cart.Products)
                                 </div>
                             }
                             <div class="d-flex justify-content-center mb-2 mt-3">
@@ -98,8 +98,8 @@
                         }
                         <li class="nav-item dropdown ms-0">
                             <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="@user.ImgUrl" class="acc border" alt="">
-                            </a>
+@*                                <img src="@user.ImgUrl" class="acc border" alt="">
+*@                            </a>
                             <ul class="dropdown-menu licolor">
                                 <li><a class="dropdown-item" href="Html/updateProfile.html">profile</a></li>
                                 <li>
@@ -124,10 +124,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="#Home">Home</a>
+                            <a class="nav-link" aria-current="page" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="Html/Contact.html">Contact Us</a>
+                            <a class="nav-link" href="~/Contact.html">Contact Us</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="Html/about.html">About Us</a>
@@ -135,7 +135,7 @@
                     </ul>
                     <div class="d-flex gap-4 DTCairocolor">
                         <div class="d-flex gap-2">
-                            <img src="Assets/Image/egypt.jpeg" class="egyimg mt-2" alt="">
+                            <img src="~/Assets/Image/egypt.jpeg" class="egyimg mt-2" alt="">
                             <p class="DTCairo pt-3">Delivery to Egypt</p>
                         </div>
                     </div>
@@ -210,7 +210,8 @@
     <script src="~/js/jquery-ui.min.js"></script>
     <script src="~/js/jq.js"></script>
     <script src="~/js/index.js"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/ajax.js"></script>
+@*    @await RenderSectionAsync("Scripts", required: false)*@
     
 </body>
 </html>

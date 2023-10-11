@@ -24,7 +24,7 @@ namespace Go_Cart.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products.ToListAsync();
+            var products = await _context.Products.Include(p => p.Ratings).ToListAsync();
             var categories = await _context.Categories.Include(c => c.Products).ToListAsync();
             var offers = await _context.Offers.ToListAsync();
 

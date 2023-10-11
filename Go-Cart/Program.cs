@@ -4,7 +4,9 @@ using Go_Cart.Models;
 using Go_Cart.Services;
 using GoCart;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,16 +16,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultUI()
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddTransient<IDateService<Product>, ProductDateService>();
-builder.Services.AddTransient<IImageService<Product>, ProductImageService>();
+builder.Services.AddTransient<IDateService<Go_Cart.Models.Product>, ProductDateService>();
+builder.Services.AddTransient<IImageService<Go_Cart.Models.Product>, ProductImageService>();
 builder.Services.AddTransient<IImageService<ApplicationUser>, UserImageService>();
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 builder.Services.AddSession();
 
@@ -47,6 +50,7 @@ app.UseCookiePolicy();
 app.UseRouting();
 app.UseAuthentication();
 app.UseSession();
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 app.UseAuthorization();
 app.MapRazorPages();
 app.MapControllerRoute(

@@ -265,47 +265,20 @@
               
             }
         });
-        
-        $("#cartList").slideUp(0);
-        
-      $("#Carticon").click(function(){
-        $("#cartList").slideToggle(5);
-      })
+  });
 
-      let wishlistBtn = document.querySelectorAll(".addToWL");
-      wishlistBtn.forEach(item => {
-          var productId = $(item).data('product-id');
-          var isAdded = localStorage.getItem('wishlist_' + productId);
+function showToast() {
+    var toastEl = document.getElementById('toast');
+    toastEl.classList.remove('d-none'); // Remove the 'd-none' class to display the toast
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
 
-          if (isAdded && JSON.parse(isAdded)) {
-              item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
-          }
+    setTimeout(function () {
+        toast.hide();
+    }, 5000); // Adjust the time to display the toast in milliseconds (e.g., 3000 for 3 seconds)
+}
+$("#cartList").slideUp(0);
 
-          item.onclick = function () {
-              var isCurrentlyAdded = item.firstElementChild.classList.contains("text-danger");
-              var updatedIsAdded = !isCurrentlyAdded;
-
-              localStorage.setItem('wishlist_' + productId, updatedIsAdded);
-              var url = updatedIsAdded ? '/WishList/AddToWishList' : '/WishList/RemoveFromWishList';
-              var requestData = { productId: productId };
-
-              $.ajax({
-                  url: url,
-                  type: 'POST',
-                  data: requestData,
-                  success: function (response) {
-                      if (updatedIsAdded) {
-                          item.firstElementChild.classList.remove("fas", "fa-heart");
-                          item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
-                      } else {
-                          item.firstElementChild.classList.remove("fas", "fa-heart", "text-danger");
-                          item.firstElementChild.classList.add("far", "fa-heart");
-                      }
-                  },
-                  error: function (xhr) {
-                      // Handle error
-                  }
-              });
-          }
-      });
-});
+$("#Carticon").click(function () {
+    $("#cartList").slideToggle(5);
+})

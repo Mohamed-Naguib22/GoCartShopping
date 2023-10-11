@@ -11,6 +11,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+<input class="d-none" id="category-id" value="@Model.Category.Id"/>
 <section class="cat1 pt-5" id="cat">
     <div class="mb-5">
         <h4 class="win">@Model.Category.Name</h4>
@@ -20,16 +21,40 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <div class="card">
+                <div class=" filter-card bg-primary bg-opacity-10">
                     <div class="card-body">
-                        <h5 class="card-title">Filter By Price</h5>
+                        <h5 class="card-title">Filter</h5>
+                        <select class="form-control" id="sortBy">
+                            <option selected>Sort by</option>
+                            <option value="newest">Newest</option>
+                            <option value="highest">Price: Highest</option>
+                            <option value="lowest">Price: Lowest</option>
+                         </select>
+
                         <hr />
+
                         <div class="form-group">
-                            <label for="priceRange">Price Range:</label>
-                            <input type="range" class="form-range" id="priceRange" min="0" max="1000" step="10" value="500">
+                            <p class="fs-5 fw-semibold" for="priceRange">Price Range</p>
+                            <input type="range" class="form-range" id="priceRange" min="0" max="10000" step="10" value="5000">
                         </div>
                         <div class="form-group">
-                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">500</span></label>
+                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">5000</span></label>
+                        </div>
+                        <hr />
+                        <p class="fs-5 fw-semibold">Colors</p>
+                        @foreach (var color in Model.Colors)
+                        {
+                            <a data-color-id="@color.Id" class="btn color-button border border-dark mx-1 my-1"><i class="fa-solid fa-fw fa-lg fa-circle text-@(color.Value)"></i></a>
+                        }
+
+                        <hr />
+
+                        <p class="fs-5 fw-semibold">Sizes</p>
+                        <div class="filter-button-group">
+                            @foreach (var size in Model.Sizes)
+                            {
+                                <button data-size-id ="@size.Id">@size.Name</button>
+                            }
                         </div>
                     </div>
                 </div>
@@ -43,30 +68,3 @@
         </div>
     </div>
 </section>
-@section scripts {
-    <script>
-        $(document).ready(function () {
-
-            var priceRange = document.getElementById('priceRange');
-            var selectedPrice = document.getElementById('selectedPrice');
-
-            priceRange.addEventListener('input', function () {
-                selectedPrice.innerText = priceRange.value;
-                $.ajax({
-                    url: '@Url.Action("FilteredProducts", "Category")',
-                    type: 'GET',
-                    data: {
-                        categoryId: '@Model.Category.Id',
-                        price: priceRange.value // Update to use priceRange value
-                    },
-                    success: function (result) {
-                        $('#filtered-products').html(result);
-                    },
-                    error: function () {
-                        // Handle error
-                    }
-                });
-            });
-        });
-    </script>
-}

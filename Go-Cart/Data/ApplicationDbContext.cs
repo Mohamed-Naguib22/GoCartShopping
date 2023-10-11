@@ -29,7 +29,7 @@ namespace Go_Cart.Data
             builder.Entity<ProductColor>()
                 .HasKey(pc => new { pc.ColorId, pc.ProductId });
 
-            builder.Entity<OrderDetails>()
+            builder.Entity<OrderItem>()
                 .HasKey(po => new { po.OrderId, po.ProductId });
 
             builder.Entity<WishListItem>()
@@ -45,7 +45,7 @@ namespace Go_Cart.Data
         public DbSet<ProductColor> ProductColors { get; set; }
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Order> Orders { get; set; }
-        public DbSet<OrderDetails> OrderDetails { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<ShippingAddress> ShippingAddresses { get; set; }
         public DbSet<WishList> WishLists { get; set; }

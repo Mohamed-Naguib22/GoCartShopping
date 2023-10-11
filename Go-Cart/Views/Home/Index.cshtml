@@ -40,7 +40,16 @@
         <i class="fas fa-arrow-up btnUp"></i>
     </button>
 </header>
-
+<div id="toast" class="toast ms-2 d-none" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header bg-black">
+        <img src="~/assets/image/logo.png" class="rounded me-2 w-25" alt="...">
+        <strong class="me-auto">Go-Cart</strong>
+        <button type="button" class="btn-close btn-close-white border border-white" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="notification-text">
+        Product Added Successfully!
+    </div>
+</div>
 <section class="sec2 mt-5" id="sec2">
     <div class="container">
         <div class="d-flex justify-content-between row ">
@@ -153,6 +162,7 @@
             Products
         </h4>
     </div>
+
     <div class="boxs swiper-wrapper">
         @foreach (var product in Model.Products.Where(p => p.OnSale == true))
         {
@@ -172,13 +182,7 @@
                     <a class="product-item-link">
                         @product.Name
                     </a>
-                    @{
-                        var ratings = _context.Ratings.
-                            Where(r => r.ProductId == product.Id).ToList();
-                        
-                            decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
-                    }
-
+                    @{decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;}
                     <div class="stars">
                         @for (int i = 0; i < (int)Math.Round(rating); i++)
                         {
@@ -234,10 +238,7 @@
                         @product.Name
                     </a>
                     @{
-                        var ratings = _context.Ratings.
-                            Where(r => r.ProductId == product.Id).ToList();
-                        
-                            decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
+                        decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
                     }
 
                     <div class="stars">

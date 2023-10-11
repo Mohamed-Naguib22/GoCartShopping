@@ -28,7 +28,7 @@
                 </div>
                 <div class="d-flex flex-column gap-1 mt-4">
                     <a asp-route-productId="@wishListItem.Product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-success">Add to cart</a>
-                    <a data-product-id="@wishListItem.Product.Id" class="btn remove-btn btn-danger">Remove</a>
+                    <a data-product-id="@wishListItem.Product.Id" id="remove-wishlist" class="btn remove-btn btn-danger">Remove</a>
                 </div>
             </div>
         </div>

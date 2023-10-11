@@ -3,6 +3,7 @@
     public class Transaction
     {
         public int Id { get; set; }
+        public string TransactionId { get; set; }
         public decimal Amount { get; set; }
         public string PaymentMethod { get; set; }
         public string BuyerId { get; set; }

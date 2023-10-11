@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;
+using Stripe.Checkout;
+using Stripe;
 
 namespace Go_Cart.Controllers
 {
@@ -23,13 +25,13 @@ namespace Go_Cart.Controllers
         public async Task<IActionResult> PlaceOrder()
         {
             Cart cart = HttpContext.Session.Get<Cart>("_cart");
-            var totalCost = cart.Products.Sum(item => item.Price * item.Quantity);
+            var totalCost = cart.TotalPrice;
             var user = await _userManager.GetUserAsync(User);
             var order = new Order
             {
                 TotalCost = totalCost,
                 Status = "Waiting",
-                PlacedOn = DateTime.UtcNow.ToLocalTime(),
+                PlacedOn = DateTime.Now,
                 ApplicationUserId = user.Id
             };
 
@@ -38,26 +40,29 @@ namespace Go_Cart.Controllers
 
             foreach (var product in cart.Products)
             {
-                var orderItem = new OrderDetails
+                var orderItem = new OrderItem
                 {
                     ProductId = product.Id,
                     OrderId = order.Id,
                     Quantity = product.Quantity,
+                    Color = product.SelecetdColor,
+                    Size = product.SelectedSize,
                     SubTotalPrice = product.Price * product.Quantity
                 };
-                await _context.OrderDetails.AddAsync(orderItem);
+                await _context.OrderItems.AddAsync(orderItem);
             }
 
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Checkout", new { orderId = order.Id });
+            return RedirectToAction("AddAddress", new { orderId = order.Id });
         }
-        public async Task<IActionResult> Checkout(int orderId)
+        [HttpGet]
+        public async Task<IActionResult> AddAddress(int orderId)
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-            var orderItems = _context.OrderDetails.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
-            
+            var orderItems = _context.OrderItems.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
+
             var orderSubmitFormViewModel = new OrderSubmitFormViewModel
             {
                 Id = orderId,
@@ -75,75 +80,158 @@ namespace Go_Cart.Controllers
             {
                 OrderId = model.Id,
                 ZipCode = model.ZipCode,
-                State = model.State,
                 City = model.City,
                 Street = model.Street,
                 RecipientName = model.RecipientName,
-                RecipientPhone  = model.RecipientPhone,
+                RecipientPhone = model.RecipientPhone,
             };
 
             await _context.ShippingAddresses.AddAsync(address);
             await _context.SaveChangesAsync();
-            return RedirectToAction("ProcessPayment", new { orderId = model.Id, paymentMethod = model.PaymentMethod });
+            return RedirectToAction("Checkout", new { orderId = model.Id });
         }
-        public IActionResult ProcessPayment(int orderId, string paymentMethod)
+        public async Task<IActionResult> Checkout(int orderId)
         {
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-            if (order == null)
+            Cart cart = HttpContext.Session.Get<Cart>("_cart");
+            var user = await _userManager.GetUserAsync(User);
+            var domain = "https://localhost:7285/";
+            var options = new SessionCreateOptions
             {
-                return NotFound();
+                SuccessUrl = domain + $"Order/OrderConfirmation?orderId={orderId}",
+                CancelUrl = domain + $"Order/Failed",
+                LineItems = new List<SessionLineItemOptions>(),
+                Mode = "payment",
+                CustomerEmail = user.Email,
+            };
+
+            foreach (var item in cart.Products)
+            {
+                var sessionListItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100),
+                        Currency = "egp",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Name,
+                        }
+                    },
+                    Quantity = item.Quantity,
+                };
+                options.LineItems.Add(sessionListItem);
             }
+            var service = new SessionService();
+            Session session = service.Create(options);
 
-            var paymentGateway = new PaymentGateway();
-            var paymentResult = paymentGateway.ProcessPayment(order.TotalCost);
+            TempData["Session"] = session.Id;
 
-            if (paymentResult.Success)
+            Response.Headers.Add("Location", session.Url);
+
+            return new StatusCodeResult(303);
+        }
+        public async Task<IActionResult> OrderConfirmation(int orderId)
+        {
+            var service = new SessionService();
+            Session session = service.Get(TempData["Session"].ToString());
+            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+
+            if (session.PaymentStatus == "paid")
             {
                 order.IsPaid = true;
-                _context.SaveChanges();
 
-                var payment = new Transaction
+                var transactionId = session.PaymentIntentId.ToString();
+                var paymentMethod = session.PaymentMethodTypes.FirstOrDefault();
+
+                var transaction = new Transaction
                 {
                     OrderId = orderId,
+                    TransactionId = transactionId,
                     Amount = order.TotalCost,
                     PaymentDate = DateTime.UtcNow.ToLocalTime(),
                     PaymentMethod = paymentMethod,
                     BuyerId = order.ApplicationUserId
                 };
-                _context.Transactions.Add(payment);
-                _context.SaveChanges();
-
-                return RedirectToAction("Index", "Home");
+                await _context.Transactions.AddAsync(transaction);
+                await _context.SaveChangesAsync();
+                HttpContext.Session.Remove("_cart");
+                return View("Success");
             }
             else
             {
-                order.IsPaid = false;
-                _context.SaveChanges();
-
-                return RedirectToAction("PaymentFailure", new { orderId = order.Id });
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+                return View("Failed");
             }
         }
-
-        public IActionResult PaymentSuccess(int orderId)
+        public IActionResult Success()
         {
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
+            return View();
         }
-
-        public IActionResult PaymentFailure(int orderId)
+        public IActionResult Failed()
         {
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-            if (order == null)
-            {
-                return NotFound();
-            }
-
-            return View(order);
+            return View();
         }
+
+
+        //public IActionResult ProcessPayment(int orderId, string paymentMethod)
+        //{
+        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    var paymentGateway = new PaymentGateway();
+        //    var paymentResult = paymentGateway.ProcessPayment(order.TotalCost);
+
+        //    if (paymentResult.Success)
+        //    {
+        //        order.IsPaid = true;
+        //        _context.SaveChanges();
+
+        //        var payment = new Transaction
+        //        {
+        //            OrderId = orderId,
+        //            Amount = order.TotalCost,
+        //            PaymentDate = DateTime.UtcNow.ToLocalTime(),
+        //            PaymentMethod = paymentMethod,
+        //            BuyerId = order.ApplicationUserId
+        //        };
+        //        _context.Transactions.Add(payment);
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction("Index", "Home");
+        //    }
+        //    else
+        //    {
+        //        order.IsPaid = false;
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction("PaymentFailure", new { orderId = order.Id });
+        //    }
+        //}
+
+        //public IActionResult PaymentSuccess(int orderId)
+        //{
+        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(order);
+        //}
+
+        //public IActionResult PaymentFailure(int orderId)
+        //{
+        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(order);
+        //}
     }
 }

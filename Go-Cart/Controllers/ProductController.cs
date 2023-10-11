@@ -124,13 +124,15 @@ namespace Go_Cart.Controllers
                 .Include(r => r.ApplicationUser)
                 .OrderByDescending(r => r.AddedOn);
             
-            var Sizes = _context.ProductSizes
+            var sizes = _context.ProductSizes
                 .Where(ps => ps.ProductId == productId)
-                .Include(ps => ps.Size);
+                .Select(ps => ps.Size.Name)
+                .ToList();
 
-            var Colors = _context.ProductColors
+            var colors = _context.ProductColors
                 .Where(pc => pc.ProductId == productId)
-                .Include(pc => pc.Color);
+                .Select(pc => pc.Color.Value)
+                .ToList();
 
             var reviewViewModel = await reviews.Select(r => new ProductReviewViewModel
             {
@@ -146,19 +148,6 @@ namespace Go_Cart.Controllers
 
             decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
 
-            var availableSizes = new List<string>();
-            var availableColors = new List<string>();
-
-            foreach (var size in Sizes)
-            {
-                availableSizes.Add(size.Size.Name);
-            }
-
-            foreach (var color in Colors)
-            {
-                availableColors.Add(color.Color.Value);
-            }
-
             var productDetails = new ProductDetailsViewModel
             {
                 Id = product.Id,
@@ -169,8 +158,8 @@ namespace Go_Cart.Controllers
                 ImgUrl = product.ImgUrl,
                 Category = product.Category.Name,
                 ProductReviews = reviewViewModel,
-                AvailableSizes = availableSizes,
-                AvailableColors = availableColors
+                AvailableSizes = sizes,
+                AvailableColors = colors
             };
 
             return View(productDetails);
@@ -225,7 +214,7 @@ namespace Go_Cart.Controllers
             var matchingProducts = await _context.Products
                 .Where(p => p.Name.ToLower().Contains(searchItemTrimed))
                 .OrderBy(p => p.Name)
-                .Select(p => p.Name)
+                .Select(p => p.Name).Distinct()
                 .ToListAsync();
 
             return Json(matchingProducts);

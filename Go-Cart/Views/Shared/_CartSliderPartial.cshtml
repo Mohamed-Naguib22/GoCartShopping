@@ -1,9 +1,19 @@
-﻿@*@foreach (var product in cart.Products)
+﻿@model IEnumerable<CartItem>
+
+@foreach (var product in Model)
 {
-    <div class="d-flex align-items-center mb-3">
-        <img src="@product.ImgUrl" class="mx-2" alt="">
-        <small class="fw-normal mx-2">@product.Name</small>
-        <small class="fw-normal mx-2">@product.Price$</small>
-        <small class="mx-2 btn btn-danger">X</small>
+    <div class = "row d-flex">
+        <div class=" col-md-12 justify-content-start align-items-center gap-2 d-flex ">
+            <img src="@product.ImgUrl" alt="">
+            <small class="fw-normal">@product.Name</small>
+        </div>
+
+        <div class="d-flex col-md-12  justify-content-between align-items-center">
+            <small class="fw-normal text-success">@product.Price$</small>
+            <button id="remove-cartSlider" class="btn border border-2" data-product-id="@product.Id">
+                <i class="fa fa-trash Go-color"></i>
+            </button>
+        </div>
     </div>
-}*@
+    <hr class="bg-black">
+}

@@ -10,17 +10,20 @@
             <div class="card-body">
                 <h5 class="card-title">@product.Name</h5>
                 <p class="card-text">Price: <span class="text-success">$@product.Price</span></p>
-@*                <div>
-                    @for (int i = 0; i < Math.Round(product.Rating); i++)
+@*                @{
+                        decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                }
+                <div>
+                    @for (int i = 0; i < Math.Round(rating); i++)
                     {
                         <i class="fas fa-star" style="color:gold"></i>
                     }
-                    @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
+                    @for (int i = (int)Math.Round(rating); i < 5; i++)
                     {
                         <i class="fas fa-star" style="color:darkgray"></i>
                     }
                 </div>*@
-                <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
+                <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-success">Add To Cart</a>
                 <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">Details</a>
             </div>
         </div>

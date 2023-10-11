@@ -3,6 +3,9 @@ using Go_Cart.Models;
 using Go_Cart.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System.Globalization;
+using System.Web;
 
 namespace Go_Cart.Controllers
 {
@@ -16,17 +19,22 @@ namespace Go_Cart.Controllers
         public async Task<IActionResult> Index(int categoryId)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
-            var products = _context.Products.Where(p => p.CategoryId == categoryId);
+            var sizes = await _context.Sizes.ToListAsync();
+            var colors = await _context.Colors.ToListAsync();
+            var query = _context.Products.Include(p => p.Ratings);
+            var products = await query.Where(p => p.CategoryId == categoryId).ToListAsync();
 
             if (categoryId == 1)
             {
-                products = _context.Products.Where(p => p.Category.ParentCategoryId == 1);
+                products = await query.Where(p => p.Category.ParentCategoryId == 1).ToListAsync();
             }
 
             var categoryViewModel = new CategoryViewModel
             {
                 Category = category,
-                Products = products
+                Products = products,
+                Sizes = sizes,
+                Colors = colors
             };
 
             return View(categoryViewModel);
@@ -38,20 +46,51 @@ namespace Go_Cart.Controllers
             return View(products);
         }
         [HttpGet]
-        public async Task<IActionResult> FilteredProducts(int categoryId, decimal price)
+        public async Task<IActionResult> FilteredProducts(int categoryId, decimal price, int? sizeId, int? colorId, string sortBy)
         {
-            var products = await _context.Products
-                .Where(p => p.CategoryId == categoryId)
-                .ToListAsync();
+            var query = _context.Products
+                .Include(p => p.Ratings)
+                .Include(p => p.Category)
+                .Include(p => p.ProductSizes)
+                .Include(p => p.ProductColors)
+                .Where(p => p.Price <= price);
 
-            if (categoryId == 1)
+            if (categoryId != 1)
             {
-                products = await _context.Products
-                    .Where(p => p.Category.ParentCategoryId == categoryId)
-                    .ToListAsync();
+                query = query.Where(p => p.CategoryId == categoryId);
+            }
+            else
+            {
+                query = query.Where(p => p.Category.ParentCategoryId == 1);
             }
 
-            var filteredProducts = products.Where(p => p.Price <= price);
+            if (sizeId.HasValue)
+            {
+                query = query.Where(p => p.ProductSizes.Any(s => s.SizeId == sizeId));
+            }
+            if (colorId.HasValue)
+            {
+                query = query.Where(p => p.ProductColors.Any(c => c.ColorId == colorId));
+            }
+            if (colorId.HasValue)
+            {
+                query = query.Where(p => p.ProductColors.Any(c => c.ColorId == colorId));
+            }
+
+            switch (sortBy)
+            {
+                case "highest":
+                    query = query.OrderByDescending(p => p.Price);
+                    break;                
+                case "lowest":
+                    query = query.OrderBy(p => p.Price);
+                    break;
+                case "newest":
+                    query = query.OrderByDescending(p => p.CreatedAt);
+                    break;
+            }
+
+            var filteredProducts = await query.ToListAsync();
             return PartialView("_ProductsPartial", filteredProducts);
         }
     }

@@ -12,6 +12,7 @@
 }
 
 <section class="details">
+    <input class="d-none" id="product-id-details" value="@Model.Id" />
     <div class="container">
         <div class="row ">
             <div class="col-md-4">
@@ -98,111 +99,3 @@
     </div>
 </section>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script>
-    $(".star-rating .star").click(function () {
-        var value = $(this).data("value");
-        $("#rating-value").val(value);
-        $(".star-rating .star").removeClass("checked");
-        $(this).prevAll().addBack().addClass("checked");
-    });
-</script>
-
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            $('#coment').keypress(function (e) {
-                if (e.keyCode == 13) { 
-                    e.preventDefault();
-                    submitReviewForm();
-                }
-            });
-
-
-            $.ajax({
-                url: '@Url.Action("GetUserRating", "Rating")',
-                type: 'Get',
-                data: {
-                    productId: '@Model.Id',
-                },
-                success: function (result) {
-                    var requiredStars = result;
-                    console.log(requiredStars);
-                    $(".star-rating .star").slice(0, requiredStars).addClass("checked");
-                },
-                error: function () {
-                }
-            });
-
-            function refreshRating() {
-                var productId = '@Model.Id';
-                $.ajax({
-                    url: '@Url.Action("GetRating", "Rating")',
-                    type: 'GET',
-                    data: {
-                        productId: productId
-                    },
-                    success: function (result) {
-                        $('#rating-container').html(result); // Update the comments section
-                    },
-                    error: function () {
-                    }
-                });
-            }
-
-            $('.star-rating .star').click(function () {
-                var value = $(this).data('value');
-                var productId = '@Model.Id';
-                $.ajax({
-                    url: '@Url.Action("Rate", "Rating")',
-                    type: 'POST',
-                    data: {
-                        value: value,
-                        productId: productId,
-                    },
-                    success: function () {
-                        refreshRating();
-                    },
-                    error: function () {
-                    }
-                });
-            });
-
-            function submitReviewForm() {
-                var review = $('#coment').val();
-                var productId = '@Model.Id';
-                $.ajax({
-                    url: '@Url.Action("AddReview", "Product")',
-                    type: 'POST',
-                    data: {
-                        review: review,
-                        productId: productId,
-                        __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
-                    },
-                    success: function () {
-                        refreshComments(); 
-                        $('#coment').val('');
-                    },
-                    error: function () {
-                    }
-                });
-            }
-
-            function refreshComments() {
-                var productId = '@Model.Id';
-                $.ajax({
-                    url: '@Url.Action("GetComments", "Product")',
-                    type: 'GET',
-                    data: {
-                        productId: productId
-                    },
-                    success: function (result) {
-                        $('#comments-container').html(result); // Update the comments section
-                    },
-                    error: function () {
-                    }
-                });
-            }
-        });
-    </script>
-}

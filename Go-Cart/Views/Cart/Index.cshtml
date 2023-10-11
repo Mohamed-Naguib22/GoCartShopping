@@ -5,58 +5,16 @@
 
 
 <section class="cart mx-2" id="cart-section">
-    @Html.Partial("_CartPartial", Model)
+    <section class="cart container">
+        <div class="row">
+            <div class="col-md-9 bg-primary bg-opacity-10 cartleft  p-5">
+                <div id="cartItems-container">
+                    @Html.Partial("_CartPartial", Model)
+                </div>
+            </div>
+            <div id="totalCost-container" class="col-md-3 bg-success bg-opacity-10 cartright  p-5">
+                @Html.Partial("_TotalCostPartial", Model.TotalPrice)
+            </div>
+        </div>
+    </section>
 </section>
-
-@section scripts {
-    <script>
-        $(document).ready(function () {
-            // AJAX request to update quantity
-            $(".quantity-input").on("input", function () {
-                var productId = $(this).data("product-id");
-                var quantity = $(this).val();
-                if (quantity > 0) {
-                    updateQuantity(productId, quantity);
-                }
-            });
-
-            // AJAX request to remove item
-            $(".remove-btn").click(function () {
-                var productId = $(this).data("product-id");
-                removeFromCart(productId);
-            });
-
-            // Function to update quantity using AJAX
-            function updateQuantity(productId, quantity) {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("UpdateQuantity", "Cart")",
-                    data: { productId: productId, quantity: quantity },
-                    success: function () {
-                        // Update the UI if needed
-                        location.reload(); // Refresh the page to reflect the changes
-                    },
-                    error: function () {
-                        // Handle error, if any
-                    }
-                });
-            }
-
-            // Function to remove item from cart using AJAX
-            function removeFromCart(productId) {
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("RemoveFromCart", "Cart")",
-                    data: { productId: productId },
-                    success: function () {
-                        // Update the UI if needed
-                        location.reload(); // Refresh the page to reflect the changes
-                    },
-                    error: function () {
-                        // Handle error, if any
-                    }
-                });
-            }
-        });
-    </script>
-}

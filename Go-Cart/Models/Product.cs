@@ -19,7 +19,7 @@
         public IEnumerable<ProductReview> ProductReviews { get; set; }
         public IEnumerable<ProductColor> ProductColors { get; set; }
         public IEnumerable<ProductSize> ProductSizes { get; set; }
-        public IEnumerable<OrderDetails> ProductOrders { get; set; }
+        public IEnumerable<OrderItem> ProductOrders { get; set; }
         public IEnumerable<WishListItem> WishListItems { get; set; }
         public IEnumerable<Rating> Ratings { get; set; }
     }
