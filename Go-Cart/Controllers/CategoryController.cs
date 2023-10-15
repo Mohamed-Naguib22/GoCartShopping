@@ -16,34 +16,92 @@ namespace Go_Cart.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Index(int categoryId)
+        //public async Task<IActionResult> Index(int categoryId)
+        //{
+        //    var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
+        //    var sizes = await _context.Sizes.ToListAsync();
+        //    var colors = await _context.Colors.ToListAsync();
+        //    var query = _context.Products.Include(p => p.ProductImages).Include(p => p.Ratings);
+        //    IEnumerable<Product> products;
+        //    int totalItems;
+        //    if (categoryId == 1)
+        //    {
+        //        products = await query.Where(p => p.Category.ParentCategoryId == 1).ToListAsync();
+        //        totalItems = _context.Products.Where(p => p.Category.ParentCategoryId == 1).Count();
+        //    }
+        //    else
+        //    {
+        //        products = await query.Where(p => p.CategoryId == categoryId).ToListAsync();
+        //        totalItems = _context.Products.Where(p => p.Category.Id == categoryId).Count();
+        //    }
+
+        //    var categoryViewModel = new CategoryViewModel
+        //    {
+        //        Category = category,
+        //        Products = products,
+        //        Sizes = sizes,
+        //        Colors = colors,
+        //    };
+
+        //    return View(categoryViewModel);
+        //}
+        public async Task<IActionResult> Index(int categoryId, int page = 1, int pageSize = 10)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
             var sizes = await _context.Sizes.ToListAsync();
             var colors = await _context.Colors.ToListAsync();
-            var query = _context.Products.Include(p => p.Ratings);
-            var products = await query.Where(p => p.CategoryId == categoryId).ToListAsync();
-
+            var query = _context.Products.Include(p => p.ProductImages).Include(p => p.Ratings);
+            IEnumerable<Product> products;
+            int totalItems;
             if (categoryId == 1)
             {
-                products = await query.Where(p => p.Category.ParentCategoryId == 1).ToListAsync();
+                products = await query.Where(p => p.Category.ParentCategoryId == 1).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+                totalItems = _context.Products.Where(p => p.Category.ParentCategoryId == 1).Count();
             }
+            else
+            {
+                products = await query.Where(p => p.CategoryId == categoryId).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+                totalItems = _context.Products.Where(p => p.Category.Id == categoryId).Count();
+            }
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
 
             var categoryViewModel = new CategoryViewModel
             {
                 Category = category,
                 Products = products,
                 Sizes = sizes,
-                Colors = colors
+                Colors = colors,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
             };
 
             return View(categoryViewModel);
         }
         [HttpGet]
-        public async Task<IActionResult> NewArrivals()
+        public async Task<IActionResult> NewArrivals(int page = 1, int pageSize = 7)
         {
-            var products = await _context.Products.Take(5).ToListAsync();
-            return View(products);
+            var products = await _context.Products
+                .Skip((page - 1) * pageSize).Take(pageSize)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            var sizes = await _context.Sizes.ToListAsync();
+            var colors = await _context.Colors.ToListAsync();
+
+            var totalItems = _context.Products.Count();
+            var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
+            var categoryViewModel = new CategoryViewModel
+            {
+                Products = products,
+                Sizes = sizes,
+                Colors = colors,
+                CurrentPage = page,
+                PageSize = pageSize,
+                TotalPages = totalPages
+            };
+            return View(categoryViewModel);
         }
         [HttpGet]
         public async Task<IActionResult> FilteredProducts(int categoryId, decimal price, int? sizeId, int? colorId, string sortBy)

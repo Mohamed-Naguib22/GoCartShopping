@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="~/Assets/Image/55.ico" type="image/x-icon">
+    <link href="~/css/all.css" rel="stylesheet" />
+    <link href="~/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/css/media.css" rel="stylesheet" />
+    <link href="~/css/dark-mode.css" rel="stylesheet" id="dark-mode" />
+    <link href="~/css/jquery-ui.css" rel="stylesheet" />
+    <link href="~/css/Style.css" rel="stylesheet" />
+    
+    <title>@ViewData["Title"] - Go Cart</title>
+</head>
+
+<body id="body" class="updateProfile">
+    <div class="d-flex flex-column fixed-top">
+        <nav class="navbar navbar1 navbar-expand-lg">
+            <div class="container">
+                <a asp-controller="Home" asp-action="Index" class="d-flex justify-content-center align-items-center text-decoration-none">
+                    <img src="~/Assets/Image/logoo5.png" class="iconbg mt-1" alt="">
+                    <h1 class="navbar-brand nav-name"><span class="Go-color">Go</span><span class="Cart-color ms-1">CART</span></h1>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="list-unstyled mb-2 search-groub1">
+                        <li class="position-relative">
+                            <i class="fas fa-search  search  position-absolute ps-2"></i>
+                            <form method="post" asp-controller="Search" asp-action="Search">
+                                <input type="search" id="searchInput" name="query" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
+                                <button class="btn d-none"></button>
+                            </form>
+                        </li>
+                    </ul>
+
+                    <div class="">
+                        <a asp-controller="Order" asp-action="OrderHistory" class="nav-link licolor fs-4"> Orders <i class="fa-solid fa-cart-flatbed-suitcase"></i></a>
+                    </div>
+
+                    <ul class="d-flex gap-3 list-unstyled licolor my-auto ms-auto icon-groub">
+                        <li class="nav-item ms-2 d-flex flex-column position-relative">
+                            <a class="nav-link licolor" style="cursor:pointer" id="Carticon">
+                                <i class="fa-solid fa-cart-shopping shop"></i>
+                            </a>
+                        </li>
+                        @{
+                            Cart cart = HttpContextAccessor.HttpContext.Session.Get<Cart>("_cart");
+                        }
+                        <div class="cartList rounded-2" id="cartList">
+                            <div id="cartSlider-container">
+                                @if (cart == null)
+                                {
+                                    <p>There is no items yet</p>
+                                }
+                                else                                {
+                                    @Html.Partial("_CartSliderPartial", cart.Products)
+                                }
+                                </div>
+                            <div class="d-flex justify-content-center mb-2 mt-3">
+                                <a asp-controller="Cart" asp-action="Index" class="px-3 py-2 text-decoration-none text-white" style="background-color: #41819c;">View Cart</a>
+                            </div>
+                        </div>
+
+                        <li>
+                            <a asp-controller="WishList" asp-action="Index" class="text-black text-decoration-none">
+                                <i class="fa-solid fa-heart fs-3 ms-2 mt-2"></i>
+                            </a>
+                        </li>
+
+                        <li class="nav-item mt-1 me-4">
+                            <i class="fa-solid fa-moon fs-3 d-block licolor" id="moon"></i>
+                            <i class="fa-solid fa-sun fs-3 d-none licolor" id="sun"></i>
+                        </li>
+                        @{
+                            var user = await _userManager.GetUserAsync(User);
+                        }
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item dropdown ms-0">
+                                <a class="nav-link dropdown-toggle licolor" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="@user.ImgUrl" class="acc border" alt="">
+                                </a>
+                                <ul class="dropdown-menu licolor">
+                                    <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a></li>
+
+                                    <li>
+                                        <form class="dropdown-item" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                                            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item ms-4 pt-2">
+                                <a class= "text-decoration-none text-black" asp-area="Identity" asp-page="/Account/Login">
+                                    Log in <i class="fa-solid fa-user"></i>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="navbar4 navbar-expand h-25">
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" aria-current="page" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="~/Contact.html">Contact Us</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="Html/about.html">About Us</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-4 DTCairocolor">
+                        <div class="d-flex gap-2">
+                            <img src="~/Assets/Image/egypt.jpeg" class="egyimg mt-2" alt="">
+                            <p class="DTCairo pt-3">Delivery to Egypt</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="updateFooter py-4 text-white">
+        <div class="container  py-5 px-5">
+            <div class="row g-3 ">
+                <div class="col-md-4 ">
+                    <h4>Get to Know Us</h4>
+                    <div class="FOOTER-LINK  ">
+                        <a href=""> <p class="ms-2  ">About GO CART</p></a>
+                    </div>
+                    <div class="Social-Media">
+                        <h5>Social Media</h5>
+                        <div class="links d-flex gap-3 justify-content-start  ">
+
+                            <a href="https://www.facebook.com/">
+                                <i class="fa-brands fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.twitter.com/">
+                                <i class="fa-brands fa-twitter"></i>
+                            </a>
+                            <a href="https://www.github.com/">
+                                <i class="fa-brands fa-github"></i>
+                            </a>
+                            <a href="https://www.behance.com/">
+                                <i class="fa-brands fa-behance"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <h4>Shop with Us</h4>
+                    <div class="FOOTER-LINK  ">
+                        <a 
+                            <p class="ms-2">Your Orders</p></a>
+                        <a href="Html/Cart1.html"> <p class="ms-2">Your Cart</p></a>
+                    </div>
+                </div>
+
+                <div class="col-md-4 ">
+                    <h4>sign information</h4>
+                    <div class="FOOTER-LINK  ">
+                        <a href="Html/updateProfile.html"> <p class="ms-2">profile</p></a>
+                        <a href="Html/SignUp.html">       <p class="ms-2">sign up</p></a>
+                        <a href="Html/SignIn.html"> <p class="ms-2">sign in</p></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <script src="~/js/code.jquery.com_jquery-3.7.0.min.js"></script>
+    <script src="~/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/cartlist.js"></script>
+    <script src="~/js/jq.js"></script>
+    <script src="~/js/UpdateProfile.js"></script>
+
+    <script>
+        var searchInput = $('#searchInput');
+
+        searchInput.autocomplete({
+            source: [],
+            minLength: 0,
+            appendTo: searchInput.parent(),
+        });
+
+        searchInput.on('input', function () {
+            var searchTerm = searchInput.val();
+
+            $.ajax({
+                url: '/Product/AutoComplete',
+                type: 'GET',
+                data: { searchTerm: searchTerm },
+                success: function (response) {
+                    searchInput.autocomplete('option', 'source', response);
+
+                    searchInput.autocomplete('search', '');
+                }
+            });
+        });
+
+        $(document).on('click', '#remove-cartSlider', function () {
+            var productId = $(this).data("product-id");
+            $.ajax({
+                url: '/Cart/RemoveFromCart',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                },
+                success: function () {
+                    RefreshCartSlider();
+                },
+                error: function () {
+                }
+            });
+        });
+
+        function RefreshCartSlider() {
+            $.ajax({
+                url: '/Cart/RefreshCartPartial',
+                type: 'GET',
+                data: {
+                    partialView: 'cartSlider',
+                },
+                success: function (result) {
+                    $('#cartSlider-container').html(result);
+                    console.log("test");
+                },
+                error: function () {
+                }
+            });
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+    
+</body>
+</html>

@@ -17,6 +17,10 @@ namespace Go_Cart.ViewModels
         public decimal Price { get; set; }
         public byte CategoryId { get; set; }
         public IFormFile? ImgFile { get; set; }
+        public IFormFile? Img1{ get; set; }
+        public IFormFile? Img2 { get; set; }
+        public IFormFile? Img3 { get; set; }
+        public IFormFile? Img4 { get; set; }
         public int NumberOfItemsInStock { get; set; }
         public decimal? DiscountPercentage { get; set; }
         public List<int>? SelectedSizes { get; set; }

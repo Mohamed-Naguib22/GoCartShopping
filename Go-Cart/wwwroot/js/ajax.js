@@ -4,9 +4,40 @@ var sortBySelect = document.getElementById('sortBy');
 
 const sizeButtons = document.querySelectorAll(".filter-button-group button");
 const colorButtons = document.querySelectorAll(".color-button");
+function showToast() {
+    var toastEl = document.getElementById('toast');
+    toastEl.classList.remove('d-none');
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+
+    setTimeout(function () {
+        toast.hide();
+    }, 3000);
+}
+
+function showNotification() {
+    var toastEl = document.getElementById('notification');
+    toastEl.classList.remove('d-none');
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+
+    setTimeout(function () {
+        toast.hide();
+    }, 3000);
+}
+
+function showErrorNotification() {
+    var toastEl = document.getElementById('isAdded-notification');
+    toastEl.classList.remove('d-none');
+    var toast = new bootstrap.Toast(toastEl);
+    toast.show();
+
+    setTimeout(function () {
+        toast.hide();
+    }, 3000);
+}
 
 $(document).ready(function () {
-
     // -------------------------------Search------------------------------------------
     var searchInput = $('#searchInput');
 
@@ -64,6 +95,27 @@ $(document).ready(function () {
     }
 
     // -------------------------------Cart------------------------------------------
+    let AddCartBtn = document.querySelectorAll(".add-cart");
+    AddCartBtn.forEach(item => {
+        item.onclick = function () {
+            var productId = $(item).data('product-id');
+            $.ajax({
+                url: '/Cart/AddToCart',
+                type: 'POST',
+                data: {
+                    productId: productId,
+                },
+                success: function () {
+                    showNotification();
+                    RefreshCartSlider();
+                },
+                error: function () {
+                    showErrorNotification();
+                }
+            });
+        }
+    });
+
     $(".positive").click(function () {
         var productId = $(this).data("product-id");
         var quantityElement = $(this).siblings(".amount");
@@ -149,17 +201,24 @@ $(document).ready(function () {
     let wishlistBtn = document.querySelectorAll(".addToWL");
     wishlistBtn.forEach(item => {
         var productId = $(item).data('product-id');
-        var isAdded = localStorage.getItem('wishlist_' + productId);
 
-        if (isAdded && JSON.parse(isAdded)) {
-            item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
-        }
+        $.ajax({
+            url: '/WishList/IsAddedToWishlist',
+            type: 'POST',
+            data: { productId: productId },
+            success: function (response) {
+                if (response === true) {
+                    item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
+                }
+            },
+            error: function (xhr, status, error) {
+            }
+        });
 
         item.onclick = function () {
             var isCurrentlyAdded = item.firstElementChild.classList.contains("text-danger");
             var updatedIsAdded = !isCurrentlyAdded;
 
-            localStorage.setItem('wishlist_' + productId, updatedIsAdded);
             var url = updatedIsAdded ? '/WishList/AddToWishList' : '/WishList/RemoveFromWishList';
             var requestData = { productId: productId };
 
@@ -239,7 +298,6 @@ $(document).ready(function () {
         },
         success: function (result) {
             var requiredStars = result;
-            console.log(requiredStars);
             $(".star-rating .star").slice(0, requiredStars).addClass("checked");
         },
         error: function () {

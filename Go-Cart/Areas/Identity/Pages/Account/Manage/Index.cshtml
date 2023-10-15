@@ -1,11 +1,51 @@
 ﻿@page
+@inject UserManager<ApplicationUser> _userManager
+
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
-    ViewData["ActivePage"] = ManageNavPages.Index;
+    Layout = "~/Views/Shared/_ProfileLayout.cshtml";
 }
+<section class="pt-5">
+    <div class="container">
+        <div class="bg-opacity-10 bg-primary mb-5 rounded-5">
+            <form id="profile-form" method="post" enctype="multipart/form-data">
+                <div class= "row">
+                    <h3 class="text-center pt-3 fs-1">Profile Details</h3>
+                    <div class=" col-md-4 ">
+                        @{
+                            var user = await _userManager.GetUserAsync(User);
+                        }
+                        <div class="img-round">
+                            <img src="@user.ImgUrl" class="w-100 m-auto imgUpdate mt-3" id="profile-pic" alt="">
+                            <button class="updatePhotoBtn d-flex align-items-center gap-4">
+                                <label for="input-file">Change Photo</label>
+                                <input asp-for="Input.ProfilePicture" type="file" accept=".webp, .png , .jpg, .jpeg" id="input-file" class="d-none">
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-8 mt-3">
+                        <div class=" homeRow px-5 mx-auto my-5">
+                            <input type="email" disabled id="email" asp-for="Username" class=" mt-3 form-control" placeholder="Email">
+                            <div class="d-flex gap-2">
+                                <input type="text" asp-for="Input.FirstName" class="mt-3  form-control" placeholder="First Name">
+                                <input type="text" asp-for="Input.LastName" class="mt-3  form-control" placeholder="Last Name">
+                            </div>
+                            <input type="tel" maxlength="11" id="phone" asp-for="Input.PhoneNumber" class="  mt-3 form-control" placeholder="Phone">
+                            @*                            <select name="" id="" class="form-control my-3">
+                            <option value="">Male</option>
+                            <option value="">Female</option>
+                            </select>*@
+                            <button class="form-control-plaintext text-white my-5 detailsBtn" id="update-profile-button" type="submit">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
 
-<h3>@ViewData["Title"]</h3>
+        </div>
+    </div>
+</section>
+@*<h3>@ViewData["Title"]</h3>
 <partial name="_StatusMessage" for="StatusMessage" />
 <div class="row">
     <div class="col-md-6">
@@ -16,6 +56,14 @@
                 <label asp-for="Username" class="form-label"></label>
             </div>
             <div class="form-floating">
+                <input asp-for="Input.FirstName" class="form-control"/>
+                <label asp-for="Input.FirstName" class="form-label"></label>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.LastName" class="form-control" />
+                <label asp-for="Input.LastName" class="form-label"></label>
+            </div>
+            <div class="form-floating">
                 <input asp-for="Input.PhoneNumber" class="form-control" />
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
@@ -23,7 +71,7 @@
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
-</div>
+</div>*@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

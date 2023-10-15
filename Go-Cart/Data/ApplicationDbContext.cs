@@ -50,6 +50,7 @@ namespace Go_Cart.Data
         public DbSet<ShippingAddress> ShippingAddresses { get; set; }
         public DbSet<WishList> WishLists { get; set; }
         public DbSet<WishListItem> WishListItems { get; set; }
+        public DbSet<ProductImage> ProductImages { get; set; }
 
     }
 }

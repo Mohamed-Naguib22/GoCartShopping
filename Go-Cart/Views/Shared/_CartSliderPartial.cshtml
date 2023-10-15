@@ -1,19 +1,25 @@
 ﻿@model IEnumerable<CartItem>
-
-@foreach (var product in Model)
+@if (Model == null || !Model.Any())
 {
-    <div class = "row d-flex">
-        <div class=" col-md-12 justify-content-start align-items-center gap-2 d-flex ">
-            <img src="@product.ImgUrl" alt="">
-            <small class="fw-normal">@product.Name</small>
-        </div>
+    <p>There is no items yet</p>
+}
+else
+{
+    @foreach (var product in Model)
+    {
+            <div class = "row d-flex">
+                <div class=" col-md-12 justify-content-start align-items-center gap-2 d-flex ">
+                    <img src="@product.ImgUrl" alt="">
+                    <small class="fw-normal">@product.Name</small>
+                </div>
 
-        <div class="d-flex col-md-12  justify-content-between align-items-center">
-            <small class="fw-normal text-success">@product.Price$</small>
-            <button id="remove-cartSlider" class="btn border border-2" data-product-id="@product.Id">
-                <i class="fa fa-trash Go-color"></i>
-            </button>
-        </div>
-    </div>
-    <hr class="bg-black">
+                <div class="d-flex col-md-12  justify-content-between align-items-center">
+                    <small class="fw-normal text-success">@product.Price$</small>
+                    <button id="remove-cartSlider" class="btn border border-2" data-product-id="@product.Id">
+                        <i class="fa fa-trash Go-color"></i>
+                    </button>
+                </div>
+            </div>
+            <hr class="bg-black">
+    }
 }

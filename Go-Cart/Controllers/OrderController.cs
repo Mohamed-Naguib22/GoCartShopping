@@ -2,16 +2,15 @@
 using Go_Cart.Extensions;
 using Go_Cart.Models;
 using Go_Cart.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 using Stripe.Checkout;
-using Stripe;
 
 namespace Go_Cart.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -61,7 +60,10 @@ namespace Go_Cart.Controllers
         {
             var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-            var orderItems = _context.OrderItems.Include(oi => oi.Product).Where(oi => oi.OrderId == orderId);
+            var orderItems = await _context.OrderItems
+                .Include(oi => oi.Product)
+                .ThenInclude(p => p.ProductImages)
+                .Where(oi => oi.OrderId == orderId).ToListAsync();
 
             var orderSubmitFormViewModel = new OrderSubmitFormViewModel
             {
@@ -98,7 +100,7 @@ namespace Go_Cart.Controllers
             var options = new SessionCreateOptions
             {
                 SuccessUrl = domain + $"Order/OrderConfirmation?orderId={orderId}",
-                CancelUrl = domain + $"Order/Failed",
+                CancelUrl = domain,
                 LineItems = new List<SessionLineItemOptions>(),
                 Mode = "payment",
                 CustomerEmail = user.Email,
@@ -134,7 +136,16 @@ namespace Go_Cart.Controllers
         {
             var service = new SessionService();
             Session session = service.Get(TempData["Session"].ToString());
-            var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
+            var order = _context.Orders
+                .Include(o => o.ProductOrders)
+                .ThenInclude(o => o.Product)
+                .FirstOrDefault(o => o.Id == orderId);
+
+            foreach (var orderItem in order.ProductOrders)
+            {
+                orderItem.Product.NumberOfItemsInStock -= orderItem.Quantity;
+                orderItem.Product.NumberOfSales++;
+            }
 
             if (session.PaymentStatus == "paid")
             {
@@ -161,77 +172,37 @@ namespace Go_Cart.Controllers
             {
                 _context.Orders.Remove(order);
                 await _context.SaveChangesAsync();
-                return View("Failed");
+                return View("Index", "Home");
             }
         }
         public IActionResult Success()
         {
             return View();
         }
-        public IActionResult Failed()
+        public async Task<IActionResult> OrderHistory()
         {
-            return View();
+            var user = await _userManager.GetUserAsync(User);
+            var orders = await _context.Orders
+                .Where(o => o.ApplicationUserId == user.Id)
+                .Select(o => new OrderViewModel
+                {
+                    OrderDate = o.PlacedOn,
+                    Status = o.Status,
+                    TotalCost = o.TotalCost,
+                    OrderItems = o.ProductOrders.Select(oi => new OrderItemViewModel
+                    {
+                        ProductName = oi.Product.Name,
+                        ProductImg = oi.Product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault(),
+                        SubTotalPrice = oi.SubTotalPrice,
+                        Color = oi.Color,
+                        Size = oi.Size,
+                        Quantity = oi.Quantity
+                    })
+                })
+                .OrderByDescending(o => o.OrderDate)
+                .ToListAsync();
+
+            return View(orders);
         }
-
-
-        //public IActionResult ProcessPayment(int orderId, string paymentMethod)
-        //{
-        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var paymentGateway = new PaymentGateway();
-        //    var paymentResult = paymentGateway.ProcessPayment(order.TotalCost);
-
-        //    if (paymentResult.Success)
-        //    {
-        //        order.IsPaid = true;
-        //        _context.SaveChanges();
-
-        //        var payment = new Transaction
-        //        {
-        //            OrderId = orderId,
-        //            Amount = order.TotalCost,
-        //            PaymentDate = DateTime.UtcNow.ToLocalTime(),
-        //            PaymentMethod = paymentMethod,
-        //            BuyerId = order.ApplicationUserId
-        //        };
-        //        _context.Transactions.Add(payment);
-        //        _context.SaveChanges();
-
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    else
-        //    {
-        //        order.IsPaid = false;
-        //        _context.SaveChanges();
-
-        //        return RedirectToAction("PaymentFailure", new { orderId = order.Id });
-        //    }
-        //}
-
-        //public IActionResult PaymentSuccess(int orderId)
-        //{
-        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(order);
-        //}
-
-        //public IActionResult PaymentFailure(int orderId)
-        //{
-        //    var order = _context.Orders.FirstOrDefault(o => o.Id == orderId);
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(order);
-        //}
     }
 }

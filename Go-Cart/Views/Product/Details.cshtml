@@ -3,13 +3,6 @@
 @{
     ViewData["Title"] = Model.Name;
 }
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Product is already added to the cart.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 
 <section class="details">
     <input class="d-none" id="product-id-details" value="@Model.Id" />
@@ -17,20 +10,29 @@
         <div class="row ">
             <div class="col-md-4">
                 <div class=" d-flex flex-wrap imgDetails">
-                    <img id="imgItem" src="@Model.ImgUrl" class="" alt="">
-                    @*                    <img src="../Assets/Image/product/product-38.jpeg" class=" p-3 item" alt="">
-                    <img src="../Assets/Image/product/product-37.jpeg" class=" p-3 item" alt="">
-                    <img src="../Assets/Image/product/product-36.jpeg" class=" p-3 item" alt="">
-                    <img src="../Assets/Image/product/product-39.jpeg" class=" p-3 item" alt="">
-                    *@
+                    <img id="imgItem" src="@Model.ProductImages.FirstOrDefault()" class="p-1" alt="">
+                    @foreach (var img in Model.ProductImages)
+                    {
+                        <img src="@img" class=" p-1 item" alt="">
+                    }
                 </div>
             </div>
-
             <div class="col-md-6  p-1 mt-5 ">
                 <div class="">
                     <div class="d-flex justify-content-between">
                         <p class="text-secondary fs-4">@Model.Category</p>
-                        <h5 class="me-2 text-success">@Model.Price$</h5>
+                        @if (Model.PriceAfterDiscount.HasValue)
+                        {
+                            <div class="price-discount mt-2">
+                                <h5 class="text-danger fw-bold">$@Model.PriceAfterDiscount</h5>
+                                <del>$@Model.Price</del>
+                            </div>
+                        }
+                        else
+                        {
+                            <h5 class="mt-2 text-success">$@Model.Price</h5>
+                        }
+
                     </div>
 
                     <div class="d-flex justify-content-between mb-1">
@@ -39,33 +41,49 @@
                             @Html.Partial("_RatingPartial", Model.Rating)
                         </div>
                     </div>
-
-                    <div class="d-flex">
-                        <span class="fw-semibold">Available Colors: </span>
-                        <div class="mx-2">
-                            @for (int i = 0; i < Model.AvailableColors.Count; i++)
-                            {
-                                <i class="fa-solid fa-circle text-@(Model.AvailableColors.ElementAt(i))"></i>
-                            }
+                    <div class="mb-3">@Model.Description</div>
+                    @if (Model.AvailableColors.Any())
+                    {
+                        <div class="d-flex">
+                            <span class="fw-semibold mb-1 me-2">Available Colors: </span>
+                            <div class=" bg-primary bg-opacity-10">
+                                <div class="mx-2">
+                                    @for (int i = 0; i < Model.AvailableColors.Count; i++)
+                                    {
+                                        <i class="fa-solid fa-circle text-@(Model.AvailableColors.ElementAt(i))"></i>
+                                    }
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    }
 
-                    <div class="d-flex">
-                        <span class="fw-semibold">Available Sizes: </span>
-                        <p class="mx-2">
+                    @if (Model.AvailableSizes.Any())
+                    {
 
-                        @foreach (var size in Model.AvailableSizes)
-                        {
-                                @(size == Model.AvailableSizes.Last() ? size : size + ", ")
-                        }
-                        </p>
-                    </div>
+                        <div class="d-flex">
+                            <span class="fw-semibold">Available Sizes: </span>
+                            <p class="mx-2">
+                                @foreach (var size in Model.AvailableSizes)
+                                {
+                                    @(size == Model.AvailableSizes.Last() ? size : size + ", ")
+                                }
+                            </p>
+                        </div>
+                    }
 
-                    <small>@Model.Description</small>
+                    @if (Model.NumberOfItemsInStock > 0)
+                    {
+                        <small class="fs-5 text-success my-2">In Stock</small>
+                    }
+                    else
+                    {
+                        <small class="fs-5 text-danger my-2">Out Of Stock</small>
+                    }
+
                     <div class="text-center">
-                        <a asp-route-productId="@Model.Id" asp-controller="Cart" asp-action="AddToCart" class="btn py-2 detailsBtn text-white border-0 w-50 px-5 rounded-0 my-4">
+                        <button data-product-id="@Model.Id" class="add-cart py-2 detailsBtn text-white border-0 w-50 px-5 rounded-0 my-4">
                             ADD TO CART +
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -77,9 +95,10 @@
     @{
         var user = await _userManager.GetUserAsync(User);
     }
-    <div class="d-flex">
-        <h3 class="mx-2">Rate: </h3>
-        <div class="star-rating">
+
+    <div class="d-flex align-items-center w-50 bg-success contactimg bg-opacity-10 p-5">
+        <h2 class="mx-2 pt-1 font-monospace">Rate: </h2>
+        <div class="star-rating ">
             @for (int i = 1; i <= 5; i++)
             {
                 <span class="star" data-value="@i">&#9734;</span>
@@ -98,4 +117,3 @@
         @Html.Partial("_CommentsPartial", Model.ProductReviews)
     </div>
 </section>
-

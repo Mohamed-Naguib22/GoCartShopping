@@ -2,17 +2,20 @@
 
 @foreach (var review in Model)
 {
-    <div class="">
+    <div class="d-flex justify-content-between">
         <div class="comImg d-flex ">
             <img src="@review.ProfilePicture" alt="User Image" class=" border rounded-circle">
-            <p class="mt-2 ms-2 font-monospace">@review.UserName</p>
-            <p class="mt-2 mx-5 font-monospace">@review.ReviewDate</p>
+            <p class="mt-2 ms-2 fs-5 font-monospace">@review.UserName</p>
         </div>
+        <div class="justify-content-end">
+            <p class="mt-2 ms-5">@review.ReviewDate.ToString("MMMM d, yyyy")</p>
+        </div>
+    </div>
+
         <div class="comText ms-4">
             <p class="">
                 @review.Review
             </p>
         </div>
-    </div>
     <hr />
 }

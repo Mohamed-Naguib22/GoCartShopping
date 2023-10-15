@@ -13,14 +13,14 @@
     // console.log(sectionOffset);
     $(window).scroll(function(){
       let windowScroll=$(window).scrollTop();
-      if(windowScroll>sectionOffset-100){
+      if(windowScroll>sectionOffset-300){
         // $('.navbar1').css("backgroundColor","#fff")
-        $('.navbar2').css("backgroundColor","rgb(35, 99, 112)")
         // $('.search-groub').css("display","none")
-        $('.search-groub1').css("display","block")
-        $(' .navbar2 .nav-link').css("color","#fff")
-        $(' .navbar2 .DTCairocolor').css("color","#fff")
+        // $(' .navbar2 .nav-link').css("color","#fff")
         // $(' .navbar2 .container').css("width","60%")
+        $('.navbar2').css("backgroundColor","rgb(35, 99, 112)")
+        $('.search-groub1').css("display","block")
+        // $(' .navbar2 .DTCairocolor').css("color","#fff")
         
         
         $('#btnUp').fadeIn(500)
@@ -30,8 +30,8 @@
         $('.navbar2').css("backgroundColor","rgba(255,255,255,0.5)")
         // $('.navbar2 .container').css("width","90%")
       $('.search-groub').css("display","block")
-      $(' .navbar2 .nav-link').css("color","#000")
-      $(' .navbar2 .DTCairocolor').css("color","#000")
+      //  $(' .navbar2 .nav-link').css(".navbar2 li:hover:after","#0fff")
+      // $(' .navbar2 .DTCairocolor').css("color","#000")
 
       $('#btnUp').fadeOut(500)
       
@@ -40,7 +40,7 @@
      
   $(window).scroll(function(){
     let windowScroll=$(window).scrollTop();
-    if(windowScroll>sectionOffset-100){
+    if(windowScroll>sectionOffset-300){
       if ($(window).width() > 600) {
         $('.navbar2 .container').css("width","60%")
       }
@@ -76,6 +76,7 @@
     $('.slickSlider').slick({
         infinite: true,
         autoplay:true,
+        dots:true,
         slidesToShow: 5,
         slidesToScroll: 1,
         responsive: [
@@ -194,13 +195,12 @@
         var swiper = new Swiper(".sale-sec", {
           slidesPerView: 5,
           spaceBetween: 30,
-            autoplay:false
-            //  {
-            //   delay: 3000,
-            //   disableOnInteraction: false,
-            // },
-            ,
-            navigation: {
+            autoplay:
+              {
+               delay: 5000,
+               disableOnInteraction: false,
+             },
+                      navigation: {
               nextEl: ".swiper-button-next",
               prevEl: ".swiper-button-prev",
             },
@@ -265,20 +265,24 @@
               
             }
         });
-  });
+        
 
-function showToast() {
-    var toastEl = document.getElementById('toast');
-    toastEl.classList.remove('d-none'); // Remove the 'd-none' class to display the toast
-    var toast = new bootstrap.Toast(toastEl);
-    toast.show();
+        AOS.init();
 
-    setTimeout(function () {
-        toast.hide();
-    }, 5000); // Adjust the time to display the toast in milliseconds (e.g., 3000 for 3 seconds)
-}
-$("#cartList").slideUp(0);
+   
+      //let wishlistBtn = document.querySelectorAll(".addToWL");
+      //wishlistBtn.forEach(item => {
+      //  item.onclick = function () {
 
-$("#Carticon").click(function () {
-    $("#cartList").slideToggle(5);
-})
+      //    if (item.firstElementChild.classList.contains("text-danger")) {
+      //      item.firstElementChild.classList.remove("fas", "fa-heart", "text-danger");
+      //        item.firstElementChild.classList.add("far", "fa-heart");
+      //    }
+      //    else {
+      //        item.firstElementChild.classList.remove("far", "fa-heart");
+      //        item.firstElementChild.classList.add("fas", "fa-heart", "text-danger");
+      //    }
+      //  }
+      //  })
+      
+    });

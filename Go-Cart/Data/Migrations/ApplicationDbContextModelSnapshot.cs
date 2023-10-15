@@ -299,6 +299,28 @@ namespace Go_Cart.Data.Migrations
                     b.ToTable("ProductColors");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.ProductImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("ImgUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductImages");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
                 {
                     b.Property<int>("Id")
@@ -710,6 +732,17 @@ namespace Go_Cart.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Go_Cart.Models.ProductImage", b =>
+                {
+                    b.HasOne("Go_Cart.Models.Product", "Product")
+                        .WithMany("ProductImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
                 {
                     b.HasOne("Go_Cart.Models.ApplicationUser", "ApplicationUser")
@@ -909,6 +942,8 @@ namespace Go_Cart.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ProductColors");
+
+                    b.Navigation("ProductImages");
 
                     b.Navigation("ProductOrders");
 

@@ -38,6 +38,8 @@ namespace Go_Cart.Controllers
             var whishListItems = await _context.WishListItems
                 .Where(wi => wi.WishListId == wishList.Id)
                 .Include(wi => wi.Product)
+                .Include(p => p.Product.ProductImages)
+                .Include(p => p.Product.Ratings)
                 .ToListAsync();
 
             return View(whishListItems);
@@ -70,6 +72,16 @@ namespace Go_Cart.Controllers
             await _context.SaveChangesAsync();
 
             return Ok();
+        }
+        public async Task<IActionResult> IsAddedToWishlist(int productId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var wishList = await _context.WishLists.FirstOrDefaultAsync(w => w.ApplicationUserId == user.Id);
+
+            var isAdded = _context.WishListItems
+                .Any(wi => wi.WishListId == wishList.Id && wi.ProductId == productId);
+
+            return Ok(isAdded);
         }
     }
 }

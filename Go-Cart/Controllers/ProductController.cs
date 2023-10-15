@@ -2,6 +2,8 @@
 using Go_Cart.Interfaces;
 using Go_Cart.Models;
 using Go_Cart.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -31,6 +33,7 @@ namespace Go_Cart.Controllers
             var products = await _context.Products.ToListAsync();
             return View(products);
         }
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             ViewBag.Categories = new SelectList(_context.Categories, "Id", "Name");
@@ -40,6 +43,7 @@ namespace Go_Cart.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(ProductFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -66,6 +70,11 @@ namespace Go_Cart.Controllers
 
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+
+            _productImage.SetOptionalImage(model.Img1, product.Id);
+            _productImage.SetOptionalImage(model.Img2, product.Id);
+            _productImage.SetOptionalImage(model.Img3, product.Id);
+            _productImage.SetOptionalImage(model.Img4, product.Id);
 
             if (model.SelectedSizes != null && model.SelectedSizes.Any())
             {
@@ -117,7 +126,11 @@ namespace Go_Cart.Controllers
         }
         public async Task<IActionResult> Details(int productId)
         {
-            var product = await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.Id == productId);
+            var product = await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Offer)
+                .Include(p => p.ProductImages)
+                .FirstOrDefaultAsync(p => p.Id == productId);
             
             var reviews = _context.ProductReviews
                 .Where(r => r.ProductId == productId)
@@ -147,6 +160,8 @@ namespace Go_Cart.Controllers
                 Where(r => r.ProductId == productId).ToListAsync();
 
             decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
+            
+            var productImages = product.ProductImages.Select(pi => pi.ImgUrl);
 
             var productDetails = new ProductDetailsViewModel
             {
@@ -155,13 +170,19 @@ namespace Go_Cart.Controllers
                 Price = product.Price,
                 Rating = rating,
                 Description = product.Description,
-                ImgUrl = product.ImgUrl,
                 Category = product.Category.Name,
+                OnSale = product.OnSale,
                 ProductReviews = reviewViewModel,
                 AvailableSizes = sizes,
-                AvailableColors = colors
+                AvailableColors = colors,
+                ProductImages = productImages,
+                NumberOfItemsInStock = product.NumberOfItemsInStock,
             };
 
+            if (productDetails.OnSale)
+            {
+                productDetails.PriceAfterDiscount = product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage);
+            }
             return View(productDetails);
         }
         [HttpPost]

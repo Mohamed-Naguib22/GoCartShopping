@@ -4,13 +4,6 @@
     ViewData["Title"] = "WishList";
 }
 
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Product is already added to the cart.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
-<section class="cart" id="wishlist-container">
+<section style="margin-top:160px" id="wishlist-container">
     @Html.Partial("_WishListPartial", Model)
 </section>

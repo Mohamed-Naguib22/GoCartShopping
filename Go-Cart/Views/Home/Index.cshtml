@@ -1,22 +1,21 @@
 ﻿@model HomeViewModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
+@*@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
 {
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            Product is already added to the cart.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+    <script>
+        showErrorNotification();
+    </script>
 }
-
+*@
 <!-- start landing -->
 <header id="Home" class=" ">
     <div class=" px-5 head  headerLayover">
 
-        <div class="headCaption w-100  ">
+        <div class="headCaption w-100  " data-aos="fade-up">
             <h1 class="fs-2 fw-bolder  ">Welcome To Go Cart</h1>
             <p class="fs-3 n">
 
@@ -32,7 +31,7 @@
                 </button>
             </div>
         </div>
-        <div class="headImg w-100   ">
+        <div class="headImg  mt-5 w-100" data-aos="fade-down">
             <img src="Assets/Image/logoo5.png" class="w-100 img" alt="">
         </div>
     </div>
@@ -40,21 +39,12 @@
         <i class="fas fa-arrow-up btnUp"></i>
     </button>
 </header>
-<div id="toast" class="toast ms-2 d-none" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="toast-header bg-black">
-        <img src="~/assets/image/logo.png" class="rounded me-2 w-25" alt="...">
-        <strong class="me-auto">Go-Cart</strong>
-        <button type="button" class="btn-close btn-close-white border border-white" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-    <div class="toast-body" id="notification-text">
-        Product Added Successfully!
-    </div>
-</div>
+
 <section class="sec2 mt-5" id="sec2">
     <div class="container">
         <div class="d-flex justify-content-between row ">
-            <div class="col-md-3">
-                <div class="category">
+            <div class="col-xl-3 ">
+                <div class="category" data-aos="fade-right">
                     <div class="category1">
                         <a href="">
                             <h3 class="pt-3 ms-3">All Category</h3>
@@ -96,7 +86,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-9 ">
+            <div class="col-xl-9" data-aos="fade-left">
                 <div class="slide w-100">
                     <div class="slide-swp swiper mySwiper">
                         <div class="swiper-wrapper">
@@ -118,29 +108,70 @@
     </div>
 </section>
 
-<div class="container d-flex gap-2 my-5">
-    <div class="position-relative">
-        <img src="Assets/Image/advertisement/banner-5.jpg" class="w-100" alt="">
-        <span class="glass-hover"></span>
-    </div>
-
-    <div class="position-relative">
-        <img src="Assets/Image/advertisement/banner-2.jpg" class="w-100" alt="">
-        <span class="glass-hover"></span>
-    </div>
-
-    <div class="position-relative">
-        <img src="Assets/Image/advertisement/banner-1.jpg" class="w-100" alt="">
-        <span class="glass-hover"></span>
-    </div>
-</div>
-
-<section class="slider my-5" style="background-color:#F0F2F5">
+<section class="features my-5">
     <div class="container">
-        <div class="slickSlider slickSlider1" >
+        <div class="row">
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures" data-aos="fade-right">
+                    <div class="">
+                        <img src="Assets/Image/features/f1.png" alt="">
+                        <h5 class="mt-2 feature1">Free Shipping</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures" data-aos="fade-right">
+                    <div class="">
+                        <img src="Assets/Image/features/f2.png" alt="">
+                        <h5 class="mt-2 feature2 ">Online Order</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures" data-aos="fade-right">
+                    <div class="">
+                        <img src="Assets/Image/features/f3.png" alt="">
+                        <h5 class="mt-2 feature3">Save Money</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures" data-aos="fade-left">
+                    <div class="">
+                        <img src="Assets/Image/features/f4.png" alt="">
+                        <h5 class="mt-2 feature4">Promotions</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures " data-aos="fade-left">
+                    <div class="">
+                        <img src="Assets/Image/features/f5.png" alt="">
+                        <h5 class="mt-2 feature5">Happy Sell</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2  p-3">
+                <div class="imgFeatures" data-aos="fade-left">
+                    <div class="">
+                        <img src="Assets/Image/features/f6.png" alt="">
+                        <h5 class="mt-2  feature6">F24/7 Support</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="slider my-5">
+    <div class="container">
+        <div class="win  section-head">
+            <h2 class="win1">Categories </h2>
+        </div>
+        <div class="slickSlider slickSlider1">
             @foreach (var category in Model.Categories.Where(c => c.ParentCategoryId != 1))
             {
-                <div class="item rounded-circle" style="background-color:#fff">
+                <div class="item rounded-circle ">
                     <img src="@category.ImgUrl" class="rounded-circle" alt="">
                     <a asp-route-categoryId="@category.Id" asp-controller="Category" asp-action="Index" class="layer1 rounded-circle text-decoration-none">
                         <div class="layCard lay-icon d-flex flex-column">
@@ -154,7 +185,7 @@
 </section>
 
 <section class="sale-sec container swiper mySwiper">
-    <div class="section-head">
+    <div class="section-head" data-aos="fade-up">
         <h4>
             <span class="section-onsale">
                 On Sale
@@ -170,13 +201,13 @@
                 <div class="product-btn">
                     <ul class="product-action">
                         <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
-                        <li><a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                        <li class="add-cart" data-product-id="@product.Id"><i class="fa-solid fa-cart-shopping"></i></li>
                     </ul>
                 </div>
                 <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
                     <span class="discount bg-danger ">@((int)(product.Offer.DiscountPercentage * 100))%</span>
-                    <img src="@product.ImgUrl" class="img-product">
-                    <img src="@product.ImgUrl" class="hover-img">
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="img-product">
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).Skip(1).FirstOrDefault()" class="hover-img">
                 </a>
                 <div class="content">
                     <a class="product-item-link">
@@ -194,7 +225,7 @@
                         }
                     </div>
                     <div class="price">
-                        <span>$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
+                        <span class="fs-6">$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
                         <del>$@product.Price</del>
                     </div>
                 </div>
@@ -209,10 +240,25 @@
     </div>
 </section>
 
+<div class="container advertisement  d-flex gap-2 my-5">
+    <div class="position-relative " data-aos="fade-right">
+        <img src="Assets/Image/advertisement/banner-5.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+
+    </div>
+    <div class="position-relative" data-aos="fade-up">
+        <img src="Assets/Image/advertisement/banner-2.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+    </div>
+    <div class="position-relative" data-aos="fade-left">
+        <img src="Assets/Image/advertisement/banner-1.jpg" class="w-100" alt="">
+        <span class="glass-hover"></span>
+    </div>
+</div>
 
 <section class="sale-sec container swiper mySwiper">
-    <div class="section-head">
-        <h4>
+    <div class="section-head ">
+        <h4 data-aos="fade-up">
             <span class="section-onsale">
                 New
             </span>
@@ -226,33 +272,38 @@
                 <div class="product-btn">
                     <ul class="product-action">
                         <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
-                        <li><a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart"><i class="fa-solid fa-cart-shopping"></i></a></li>
+                        <li class="add-cart" data-product-id="@product.Id"><i class="fa-solid fa-cart-shopping"></i></li>
                     </ul>
                 </div>
                 <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
-                    <img src="@product.ImgUrl" class="img-product">
-                    <img src="@product.ImgUrl" class="hover-img">
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="img-product">
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).Skip(1).FirstOrDefault()" class="hover-img">
                 </a>
                 <div class="content">
                     <a class="product-item-link">
                         @product.Name
                     </a>
                     @{
-                        decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                        int numOfRates = product.Ratings.Count();
+                        decimal rating = numOfRates > 0 ? product.Ratings.Average(r => r.Value) : 5;
                     }
 
-                    <div class="stars">
-                        @for (int i = 0; i < rating; i++)
-                        {
-                            <i class="fa-solid fa-star"></i>
-                        }
-                        @for (int i = (int)Math.Round(rating); i < 5; i++)
-                        {
-                            <i class="fas fa-star" style="color:darkgray"></i>
-                        }
+                    <div class="stars d-flex justify-content-center">
+                        <div>
+                            @for (int i = 0; i < rating; i++)
+                            {
+                                <i class="fa-solid fa-star"></i>
+                            }
+                            @for (int i = (int)Math.Round(rating); i < 5; i++)
+                            {
+                                <i class="fas fa-star" style="color:darkgray"></i>
+                            }
+                        </div>
+
+                        <p class="ms-2">(@numOfRates)</p>
                     </div>
                     <div class="price">
-                        <span>$@product.Price</span>
+                        <span class="fs-6">$@product.Price</span>
                     </div>
                 </div>
             </div>
@@ -293,12 +344,12 @@
                 {
                     <div class="col-md-6 col-lg-4 p-2 mix @category">
                         <div class="port">
-                            <img class="w-100" src="@product.ImgUrl" alt="">
+                            <img class="w-100" src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" alt="">
                             <div class="layer text-center text-white d-flex align-items-center justify-content-center">
                                 <div class="lay-text">
                                     <h4 class="text-black">@product.Name</h4>
                                     <div class="lay-icon">
-                                    <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart">
+                                        <a class="add-cart" data-product-id="@product.Id" style="cursor:pointer;">
                                         <i class="fa-solid fa-cart-shopping"></i>
                                     </a>
 

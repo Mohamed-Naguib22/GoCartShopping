@@ -1,17 +1,86 @@
-﻿@model IEnumerable<Product>
+﻿@model CategoryViewModel
 
 @{
     ViewData["Title"] = "New Arrivals";
 }
-
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Product is already added to the cart.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 <section class="cat1 pt-5" id="cat">
+    <div class="container ">
+        <h2 class="mb-5 ">
+            New Arrivals
+            <hr class="">
+        </h2>
+        <div class="row g-3">
+            <div class="col-md-4 col-xl-4 col-xxl-3">
+                <div class=" filter-card bg-success bg-opacity-25">
+                    <div class="card-body">
+                        <h5 class="card-title">Filter</h5>
+                        <select class="form-control" id="sortBy">
+                            <option selected>Sort by</option>
+                            <option value="newest">Newest</option>
+                            <option value="highest">Price: Highest</option>
+                            <option value="lowest">Price: Lowest</option>
+                        </select>
+
+                        <hr />
+
+                        <div class="form-group">
+                            <p class="fs-5 fw-semibold" for="priceRange">Price Range</p>
+                            <input type="range" class="form-range" id="priceRange" min="0" max="10000" step="10" value="5000">
+                        </div>
+                        <div class="form-group">
+                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">5000</span></label>
+                        </div>
+                        <hr />
+                        <p class="fs-5 fw-semibold">Colors</p>
+                        @foreach (var color in Model.Colors)
+                        {
+                            <a data-color-id="@color.Id" class="btn color-button border mx-1 my-1"><i class="fa-solid fa-fw fa-lg fa-circle text-@(color.Value)"></i></a>
+                        }
+
+                        <hr />
+
+                        <p class="fs-5 fw-semibold">Sizes</p>
+                        <div class="filter-button-group">
+                            @foreach (var size in Model.Sizes)
+                            {
+                                <button data-size-id="@size.Id">@size.Name</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-9">
+                <div class="row g-3" id="filtered-products">
+                    @Html.Partial("_ProductsPartial", Model.Products)
+                </div>
+            </div>
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="NewArrivals" asp-route-page="1" asp-route-pageSize="@Model.PageSize">First</a>
+                    </li>
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="NewArrivals" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                            <a class="page-link" asp-action="NewArrivals" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="NewArrivals" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                    </li>
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="NewArrivals" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize">Last</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>
+@*<section class="cat1 pt-5" id="cat">
     <div class="mb-5">
         <h4 class="win">New Arrivals</h4>
         <hr class="container" />
@@ -38,7 +107,7 @@
                                 {
                                     <i class="fas fa-star" style="color:darkgray"></i>
                                 }
-                            </div>*@
+                            </div>
                             <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
                             <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">Details</a>
                         </div>
@@ -47,4 +116,4 @@
             }
         </div>
     </div>
-</section>
+</section>*@

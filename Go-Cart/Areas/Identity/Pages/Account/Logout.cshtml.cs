@@ -27,6 +27,7 @@ namespace Go_Cart.Areas.Identity.Pages.Account
         public async Task<IActionResult> OnPost(string returnUrl = null)
         {
             await _signInManager.SignOutAsync();
+            HttpContext.Session.Remove("_cart");
             _logger.LogInformation("User logged out.");
             if (returnUrl != null)
             {

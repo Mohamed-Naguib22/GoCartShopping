@@ -4,6 +4,7 @@
 @using Go_Cart.ViewModels
 @using Go_Cart.Extensions
 @using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> _signInManager
 @inject UserManager<ApplicationUser> _userManager
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ApplicationDbContext _context

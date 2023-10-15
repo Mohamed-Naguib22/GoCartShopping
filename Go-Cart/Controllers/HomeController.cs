@@ -21,10 +21,9 @@ namespace Go_Cart.Controllers
             _context = context;
             _userManager = userManager;
         }
-        [Authorize]
         public async Task<IActionResult> Index()
         {
-            var products = await _context.Products.Include(p => p.Ratings).ToListAsync();
+            var products = await _context.Products.Include(p => p.ProductImages).Include(p => p.Ratings).ToListAsync();
             var categories = await _context.Categories.Include(c => c.Products).ToListAsync();
             var offers = await _context.Offers.ToListAsync();
 
@@ -32,13 +31,20 @@ namespace Go_Cart.Controllers
             {
                 Products = products,
                 Categories = categories,
-                Offers = offers
             };
 
             return View(homeViewModel);
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+        public IActionResult ContactUs()
+        {
+            return View();
+        }
+        public IActionResult AboutUs()
         {
             return View();
         }

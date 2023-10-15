@@ -2,13 +2,13 @@
 @{
     ViewData["Title"] = "Checkout";
 }
-<section class="order mb-5">
+<section class="order">
     <div class="container">
             <form method="post" asp-controller="Order" asp-action="AddAddress" enctype="multipart/form-data">
             <input type="hidden" name="Id" value="@Model.Id" />
             <div class="row gap-5">
                 <div class="col-md-7  rounded-4">
-                    <div class="p-4 mb-5 rounded-4 bg-opacity-25 bg-success">
+                    <div class="p-4 mb-5 rounded-4 bg-opacity-10 bg-primary">
                         <h3>
                             Personal Information
                         <hr>
@@ -17,13 +17,16 @@
                         <div class="">
                             <input asp-for="@Model.RecipientName" type="text" class="w-100 mb-4 form-control" placeholder="Your Name">
                             <div class="d-flex gap-5">
-                                <input type="text" class="w-50 form-control" placeholder="Email" value="mohamednageb@gmail.com">
+                                @{
+                                    var user = await _userManager.GetUserAsync(User);
+                                }
+                                <input type="text" class="w-50 form-control" placeholder="Email" value="@user.UserName" disabled>
                                 <input asp-for="@Model.RecipientPhone" type="text" class="w-50 form-control" placeholder="Phone Number">
                             </div>
                         </div>
                     </div>
   
-                    <div class="p-4 mb-5 rounded-4 bg-opacity-25 bg-success">
+                    <div class="p-4 mb-5 rounded-4 bg-opacity-10 bg-primary">
                         <h3>
                         Shipping Address      
                         <hr>
@@ -67,21 +70,27 @@
 
                 <div class="col-md-4  h-50 rounded-4  bg-opacity-10 bg-primary ">
                     <div class="P-4">
-                        <h3>Order Details<hr></h3>
+                        <h3 class="pt-3">Order Details<hr></h3>
                         @foreach (var orderItem in Model.OrderItems)
                         {
                             <div class="d-flex my-2">
-                                <img src="@orderItem.Product.ImgUrl" class="" height="80" width="80" alt="">
+                                <img src="@orderItem.Product.ProductImages.Select(p => p.ImgUrl).FirstOrDefault()" class="" height="80" width="80" alt="">
                                 <div class="col-md-8">
                                     <p class="fs-5 fw-semibold mx-2">@orderItem.Product.Name</p>
                                     <div class="d-flex justify-content-between ms-3 my-3">
-                                        <div class=" border border-dark p-2 bg-success bg-opacity-25">@orderItem.Quantity</div>
+                                        <div class=" border border-dark p-2 bg-secondary bg-opacity-25">@orderItem.Quantity</div>
                                         <div class="fs-3 fw-semibold text-success">@orderItem.SubTotalPrice$</div>
                                     </div>
 
                                     <div class="d-flex justify-content-between ms-3 my-3">
-                                        <p class=""><span class="fw-semibold">Color:</span> @orderItem.Color</p>
-                                        <p class=""><span class="fw-semibold">Size:</span> @orderItem.Size</p>
+                                        @if (orderItem.Color != null)
+                                        {
+                                            <p class=""><span class="fw-semibold">Color:</span> @orderItem.Color</p>
+                                        }
+                                        @if (orderItem.Size != null)
+                                        {
+                                            <p class=""><span class="fw-semibold">Size:</span> @orderItem.Size</p>
+                                        }
                                     </div>
                                 </div>
                             </div>

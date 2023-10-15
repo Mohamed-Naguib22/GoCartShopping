@@ -42,5 +42,8 @@ namespace GoCart
                 }
             }
         }
+        public void SetOptionalImage(IFormFile? imgFile, int productId)
+        {
+        }
     }
 }

@@ -50,20 +50,20 @@ namespace Go_Cart.Controllers
             var product = GetProductById(productId);
             var cart = GetCart();
             bool productAlreadyAdded = cart.Products.Any(p => p.Id == productId);
+            
             if (productAlreadyAdded)
             {
-                TempData["DuplicateProduct"] = true;
-                return RedirectToAction(nameof(Index), "Home");
+                return BadRequest();
             }
 
             if (product != null)
             {
-                 cart.Products.Add(product);
+                cart.Products.Add(product);
             }
 
             SetCart(cart);
-
-            return RedirectToAction(nameof(Index));
+            return Ok();
+            
         }
         public IActionResult RemoveFromCart(int productId)
         {
@@ -134,6 +134,8 @@ namespace Go_Cart.Controllers
         {
             var product = _context.Products
                 .Include(p => p.Category)
+                .Include(p => p.Offer)
+                .Include(p => p.ProductImages)
                 .FirstOrDefault(p => p.Id == productId);
             
             var sizes = _context.ProductSizes
@@ -146,17 +148,24 @@ namespace Go_Cart.Controllers
                 .Select(pc => pc.Color.Name)
                 .ToList();
 
+            var productImage = product.ProductImages.Select(p => p.ImgUrl).FirstOrDefault();
             var cartItem = new CartItem
             {
                 Id = productId,
                 Name = product.Name,
                 Category = product.Category.Name,
-                ImgUrl = product.ImgUrl,
+                ImgUrl = productImage,
                 Price = product.Price,
                 Quantity = 1,
                 Sizes = sizes,
                 Colors = colors
             };
+
+            if (product.OnSale)
+            {
+                cartItem.Price = product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage);
+            }
+
             return cartItem;
         }
         private Cart GetCart()

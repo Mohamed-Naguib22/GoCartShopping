@@ -4,24 +4,16 @@
     ViewData["Title"] = @Model.Category.Name;
 }
 
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Product is already added to the cart.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
 <input class="d-none" id="category-id" value="@Model.Category.Id"/>
 <section class="cat1 pt-5" id="cat">
-    <div class="mb-5">
-        <h4 class="win">@Model.Category.Name</h4>
-        <hr class="container" />
-    </div>
-
-    <div class="container">
-        <div class="row">
-            <div class="col-md-3">
-                <div class=" filter-card bg-primary bg-opacity-10">
+    <div class="container ">
+        <h2 class="mb-5 ">
+            @Model.Category.Name
+            <hr class="">
+        </h2>
+        <div class="row g-3">
+            <div class="col-md-4 col-xl-4 col-xxl-3">
+                <div class=" filter-card bg-success bg-opacity-25">
                     <div class="card-body">
                         <h5 class="card-title">Filter</h5>
                         <select class="form-control" id="sortBy">
@@ -44,7 +36,7 @@
                         <p class="fs-5 fw-semibold">Colors</p>
                         @foreach (var color in Model.Colors)
                         {
-                            <a data-color-id="@color.Id" class="btn color-button border border-dark mx-1 my-1"><i class="fa-solid fa-fw fa-lg fa-circle text-@(color.Value)"></i></a>
+                            <a data-color-id="@color.Id" class="btn color-button border mx-1 my-1"><i class="fa-solid fa-fw fa-lg fa-circle text-@(color.Value)"></i></a>
                         }
 
                         <hr />
@@ -65,6 +57,28 @@
                     @Html.Partial("_ProductsPartial", Model.Products)
                 </div>
             </div>
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.Category.Id" asp-route-page="1" asp-route-pageSize="@Model.PageSize">First</a>
+                    </li>
+                    <li class="page-item @(Model.CurrentPage == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.Category.Id" asp-route-page="@(Model.CurrentPage - 1)" asp-route-pageSize="@Model.PageSize">Previous</a>
+                    </li>
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(Model.CurrentPage == i ? "active" : "")">
+                            <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.Category.Id" asp-route-page="@i" asp-route-pageSize="@Model.PageSize">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.Category.Id" asp-route-page="@(Model.CurrentPage + 1)" asp-route-pageSize="@Model.PageSize">Next</a>
+                    </li>
+                    <li class="page-item @(Model.CurrentPage == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index" asp-route-categoryId="@Model.Category.Id" asp-route-page="@Model.TotalPages" asp-route-pageSize="@Model.PageSize">Last</a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </div>
 </section>

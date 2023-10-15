@@ -1,0 +1,53 @@
+﻿@model IEnumerable<OrderViewModel>
+@{
+    ViewData["Title"] = "Order History";
+}
+<div class="orderh container p-2">
+    <div class="row bg-secondary bg-opacity-10 rounded-3 gap-4 justify-content-center p-5">
+        <h2 class="text-center">Order History</h2>
+        @foreach (var order in Model)
+        {
+            <div class="col-md-9 p-2 rounded-4 bg-primary bg-opacity-10 ">
+                <div class=" mb-3">
+                    <div class="d-flex justify-content-between">
+                        <p class="d-flex justify-content-start fs-5 ms-3 fw-semibold">Status: <span class="text-danger mx-2">@order.Status</span></p>
+                        <p class="d-flex justify-content-start  ms-3 text-success me-2">@order.OrderDate.ToString("MMMM d, yyyy")</p>
+                    </div>
+                    <p class="d-flex justify-content-start fs-4 ms-3 fw-semibold">Total Cost: <span class="text-success mx-2">@order.TotalCost$</span></p>
+                </div>
+                @{int i = 0;}
+                @foreach (var orderItem in order.OrderItems)
+                {
+                    i++;
+                    <div class="oh  d-flex">
+                        <div class="ohimg p-2  ">
+                            <img src="@orderItem.ProductImg" class="w-75 rounded-3" alt="">
+                        </div>
+                        <div class="d-flex justify-content-between w-100 ">
+                            <div class="">
+                                <small>Item @i</small>
+                                <h5>@orderItem.ProductName</h5>
+                                <div class="d-flex ustify-content-between">
+                                    <di class="col-md-12 d-flex flex-column">
+                                        <small class="text-success h6"><span class="text-dark">Quantity :  </span> @orderItem.Quantity</small>
+                                        @if (orderItem.Color != null)
+                                        {
+                                            <small class="text-success h6"><span class="text-dark">Color : </span>@orderItem.Color</small>
+                                        }
+                                    </di>
+                                    <di class="col-md-12  d-flex flex-column mx-2">
+                                        <small class="text-success h6"><span class="text-dark">Price : </span>@orderItem.SubTotalPrice$</small>
+                                        @if (orderItem.Size != null)
+                                        {
+                                            <small class="text-success h6"><span class="text-dark">Size : </span>@orderItem.Size</small>
+                                        }
+                                    </di>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
