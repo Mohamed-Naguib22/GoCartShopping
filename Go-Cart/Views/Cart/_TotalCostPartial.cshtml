@@ -1,27 +1,5 @@
 ﻿@model decimal
-<h1>Order Details</h1>
-<div class="my-5">
 
-    <h5>Subtotal</h5>
-    <small class="fw-bold fs-5">@Model$</small>
-</div>
-
-<div class="  rounded-4 bg-primary bg-opacity-10 p-3">
-    <h5>Shipping</h5>
-    <h5>USPS(9,00$)</h5>
-</div>
-<div class="  rounded-4 bg-primary bg-opacity-10 p-3 mt-3">
-    <h5>Promo Code</h5>
-    <input type="text" class="border-0  bg-transparent border-dark" placeholder="Enter avalid promo code">
-</div>
-<hr>
-<h5 class="text-center">@Model$</h5>
-<div class="d-flex justify-content-center  align-items-center gap-2">
-    <a asp-controller="Order" asp-action="PlaceOrder" class="my-2 btn btn-dark">CHECKOUT</a>or
-    <a asp-controller="Home" asp-action="Index" class="my-2 btn btn-dark">
-        Continue shopping
-    </a>
-</div>
 
 @*<div class="container">
     <h2 class="mt-2">Your Cart</h2>

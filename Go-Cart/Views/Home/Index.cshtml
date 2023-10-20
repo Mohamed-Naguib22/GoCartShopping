@@ -22,14 +22,9 @@
                 Exclusive collection for everyone...We are  One of The best E-commerce sites in The Middle East
                 .... Try it now
             </p>
-            <div class="d-flex gap-2">
-                <button class="btn2 fw-bold">
-                    <a href="Html/Categories.html" class="text-decoration-none text-white">
-
-                        Explore Now
-                    </a>
-                </button>
-            </div>
+            <a class="text-decoration-none go-down-btn  text-black  ex">
+                <p class="circle-text ">EXPLORE NOW</p>
+            </a>
         </div>
         <div class="headImg  mt-5 w-100" data-aos="fade-down">
             <img src="Assets/Image/logoo5.png" class="w-100 img" alt="">
@@ -200,40 +195,49 @@
             <div class="box column product-item swiper-slide">
                 <div class="product-btn">
                     <ul class="product-action">
-                        <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        }
                         <li class="add-cart" data-product-id="@product.Id"><i class="fa-solid fa-cart-shopping"></i></li>
                     </ul>
                 </div>
                 <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
-                    <span class="discount bg-danger ">@((int)(product.Offer.DiscountPercentage * 100))%</span>
+                    <span class="discount bg-danger">@((int)(product.Offer.DiscountPercentage * 100))%</span>
                     <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="img-product">
                     <img src="@product.ProductImages.Select(pi => pi.ImgUrl).Skip(1).FirstOrDefault()" class="hover-img">
                 </a>
                 <div class="content">
-                    <a class="product-item-link">
+                    <a class="product-item-link" asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
                         @product.Name
                     </a>
-                    @{decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;}
-                    <div class="stars">
-                        @for (int i = 0; i < (int)Math.Round(rating); i++)
-                        {
-                            <i class="fa-solid fa-star"></i>
-                        }
-                        @for (int i = (int)Math.Round(rating); i < 5; i++)
-                        {
-                            <i class="fas fa-star" style="color:darkgray"></i>
-                        }
+                    @{
+                        int numOfRates = product.Ratings.Count();
+                        decimal rating = numOfRates > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                    }
+
+                    <div class="stars d-flex justify-content-center">
+                        <div>
+                            @for (int i = 0; i < rating; i++)
+                            {
+                                <i class="fa-solid fa-star"></i>
+                            }
+                            @for (int i = (int)Math.Round(rating); i < 5; i++)
+                            {
+                                <i class="fas fa-star" style="color:darkgray"></i>
+                            }
+                        </div>
+
+                        <p class="ms-2">(@numOfRates)</p>
                     </div>
                     <div class="price">
                         <span class="fs-6">$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
-                        <del>$@product.Price</del>
+                        <del>@product.Price EGP</del>
                     </div>
                 </div>
             </div>
-
         }
     </div>
-
     <div class="">
         <div class="swiper-button-next swiper-btn"></div>
         <div class="swiper-button-prev swiper-btn"></div>
@@ -271,7 +275,10 @@
             <div class="box column product-item swiper-slide">
                 <div class="product-btn">
                     <ul class="product-action">
-                        <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        }
                         <li class="add-cart" data-product-id="@product.Id"><i class="fa-solid fa-cart-shopping"></i></li>
                     </ul>
                 </div>
@@ -280,7 +287,7 @@
                     <img src="@product.ProductImages.Select(pi => pi.ImgUrl).Skip(1).FirstOrDefault()" class="hover-img">
                 </a>
                 <div class="content">
-                    <a class="product-item-link">
+                    <a class="product-item-link" asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
                         @product.Name
                     </a>
                     @{
@@ -303,11 +310,10 @@
                         <p class="ms-2">(@numOfRates)</p>
                     </div>
                     <div class="price">
-                        <span class="fs-6">$@product.Price</span>
+                        <span class="fs-6">@product.Price EGP</span>
                     </div>
                 </div>
             </div>
-
         }
     </div>
 

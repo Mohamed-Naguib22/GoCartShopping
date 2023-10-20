@@ -19,29 +19,27 @@
                 @foreach (var orderItem in order.OrderItems)
                 {
                     i++;
-                    <div class="oh  d-flex">
-                        <div class="ohimg p-2  ">
+                    <div class="oh d-flex">
+                        <div class="ohimg p-2">
                             <img src="@orderItem.ProductImg" class="w-75 rounded-3" alt="">
                         </div>
-                        <div class="d-flex justify-content-between w-100 ">
-                            <div class="">
-                                <small>Item @i</small>
-                                <h5>@orderItem.ProductName</h5>
-                                <div class="d-flex ustify-content-between">
-                                    <di class="col-md-12 d-flex flex-column">
-                                        <small class="text-success h6"><span class="text-dark">Quantity :  </span> @orderItem.Quantity</small>
-                                        @if (orderItem.Color != null)
-                                        {
-                                            <small class="text-success h6"><span class="text-dark">Color : </span>@orderItem.Color</small>
-                                        }
-                                    </di>
-                                    <di class="col-md-12  d-flex flex-column mx-2">
-                                        <small class="text-success h6"><span class="text-dark">Price : </span>@orderItem.SubTotalPrice$</small>
-                                        @if (orderItem.Size != null)
-                                        {
-                                            <small class="text-success h6"><span class="text-dark">Size : </span>@orderItem.Size</small>
-                                        }
-                                    </di>
+                        <div class="col-md-6">
+                            <small>Item @i</small>
+                            <h5>@orderItem.ProductName</h5>
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <small class="text-success h6"><span class="text-dark">Quantity:</span> @orderItem.Quantity</small>
+                                    @if (orderItem.Color != null)
+                                    {
+                                        <small class="text-success h6"><span class="text-dark">Color:</span> @orderItem.Color</small>
+                                    }
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <small class="text-success h6"><span class="text-dark">Price:</span> @orderItem.SubTotalPrice$</small>
+                                    @if (orderItem.Size != null)
+                                    {
+                                        <small class="text-success h6"><span class="text-dark">Size:</span> @orderItem.Size</small>
+                                    }
                                 </div>
                             </div>
                         </div>

@@ -9,6 +9,7 @@ using System.Diagnostics;
 
 namespace Go_Cart.Controllers
 {
+    [Authorize]
     public class WishListController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -27,6 +28,11 @@ namespace Go_Cart.Controllers
             var whishListItems = await _context.WishListItems
                 .Where(wi => wi.WishListId == wishList.Id)
                 .Include(wi => wi.Product)
+                .Include(p => p.Product.Ratings)
+                .Include(p => p.Product.ProductImages)
+                .Include(p => p.Product.Offer)
+                .Include(p => p.Product.Category)
+                .OrderByDescending(wi => wi.AddedOn)
                 .ToListAsync();
 
             return PartialView("_WishListPartial", whishListItems);
@@ -38,8 +44,11 @@ namespace Go_Cart.Controllers
             var whishListItems = await _context.WishListItems
                 .Where(wi => wi.WishListId == wishList.Id)
                 .Include(wi => wi.Product)
+                .Include(p => p.Product.Category)
                 .Include(p => p.Product.ProductImages)
                 .Include(p => p.Product.Ratings)
+                .Include(p => p.Product.Offer)
+                .OrderByDescending(wi => wi.AddedOn)
                 .ToListAsync();
 
             return View(whishListItems);

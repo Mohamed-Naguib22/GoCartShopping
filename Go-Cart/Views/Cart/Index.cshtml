@@ -2,19 +2,18 @@
 @{
     ViewData["Title"] = "Cart";
 }
-
+@{
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
 
 <section class="cart mx-2" id="cart-section">
     <section class="cart container">
-        <div class="row">
-            <div class="col-md-9 bg-primary bg-opacity-10 cartleft  p-5">
-                <div id="cartItems-container">
-                    @Html.Partial("_CartPartial", Model)
-                </div>
-            </div>
-            <div id="totalCost-container" class="col-md-3 bg-success bg-opacity-10 cartright  p-5">
-                @Html.Partial("_TotalCostPartial", Model.TotalPrice)
-            </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">@errorMessage</div>
+        }
+        <div class="row" id="cartItems-container">
+            @Html.Partial("_CartPartial", Model)
         </div>
     </section>
 </section>

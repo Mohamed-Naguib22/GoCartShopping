@@ -11,6 +11,8 @@ namespace Go_Cart.Models
         public string LastName { get; set; }
         [Required]
         public string ImgUrl { get; set; }
+        public string Gender { get; set; }
+        public string? Address { get; set; }
         public WishList WishList { get; set; }
         public IEnumerable<ProductReview> ProductReviews { get; set; }
         public IEnumerable<Rating> Ratings { get; set; }

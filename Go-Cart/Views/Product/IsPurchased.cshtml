@@ -1,0 +1,13 @@
+﻿@model IEnumerable<int>
+
+@{
+    ViewData["Title"] = "test";
+    Layout = "~/Views/Shared/_LayoutResource.cshtml";
+}
+
+<div>
+    @foreach (var s in Model)
+    {
+        <p>@s</p>
+    }
+</div>

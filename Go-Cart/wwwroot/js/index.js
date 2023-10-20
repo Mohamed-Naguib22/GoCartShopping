@@ -6,7 +6,7 @@ let phone =document.getElementById('phone')
 let passWord =document.getElementById('passWord')
 let rePassword =document.getElementById('Re-password')
 let email =document.getElementById('email')
-let btn =document.getElementById('btnSignUp')
+let btn = document.getElementById('registerSubmit')
 
 let arraySignup=[]
 
@@ -58,12 +58,12 @@ function closeMassage(){
     massage.classList.replace("d-flex", "d-none");
 }
 
-let nameRegex = /^[A-Z][a-z]{3,}$/;
+let nameRegex = /^[A-Za-z]{3,}$/;
 let emailRegex =/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-let passwordRegex =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
-let rePasswordRegex =/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[#$@&]).{6,}$/;
+let rePasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[#$@&]).{6,}$/;
 let phoneRegex =/^(002)?01[0125][0-9]{8}$/;
-
+    
 
 
 
@@ -124,7 +124,7 @@ function isEmailValid(){
   
   }
  
-  fName.addEventListener('keyup',function(){
+fName.addEventListener('change',function(){
     if(isNameValid()) {
       document.querySelector(".alertName1").classList.add("d-none")
   }else{
@@ -132,7 +132,7 @@ function isEmailValid(){
   }
 });
   
-  lNAme.addEventListener('keyup',function(){
+lNAme.addEventListener('change',function(){
     if(isLNameValid()) {
       document.querySelector(".alertName2").classList.add("d-none")
   }else{
@@ -141,7 +141,7 @@ function isEmailValid(){
   
   
   });
-  email.addEventListener('onblur',function(){
+  email.addEventListener('change',function(){
     if(isEmailValid()) {
       document.querySelector(".alertEmail1").classList.add("d-none")
   }else{
@@ -150,7 +150,7 @@ function isEmailValid(){
   
   
   });
-  phone.addEventListener('keyup',function(){
+phone.addEventListener('change',function(){
     if(isPhoneValid()) {
       document.querySelector(".alertPhone1").classList.add("d-none")
   }else{
@@ -159,7 +159,7 @@ function isEmailValid(){
   
   
   });
-  passWord.addEventListener('keyup',function(){
+passWord.addEventListener('change',function(){
     if(isPassValid()) {
       document.querySelector(".alertPass1").classList.add("d-none")
   }else{
@@ -168,7 +168,7 @@ function isEmailValid(){
   
   
   });
-  rePassword.addEventListener('keyup',function(){
+rePassword.addEventListener('cahnge',function(){
     if(isRePassValid()) {
       if (rePassword.value === passWord.value){
   
@@ -186,45 +186,45 @@ function isEmailValid(){
 
 
   
-  fName.addEventListener('keyup',function(){
+fName.addEventListener('keyup',function(){
     if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isAgeValid()&&isPassValid()) {
-      btnSignUp.removeAttribute("disabled")
+        registerSubmit.removeAttribute("disabled")
     }else{
-      btnSignUp.disabled="true"
+        registerSubmit.disabled="true"
     }
   })
   
-  lNAme.addEventListener('keyup',function(){
+lNAme.addEventListener('keyup',function(){
     if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isPassValid()) {
-      btnSignUp.removeAttribute("disabled")
+        registerSubmit.removeAttribute("disabled")
     }else{
-      btnSignUp.disabled="true"
+        registerSubmit.disabled="true"
     }
   })
-    email.addEventListener('keyup',function(){
+email.addEventListener('keyup',function(){
       if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isPassValid()) {
-        btnSignUp.removeAttribute("disabled")
+          registerSubmit.removeAttribute("disabled")
       }else{
-        btnSignUp.disabled="true"
+          registerSubmit.disabled="true"
       }})
-    passWord.addEventListener('keyup',function(){
+passWord.addEventListener('keyup',function(){
       if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isPassValid()) {
-        btnSignUp.removeAttribute("disabled")
+          registerSubmit.removeAttribute("disabled")
       }else{
-        btnSignUp.disabled="true"
+          registerSubmit.disabled="true"
       }})
-   rePassword.addEventListener('keyup',function(){
+rePassword.addEventListener('keyup',function(){
     if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isPassValid()) {
       if (rePassword.value === passWord.value){
-      btnSignUp.removeAttribute("disabled")
+          registerSubmit.removeAttribute("disabled")
     }}else{
-      btnSignUp.disabled="true"
+        registerSubmit.disabled="true"
     }})
-   phone.addEventListener('keyup',function(){
+phone.addEventListener('keyup',function(){
     if(isNameValid()&&isLNameValid()&&isEmailValid()&&isRePassValid()&&isPhoneValid()&&isPassValid()) {
-      btnSignUp.removeAttribute("disabled")
+        registerSubmit.removeAttribute("disabled")
     }else{
-      btnSignUp.disabled="true"
+        registerSubmit.disabled="true"
     }})
  
     

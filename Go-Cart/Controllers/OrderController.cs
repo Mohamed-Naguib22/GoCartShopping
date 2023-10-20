@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using Stripe.Checkout;
 
 namespace Go_Cart.Controllers
@@ -29,7 +30,7 @@ namespace Go_Cart.Controllers
             var order = new Order
             {
                 TotalCost = totalCost,
-                Status = "Waiting",
+                Status = "Shipped",
                 PlacedOn = DateTime.Now,
                 ApplicationUserId = user.Id
             };
@@ -37,16 +38,26 @@ namespace Go_Cart.Controllers
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
 
-            foreach (var product in cart.Products)
+            foreach (var cartItem in cart.Products)
             {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == cartItem.Id);
+
+                if (cartItem.Quantity >= product.NumberOfItemsInStock)
+                {
+                    TempData["ErrorMessage"] = $"{product.Name} is out of stock.";
+                    _context.Orders.Remove(order);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction("Index", "Cart");
+                }
+
                 var orderItem = new OrderItem
                 {
-                    ProductId = product.Id,
+                    ProductId = cartItem.Id,
                     OrderId = order.Id,
-                    Quantity = product.Quantity,
-                    Color = product.SelecetdColor,
-                    Size = product.SelectedSize,
-                    SubTotalPrice = product.Price * product.Quantity
+                    Quantity = cartItem.Quantity,
+                    Color = cartItem.SelecetdColor,
+                    Size = cartItem.SelectedSize,
+                    SubTotalPrice = cartItem.Price * cartItem.Quantity
                 };
                 await _context.OrderItems.AddAsync(orderItem);
             }
@@ -144,7 +155,7 @@ namespace Go_Cart.Controllers
             foreach (var orderItem in order.ProductOrders)
             {
                 orderItem.Product.NumberOfItemsInStock -= orderItem.Quantity;
-                orderItem.Product.NumberOfSales++;
+                orderItem.Product.NumberOfSales += orderItem.Quantity;
             }
 
             if (session.PaymentStatus == "paid")

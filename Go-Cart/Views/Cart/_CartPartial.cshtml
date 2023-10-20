@@ -1,48 +1,75 @@
 ﻿@model Cart
-
-<h1>Shopping Cart</h1>
-
-@foreach (var product in Model.Products)
-{
-    <div class="row mt-5 align-items-center">
-        <div class="col-md-2">
-            <img src="@product.ImgUrl" class="cartimg" alt="">
-        </div>
-        <div class="col-md-3">
-            <h5>@product.Name</h5>
-            <p>@product.Category</p>
-        </div>
-        <div class="col-md-2">
-            <select @(product.Colors.Any() ? "" : "disabled") class="my-2 form-select text-black" onchange="setItemColor(this, @product.Id)" aria-label="Default select example">
-                <option selected>Color</option>
-                @foreach (var color in product.Colors)
-                {
-                    <option value="@color">@color</option>
-                }
-            </select>
-            <select @(product.Sizes.Any() ? "" : "disabled") class="my-2 form-select text-black" onchange="setItemSize(this, @product.Id)" aria-label="Default select example">
-                <option selected>Size</option>
-                @foreach (var size in product.Sizes)
-                {
-                    <option value="@size">@size</option>
-                }
-            </select>
-        </div>
-        <div class="col-md-2">
-            <div class="Product-amount border d-flex p-0 align-items-center">
-                <button data-product-id="@product.Id" class="minus p-0 text-center py-2 border-end fs-5 fw-bold">-</button>
-                <div class="amount p-0 text-center py-2 fs-6">@product.Quantity</div>
-                <button data-product-id="@product.Id" class="positive p-0 text-center py-2 border-start fs-5 fw-bold">+</button>
+<div class="col-md-9 bg-primary bg-opacity-10 cartleft  p-5">
+    <h1>Shopping Cart</h1>
+    @foreach (var product in Model.Products.OrderByDescending(p => p.AddedOn))
+    {
+        <div class="row mt-5 align-items-center">
+            <div class="col-md-2">
+                <img src="@product.ImgUrl" class="cartimg" alt="">
+            </div>
+            <div class="col-md-3">
+                <h5>@product.Name</h5>
+                <small class="text-secondary">@product.Category</small>
+            </div>
+            <div class="col-md-2">
+                <select @(product.Colors.Any() ? "" : "disabled") class="my-2 form-select text-black" onchange="setItemColor(this, @product.Id)" aria-label="Default select example">
+                    <option selected>@(string.IsNullOrEmpty(product.SelecetdColor) ? "Color" : product.SelecetdColor)</option>
+                    @foreach (var color in product.Colors)
+                    {
+                        <option value="@color">@color</option>
+                    }
+                </select>
+                <select @(product.Sizes.Any() ? "" : "disabled") class="my-2 form-select text-black" onchange="setItemSize(this, @product.Id)" aria-label="Default select example">
+                    <option selected>@(string.IsNullOrEmpty(product.SelectedSize) ? "Size" : product.SelectedSize)</option>
+                    @foreach (var size in product.Sizes)
+                    {
+                        <option value="@size">@size</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <div class="Product-amount border d-flex p-0 align-items-center">
+                    <button data-product-id="@product.Id" class="minus p-0 text-center py-2 border-end fs-5 fw-bold">-</button>
+                    <div class="amount p-0 text-center py-2 fs-6">@product.Quantity</div>
+                    <button data-product-id="@product.Id" class="positive p-0 text-center py-2 border-start fs-5 fw-bold">+</button>
+                </div>
+            </div>
+            <div class=" col-md-2">
+                <span class="h4 cartprice">@(product.Price * product.Quantity) <span class="fs-5">EGP</span></span>
+            </div>
+            <div class=" col-md-1">
+                <button id="remove-cart" class="btn btn-danger" type="submit" data-product-id="@product.Id">X</button>
             </div>
         </div>
-        <div class=" col-md-2">
-            <span class="h2 cartprice">@product.Price$</span>
-        </div>
-        <div class=" col-md-1">
-            <button id="remove-cart" class="btn btn-danger" type="submit" data-product-id="@product.Id">X</button>
-        </div>
+    }
+</div>
+<div class="col-md-3 bg-success bg-opacity-10 cartright  p-5">
+    <h1>Order Details</h1>
+    <div class="my-5">
+
+        <h5>Subtotal</h5>
+        <small class="fw-bold fs-5">@Model.TotalPrice EGP</small>
     </div>
-}
+
+    <div class="  rounded-4 bg-primary bg-opacity-10 p-3">
+        <h5>Shipping Cost</h5>
+        <h5>30.00 EGP</h5>
+    </div>
+    <div class="  rounded-4 bg-primary bg-opacity-10 p-3 mt-3">
+        <h5>Promo Code</h5>
+        <input type="text" class="border-0  bg-transparent border-dark" placeholder="Enter avalid promo code">
+    </div>
+    <hr>
+    <h5 class="text-center">@(Model.Products.Any() ? (Model.TotalPrice + 30.00m) : 0.00m) EGP</h5>
+    <div class="text-center">
+        <a asp-controller="Order" asp-action="PlaceOrder" class="my-1 btn btn-dark">CHECKOUT</a>
+        <p class="my-1 fw-semibold">OR</p>
+        <a asp-controller="Home" asp-action="Index" class="my-1 btn btn-dark">
+            Continue shopping
+        </a>
+    </div>
+</div>
+
 <script>
     function setItemColor(selectElement, productId) {
         var selectedColor = selectElement.value;

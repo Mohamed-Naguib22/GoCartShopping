@@ -16,7 +16,6 @@ namespace Go_Cart.ViewModels
         [Range(1, double.MaxValue, ErrorMessage = "Price can not be negative!")]
         public decimal Price { get; set; }
         public byte CategoryId { get; set; }
-        public IFormFile? ImgFile { get; set; }
         public IFormFile? Img1{ get; set; }
         public IFormFile? Img2 { get; set; }
         public IFormFile? Img3 { get; set; }

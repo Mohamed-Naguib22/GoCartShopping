@@ -35,7 +35,7 @@
                         <li class="position-relative">
                             <i class="fas fa-search  search  position-absolute ps-2"></i>
                             <form method="post" asp-controller="Search" asp-action="Search">
-                                <input type="search" id="searchInput" name="query" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
+                                <input type="search" id="searchInput" name="searchItem" class="form-control border border-1 border-dark rounded-0 nav1 ps-5" placeholder="search..">
                                 <button class="btn d-none"></button>
                             </form>
                         </li>
@@ -45,37 +45,22 @@
                         <a asp-controller="Order" asp-action="OrderHistory" class="nav-link licolor fs-4"> Orders <i class="fa-solid fa-cart-flatbed-suitcase"></i></a>
                     </div>
 
-                    <ul class="d-flex gap-3 list-unstyled licolor my-auto ms-auto icon-groub">
-                        <li class="nav-item ms-2 d-flex flex-column position-relative">
-                            <a class="nav-link licolor" style="cursor:pointer" id="Carticon">
-                                <i class="fa-solid fa-cart-shopping shop"></i>
-                            </a>
-                        </li>
+                    <ul class="d-flex gap-3 list-unstyled licolor my-auto ms-auto icon-groub ">
                         @{
                             Cart cart = HttpContextAccessor.HttpContext.Session.Get<Cart>("_cart");
                         }
-                        <div class="cartList rounded-2" id="cartList">
-                            <div id="cartSlider-container">
-                                @if (cart == null)
-                                {
-                                    <p>There is no items yet</p>
-                                }
-                                else                                {
-                                    @Html.Partial("_CartSliderPartial", cart.Products)
-                                }
-                                </div>
-                            <div class="d-flex justify-content-center mb-2 mt-3">
-                                <a asp-controller="Cart" asp-action="Index" class="px-3 py-2 text-decoration-none text-white" style="background-color: #41819c;">View Cart</a>
-                            </div>
+                        <div id="cartSlider-container">
+                            @Html.Partial("_CartSliderPartial", cart)
                         </div>
+
 
                         <li>
                             <a asp-controller="WishList" asp-action="Index" class="text-black text-decoration-none">
-                                <i class="fa-solid fa-heart fs-3 ms-2 mt-2"></i>
+                                <i class="fa-solid fa-heart fs-3 ms-2 mt-3"></i>
                             </a>
                         </li>
 
-                        <li class="nav-item mt-1 me-4">
+                        <li class="nav-item mt-2 me-4">
                             <i class="fa-solid fa-moon fs-3 d-block licolor" id="moon"></i>
                             <i class="fa-solid fa-sun fs-3 d-none licolor" id="sun"></i>
                         </li>
@@ -101,8 +86,8 @@
                         }
                         else
                         {
-                            <li class="nav-item ms-4 pt-2">
-                                <a class= "text-decoration-none text-black" asp-area="Identity" asp-page="/Account/Login">
+                            <li class="nav-item ms-4 pt-3">
+                                <a class="text-decoration-none text-black" asp-area="Identity" asp-page="/Account/Login">
                                     Log in <i class="fa-solid fa-user"></i>
                                 </a>
                             </li>
@@ -112,18 +97,18 @@
             </div>
         </nav>
 
-        <div class="navbar4 navbar-expand h-25">
+        <div class="@(Context.Request.Path == "/" ? "navbar2" : "navbar4") navbar-expand h-25">
             <div class="container">
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto gap-4 mb-0 mb-lg-0">
-                        <li class="nav-item active">
+                        <li class="nav-item @(Context.Request.Path == "/" ? "active" : "")">
                             <a class="nav-link" aria-current="page" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="~/Contact.html">Contact Us</a>
+                        <li class="nav-item @(Context.Request.Path == "/Home/ContactUs" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Home" asp-action="ContactUs">Contact Us</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="Html/about.html">About Us</a>
+                        <li class="nav-item @(Context.Request.Path == "/Home/AboutUs" ? "active" : "")">
+                            <a class="nav-link" asp-controller="Home" asp-action="AboutUs">About Us</a>
                         </li>
                     </ul>
                     <div class="d-flex gap-4 DTCairocolor">
@@ -149,7 +134,7 @@
                 <div class="col-md-4 ">
                     <h4>Get to Know Us</h4>
                     <div class="FOOTER-LINK  ">
-                        <a href=""> <p class="ms-2  ">About GO CART</p></a>
+                        <a asp-controller="Home" asp-action="AboutUs"> <p class="ms-2 ">About GO CART</p></a>
                     </div>
                     <div class="Social-Media">
                         <h5>Social Media</h5>
@@ -173,30 +158,36 @@
                 <div class="col-md-4">
                     <h4>Shop with Us</h4>
                     <div class="FOOTER-LINK  ">
-                        <a 
-                            <p class="ms-2">Your Orders</p></a>
-                        <a href="Html/Cart1.html"> <p class="ms-2">Your Cart</p></a>
+                        <a asp-controller="Order" asp-action="OrderHistory"><p class="ms-2">Your Orders</p></a>
+                        <a asp-controller="Cart" asp-action="Index"> <p class="ms-2">Your Cart</p></a>
                     </div>
                 </div>
 
                 <div class="col-md-4 ">
                     <h4>sign information</h4>
                     <div class="FOOTER-LINK  ">
-                        <a href="Html/updateProfile.html"> <p class="ms-2">profile</p></a>
-                        <a href="Html/SignUp.html">       <p class="ms-2">sign up</p></a>
-                        <a href="Html/SignIn.html"> <p class="ms-2">sign in</p></a>
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Manage/Index"> <p class="ms-2">Profile</p></a>
+                        }
+                        else
+                        {
+                            <a asp-area="Identity" asp-page="/Account/Login"><p class="ms-2">Log in</p></a>
+                            <a asp-area="Identity" asp-page="/Account/Register"><p class="ms-2">Register</p></a>
+                        }
                     </div>
                 </div>
             </div>
         </div>
     </footer>
-    
+
     <script src="~/js/code.jquery.com_jquery-3.7.0.min.js"></script>
     <script src="~/js/bootstrap.bundle.min.js"></script>
 
     <script src="~/js/jquery-ui.min.js"></script>
-    <script src="~/js/cartlist.js"></script>
     <script src="~/js/jq.js"></script>
+
+    <script src="~/js/cartlist.js"></script>
     <script src="~/js/UpdateProfile.js"></script>
 
     <script>

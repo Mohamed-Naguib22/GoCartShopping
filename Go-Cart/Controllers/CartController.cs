@@ -31,17 +31,14 @@ namespace Go_Cart.Controllers
             var cart = GetCart();
             switch (partialView)
             {
-                case "totalCost":
+                case "cartItems":
                     cart.TotalPrice = cart.Products.Sum(p => p.Price * p.Quantity);
                     SetCart(cart);
-                    decimal totalCost = cart.TotalPrice;
-                    return PartialView("_TotalCostPartial", totalCost);
+                    return PartialView("_CartPartial", cart);
 
                 case "cartSlider":
-                    return PartialView("_CartSliderPartial", cart.Products);
+                    return PartialView("_CartSliderPartial", cart);
 
-                case "cartItems":
-                    return PartialView("_CartPartial", cart);
             }
             return Ok();
         }
@@ -74,6 +71,7 @@ namespace Go_Cart.Controllers
 
                 if (product != null)
                 {
+                    TempData["TempDataKey"] = true;
                     cart.Products.Remove(product);
                     SetCart(cart);
                 }
@@ -157,6 +155,7 @@ namespace Go_Cart.Controllers
                 ImgUrl = productImage,
                 Price = product.Price,
                 Quantity = 1,
+                AddedOn = DateTime.Now,
                 Sizes = sizes,
                 Colors = colors
             };

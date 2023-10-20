@@ -12,24 +12,24 @@ namespace GoCart
         }
         public void SaveImage(IFormFile? imgFile, ApplicationUser user)
         {
-            if (imgFile == null)
+            var userImage = _webHostEnvironment.WebRootPath + user.ImgUrl;
+            if (!userImage.Contains("male"))
             {
-                user.ImgUrl = "\\images\\No_Image.png";
+                DeleteImage(user);
             }
-            else
-            {
-                string imgExtension = Path.GetExtension(imgFile.FileName);
-                Guid imgGuid = Guid.NewGuid();
-                string imgName = imgGuid + imgExtension;
-                string imgUrl = "\\images\\" + imgName;
 
-                string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
-                using (var imgStream = new FileStream(imgPath, FileMode.Create))
-                {
-                    imgFile.CopyTo(imgStream);
-                }
-                user.ImgUrl = imgUrl;
+            string imgExtension = Path.GetExtension(imgFile.FileName);
+            Guid imgGuid = Guid.NewGuid();
+            string imgName = imgGuid + imgExtension;
+            string imgUrl = "\\images\\" + imgName;
+
+            string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
+            using (var imgStream = new FileStream(imgPath, FileMode.Create))
+            {
+                imgFile.CopyTo(imgStream);
             }
+            user.ImgUrl = imgUrl;
+            
         }
         public void DeleteImage(ApplicationUser user)
         {

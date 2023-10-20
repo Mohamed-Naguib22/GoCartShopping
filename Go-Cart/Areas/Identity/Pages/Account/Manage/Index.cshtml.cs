@@ -70,6 +70,12 @@ namespace Go_Cart.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+
+            [Display(Name = "Address")]
+            public string Address { get; set; }
+
+            [Display(Name = "Gender")]
+            public string Gender { get; set; }
             public IFormFile ProfilePicture { get; set; }
         }
 
@@ -84,7 +90,9 @@ namespace Go_Cart.Areas.Identity.Pages.Account.Manage
             {
                 FirstName = user.FirstName, 
                 LastName = user.LastName,
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                Gender = user.Gender,
+                Address = user.Address
             };
         }
 
@@ -117,8 +125,13 @@ namespace Go_Cart.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             var firstName = user.FirstName;
             var lastName = user.LastName;
-
-            _userImageService.SaveImage(Input.ProfilePicture, user); 
+            var address = user.Address;
+            var gender = user.Gender;
+            if (Input.ProfilePicture!= null)
+            {
+                _userImageService.SaveImage(Input.ProfilePicture, user);
+                await _userManager.UpdateAsync(user);
+            }
 
             if (Input.PhoneNumber != phoneNumber)
             {
@@ -139,7 +152,16 @@ namespace Go_Cart.Areas.Identity.Pages.Account.Manage
                 user.LastName = Input.LastName;
                 await _userManager.UpdateAsync(user);
             }
-
+            if (Input.Address != address)
+            {
+                user.Address = Input.Address;
+                await _userManager.UpdateAsync(user);
+            }
+            if (Input.Gender != gender)
+            {
+                user.Gender = Input.Gender;
+                await _userManager.UpdateAsync(user);
+            }
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();

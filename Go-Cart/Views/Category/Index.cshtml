@@ -13,7 +13,7 @@
         </h2>
         <div class="row g-3">
             <div class="col-md-4 col-xl-4 col-xxl-3">
-                <div class=" filter-card bg-success bg-opacity-25">
+                <div class=" filter-card bg-opacity-10 bg-primary">
                     <div class="card-body">
                         <h5 class="card-title">Filter</h5>
                         <select class="form-control" id="sortBy">
@@ -46,7 +46,7 @@
                             @foreach (var size in Model.Sizes)
                             {
                                 <button data-size-id ="@size.Id">@size.Name</button>
-                            }
+                            }   
                         </div>
                     </div>
                 </div>

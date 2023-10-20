@@ -15,25 +15,25 @@ namespace GoCart
         }
         public void SaveImage(IFormFile? imgFile, Product product)
         {
-            if (imgFile == null)
-            {
-                product.ImgUrl = "\\images\\No_Image.png";
-            }
-            else
-            {
-                string imgExtension = Path.GetExtension(imgFile.FileName);
-                Guid imgGuid = Guid.NewGuid();
-                string imgName = imgGuid + imgExtension;
-                string imgUrl = "\\images\\" + imgName;
+            //if (imgFile == null)
+            //{
+            //    product.ImgUrl = "\\images\\No_Image.png";
+            //}
+            //else
+            //{
+            //    string imgExtension = Path.GetExtension(imgFile.FileName);
+            //    Guid imgGuid = Guid.NewGuid();
+            //    string imgName = imgGuid + imgExtension;
+            //    string imgUrl = "\\images\\" + imgName;
 
-                product.ImgUrl = imgUrl;
+            //    product.ImgUrl = imgUrl;
 
-                string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
-                using (var imgStream = new FileStream(imgPath, FileMode.Create))
-                {
-                    imgFile.CopyTo(imgStream);
-                }
-            }
+            //    string imgPath = _webHostEnvironment.WebRootPath + imgUrl;
+            //    using (var imgStream = new FileStream(imgPath, FileMode.Create))
+            //    {
+            //        imgFile.CopyTo(imgStream);
+            //    }
+            //}
         }
         public void SetOptionalImage(IFormFile? imgFile, int productId)
         {

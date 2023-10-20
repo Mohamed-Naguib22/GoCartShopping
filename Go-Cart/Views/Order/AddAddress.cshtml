@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Checkout";
 }
-<section class="order">
+  <section class="order mb-5">
     <div class="container">
             <form method="post" asp-controller="Order" asp-action="AddAddress" enctype="multipart/form-data">
             <input type="hidden" name="Id" value="@Model.Id" />
@@ -13,15 +13,17 @@
                             Personal Information
                         <hr>
                         </h3>
-
+                        @{
+                            var user = await _userManager.GetUserAsync(User);
+                        }
                         <div class="">
-                            <input asp-for="@Model.RecipientName" type="text" class="w-100 mb-4 form-control" placeholder="Your Name">
+
+                            <input asp-for="@Model.RecipientName" type="text" class="w-100 mb-4 form-control" placeholder="Your Name" required>
                             <div class="d-flex gap-5">
-                                @{
-                                    var user = await _userManager.GetUserAsync(User);
-                                }
+
                                 <input type="text" class="w-50 form-control" placeholder="Email" value="@user.UserName" disabled>
-                                <input asp-for="@Model.RecipientPhone" type="text" class="w-50 form-control" placeholder="Phone Number">
+
+                                <input asp-for="RecipientPhone" type="text" class="w-50 form-control" placeholder="Phone Number" required>
                             </div>
                         </div>
                     </div>
@@ -33,11 +35,12 @@
                         </h3>
                         <div class="">
                             <div class="d-flex gap-5">
-                                <input asp-for="@Model.Street" type="text" class="w-75 mb-4 form-control" placeholder="Address">
-                                <input asp-for="@Model.ZipCode" type="text" class="w-25 mb-4 form-control " placeholder="Postal Code">
+                                <input asp-for="Street" type="text" class="w-75 mb-4 form-control" placeholder="Address" required>
+
+                                <input asp-for="ZipCode" type="text" class="w-25 mb-4 form-control " placeholder="Postal Code" required>
                             </div>
                             <div class="d-flex gap-5 ">
-                                <select asp-for="@Model.City" id="select region" class="rounded-2 w-75">
+                                <select asp-for="City" id="select region" class="rounded-2 w-75" required>
                                     <option value="Cairo">Cairo</option>
                                     <option value="Giza">Giza</option>
                                     <option value="Alexandria">Alexandria</option>
@@ -62,6 +65,7 @@
                                     <option value="Hurghada">Hurghada</option>
                                     <option value="Banha">Banha</option>
                                 </select>
+
                                 <input type="text" class="w-25 form-control" value="Egypt" disabled>
                             </div>
                             </div>
@@ -79,7 +83,7 @@
                                     <p class="fs-5 fw-semibold mx-2">@orderItem.Product.Name</p>
                                     <div class="d-flex justify-content-between ms-3 my-3">
                                         <div class=" border border-dark p-2 bg-secondary bg-opacity-25">@orderItem.Quantity</div>
-                                        <div class="fs-3 fw-semibold text-success">@orderItem.SubTotalPrice$</div>
+                                        <div class="fs-3 fw-semibold text-success">@orderItem.SubTotalPrice EGP</div>
                                     </div>
 
                                     <div class="d-flex justify-content-between ms-3 my-3">
@@ -99,19 +103,19 @@
                         <hr class="text-black">
                         <div class="d-flex justify-content-between">
                             <h5>Subtotal</h5>
-                            <h5>@Model.TotalCost$</h5>
+                            <h5>@(Model.TotalCost + 30.00m) EGP</h5>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h5>Discount</h5>
                             <h5>0$</h5></div>
                         <div class="d-flex justify-content-between">
                             <h5>Shipping</h5>
-                            <h5>2$</h5>
+                            <h5>30.00 EGP</h5>
                         </div>
                         <hr>
                         <div class="d-flex justify-content-between">
                             <h2>Total</h2>
-                            <h2>@Model.TotalCost$</h2>
+                            <h2>@Model.TotalCost EGP</h2>
                         </div>
                         <div class="d-flex justify-content-center my-2">
                             <button type="submit" class="btn btn-dark px-4 py-2 ">Check Out</button>

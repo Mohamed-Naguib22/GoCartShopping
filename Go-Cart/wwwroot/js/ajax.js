@@ -27,7 +27,7 @@ function showNotification() {
 }
 
 function showErrorNotification() {
-    var toastEl = document.getElementById('isAdded-notification');
+    var toastEl = document.getElementById('error-notification');
     toastEl.classList.remove('d-none');
     var toast = new bootstrap.Toast(toastEl);
     toast.show();
@@ -115,17 +115,17 @@ $(document).ready(function () {
             });
         }
     });
-
-    $(".positive").click(function () {
+    $(document).on('click', '.positive', function () {
         var productId = $(this).data("product-id");
         var quantityElement = $(this).siblings(".amount");
         var quantity = parseInt(quantityElement.text());
         quantity++;
         quantityElement.text(quantity);
         updateQuantity(productId, quantityElement);
+        console.log("+")
     });
 
-    $(".minus").click(function () {
+    $(document).on('click', '.minus', function () {
         var productId = $(this).data("product-id");
         var quantityElement = $(this).siblings(".amount");
         var quantity = parseInt(quantityElement.text());
@@ -134,6 +134,7 @@ $(document).ready(function () {
             quantityElement.text(quantity);
             updateQuantity(productId, quantityElement);
         }
+        console.log("-")
     });
 
     function updateQuantity(productId, quantityElement) {
@@ -144,26 +145,13 @@ $(document).ready(function () {
                 url: '/Cart/UpdateQuantity',
                 data: { productId: productId, quantity: quantity },
                 success: function () {
-                    refreshTotalCost()
+                    console.log("test");
+                    RefreshCart()
                 },
                 error: function () {
                 },
             });
         }
-    }
-    function refreshTotalCost() {
-        $.ajax({
-            url: '/Cart/RefreshCartPartial',
-            type: 'GET',
-            data: {
-                partialView: 'totalCost',
-            },
-            success: function (result) {
-                $('#totalCost-container').html(result);
-            },
-            error: function () {
-            }
-        });
     }
 
     $(document).on('click', '#remove-cart', function () {
@@ -250,7 +238,6 @@ $(document).ready(function () {
 
     $(document).on('click', '#remove-wishlist', function () {
         var productId = $(this).data("product-id");
-        localStorage.removeItem('wishlist_' + productId);
         removeFromWishList(productId);
     });
 

@@ -1,25 +1,51 @@
-﻿@model IEnumerable<CartItem>
-@if (Model == null || !Model.Any())
-{
-    <p>There is no items yet</p>
-}
-else
-{
-    @foreach (var product in Model)
+﻿@model Cart
+@{
+    int numOfproductsInCart;
+    if (Model != null)
     {
-            <div class = "row d-flex">
-                <div class=" col-md-12 justify-content-start align-items-center gap-2 d-flex ">
-                    <img src="@product.ImgUrl" alt="">
-                    <small class="fw-normal">@product.Name</small>
-                </div>
-
-                <div class="d-flex col-md-12  justify-content-between align-items-center">
-                    <small class="fw-normal text-success">@product.Price$</small>
-                    <button id="remove-cartSlider" class="btn border border-2" data-product-id="@product.Id">
-                        <i class="fa fa-trash Go-color"></i>
-                    </button>
-                </div>
-            </div>
-            <hr class="bg-black">
+        numOfproductsInCart = Model.Products.Count();
+    }
+    else
+    {
+        numOfproductsInCart = 0;
     }
 }
+<li class="nav-item ms-1 d-flex flex-column position-relative">
+    <a class="nav-link licolor position-relative" style="cursor:pointer" id="Carticon">
+        <i class="fa-solid fa-cart-shopping shop fs-2"></i>
+        <small class="countercart  mt-1 text-center rounded-1">@numOfproductsInCart</small>
+    </a>
+</li>
+
+<div class="cartList @((TempData["TempDataKey"] != null && (bool)TempData["TempDataKey"]) ? "" : "d-none" )" id="cartList">
+    <div class="row p-2 d-flex">
+        @if (Model != null)
+        {
+            <h2 class="cartconst mb-3 border-5">Cart</h2>
+
+            @foreach (var product in Model.Products.OrderByDescending(p => p.AddedOn))
+            {
+                <div class="mx-2">
+                    <div class="  col-md-12 justify-content-start align-items-center gap-2 d-flex ">
+                        <img src="@product.ImgUrl" class="" alt="">
+                        <small class="fw-normal">@product.Name</small>
+                    </div>
+
+                    <div class="d-flex col-md-12  justify-content-between align-items-center">
+                        <small class="fw-normal text-success fw-semibold">@product.Price EGP</small>
+                        <button id="remove-cartSlider" class="btn border border-2" data-product-id="@product.Id">
+                            <i class="fa fa-trash Go-color"></i>
+                        </button>
+                    </div>
+                    <hr class="bg-black">
+                </div>
+            }
+            
+        }
+    </div>
+    <div class="d-flex justify-content-center mb-2 mt-3">
+        <a asp-controller="Cart" asp-action="Index" class="px-3 py-2 text-decoration-none text-white" style="background-color: #41819c;">View Cart</a>
+    </div>
+</div>
+
+

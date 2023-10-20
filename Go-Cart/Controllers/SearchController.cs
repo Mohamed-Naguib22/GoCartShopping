@@ -4,6 +4,7 @@ using Go_Cart.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using System.Linq;
 
 namespace Go_Cart.Controllers
@@ -16,14 +17,36 @@ namespace Go_Cart.Controllers
         {
             _context = context;
         }
-        public async Task<IActionResult> Search(string query)
+        public async Task<IActionResult> Search(string searchItem)
         {
-            var productNameTrimed = query.Trim().ToLower();
-            var matchingProducts = await _context.Products
+            if (string.IsNullOrEmpty(searchItem))
+            {
+                return Ok();
+            }
+            var productNameTrimed = searchItem.Trim().ToLower();
+
+            var query = _context.Products
+                .Include(p => p.Ratings)
+                .Include(p => p.Offer)
+                .Include(p => p.ProductImages);
+
+            var matchingProducts = await query
                 .Where(p => p.Name.ToLower().Contains(productNameTrimed))
                 .OrderBy(p => p.Name).ToListAsync();
-            
-            return View(matchingProducts);
+
+
+            if (!matchingProducts.Any())
+            {
+                var products = await query.ToListAsync();
+            }
+
+            var searhViewModel = new SearchViewModel
+            {
+                Products = matchingProducts,
+                SearchItem = searchItem
+            };
+
+            return View(searhViewModel);
         }
     }
 }

@@ -4,6 +4,14 @@
     ViewData["Title"] = "WishList";
 }
 
-<section style="margin-top:160px" id="wishlist-container">
+@*<section style="margin-top:160px" id="wishlist-container">
+*@
+<div class="text-center" style="margin-top:160px">
+        <i class="fa-solid fa-heart fa-5x"></i>
+        <h2 class="fw-bold fs-1">My Wishlist</h2>
+    </div>
+<section class="wishlist bg-primary bg-opacity-10 mx-auto container pb-5" id="wishlist-container">
+
     @Html.Partial("_WishListPartial", Model)
 </section>
+@*</section>*@

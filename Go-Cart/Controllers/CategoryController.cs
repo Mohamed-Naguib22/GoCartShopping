@@ -2,8 +2,10 @@
 using Go_Cart.Models;
 using Go_Cart.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Drawing.Printing;
 using System.Globalization;
 using System.Web;
 
@@ -16,41 +18,16 @@ namespace Go_Cart.Controllers
         {
             _context = context;
         }
-        //public async Task<IActionResult> Index(int categoryId)
-        //{
-        //    var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
-        //    var sizes = await _context.Sizes.ToListAsync();
-        //    var colors = await _context.Colors.ToListAsync();
-        //    var query = _context.Products.Include(p => p.ProductImages).Include(p => p.Ratings);
-        //    IEnumerable<Product> products;
-        //    int totalItems;
-        //    if (categoryId == 1)
-        //    {
-        //        products = await query.Where(p => p.Category.ParentCategoryId == 1).ToListAsync();
-        //        totalItems = _context.Products.Where(p => p.Category.ParentCategoryId == 1).Count();
-        //    }
-        //    else
-        //    {
-        //        products = await query.Where(p => p.CategoryId == categoryId).ToListAsync();
-        //        totalItems = _context.Products.Where(p => p.Category.Id == categoryId).Count();
-        //    }
-
-        //    var categoryViewModel = new CategoryViewModel
-        //    {
-        //        Category = category,
-        //        Products = products,
-        //        Sizes = sizes,
-        //        Colors = colors,
-        //    };
-
-        //    return View(categoryViewModel);
-        //}
-        public async Task<IActionResult> Index(int categoryId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int categoryId, int page = 1, int pageSize = 6)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == categoryId);
             var sizes = await _context.Sizes.ToListAsync();
             var colors = await _context.Colors.ToListAsync();
-            var query = _context.Products.Include(p => p.ProductImages).Include(p => p.Ratings);
+            IQueryable<Product> query = _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.Ratings)
+                .Include(p => p.Offer);
+
             IEnumerable<Product> products;
             int totalItems;
             if (categoryId == 1)
@@ -79,9 +56,12 @@ namespace Go_Cart.Controllers
             return View(categoryViewModel);
         }
         [HttpGet]
-        public async Task<IActionResult> NewArrivals(int page = 1, int pageSize = 7)
+        public async Task<IActionResult> NewArrivals(int page = 1, int pageSize = 12)
         {
             var products = await _context.Products
+                .Include(p => p.ProductImages)
+                .Include(p => p.Ratings)
+                .Include(p => p.Offer)
                 .Skip((page - 1) * pageSize).Take(pageSize)
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
@@ -104,13 +84,16 @@ namespace Go_Cart.Controllers
             return View(categoryViewModel);
         }
         [HttpGet]
-        public async Task<IActionResult> FilteredProducts(int categoryId, decimal price, int? sizeId, int? colorId, string sortBy)
+        public async Task<IActionResult> FilteredProducts(int categoryId, decimal price, 
+            int? sizeId, int? colorId, string sortBy)
         {
             var query = _context.Products
                 .Include(p => p.Ratings)
                 .Include(p => p.Category)
                 .Include(p => p.ProductSizes)
                 .Include(p => p.ProductColors)
+                .Include(p => p.ProductImages)
+                .Include(p => p.Offer)
                 .Where(p => p.Price <= price);
 
             if (categoryId != 1)
@@ -147,7 +130,7 @@ namespace Go_Cart.Controllers
                     query = query.OrderByDescending(p => p.CreatedAt);
                     break;
             }
-
+            var products = await query.ToListAsync();
             var filteredProducts = await query.ToListAsync();
             return PartialView("_ProductsPartial", filteredProducts);
         }

@@ -10,49 +10,49 @@
             <hr class="">
         </h2>
         <div class="row g-3">
-            <div class="col-md-4 col-xl-4 col-xxl-3">
-                <div class=" filter-card bg-success bg-opacity-25">
-                    <div class="card-body">
-                        <h5 class="card-title">Filter</h5>
-                        <select class="form-control" id="sortBy">
-                            <option selected>Sort by</option>
-                            <option value="newest">Newest</option>
-                            <option value="highest">Price: Highest</option>
-                            <option value="lowest">Price: Lowest</option>
-                        </select>
-
-                        <hr />
-
-                        <div class="form-group">
-                            <p class="fs-5 fw-semibold" for="priceRange">Price Range</p>
-                            <input type="range" class="form-range" id="priceRange" min="0" max="10000" step="10" value="5000">
-                        </div>
-                        <div class="form-group">
-                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">5000</span></label>
-                        </div>
-                        <hr />
-                        <p class="fs-5 fw-semibold">Colors</p>
-                        @foreach (var color in Model.Colors)
-                        {
-                            <a data-color-id="@color.Id" class="btn color-button border mx-1 my-1"><i class="fa-solid fa-fw fa-lg fa-circle text-@(color.Value)"></i></a>
-                        }
-
-                        <hr />
-
-                        <p class="fs-5 fw-semibold">Sizes</p>
-                        <div class="filter-button-group">
-                            @foreach (var size in Model.Sizes)
-                            {
-                                <button data-size-id="@size.Id">@size.Name</button>
-                            }
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-9">
+            <div class="col-md-12">
                 <div class="row g-3" id="filtered-products">
-                    @Html.Partial("_ProductsPartial", Model.Products)
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-3">
+                            <div class="card me-2 bg-primary bg-opacity-10 border border-2 rounded rounded-1">
+                                <div class="card1">
+                                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="card-img w-100" alt="...">
+                                </div>
+                                <div class="card-body">
+                                    <h5 style="height:65px;" class="card-title">@product.Name</h5>
+                                    @if (product.OnSale)
+                                    {
+                                        var price = @product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage);
+                                        <div class="price-discount d-flex">
+                                            <del>@product.Price</del>
+                                            <p class="fw-semibold fs-5 mx-3 text-danger">@price EGP</p>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <p class="fw-semibold fs-5 text-success">@product.Price EGP</p>
+                                    }
+
+                                    @{
+                                        decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                                    }
+                                    <div class="pb-3">
+                                        @for (int i = 0; i < Math.Round(rating); i++)
+                                        {
+                                            <i class="fas fa-star" style="color:gold"></i>
+                                        }
+                                        @for (int i = (int)Math.Round(rating); i < 5; i++)
+                                        {
+                                            <i class="fas fa-star" style="color:darkgray"></i>
+                                        }
+                                    </div>
+                                    <button data-product-id="@product.Id" class="btn btn-success add-cart">Add To Cart</button>
+                                    <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary ">Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
             <nav>

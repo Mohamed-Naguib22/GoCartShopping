@@ -1,40 +1,51 @@
-﻿@model IEnumerable<Product>
+﻿@model SearchViewModel
 
 @{
     ViewData["Title"] = "Search";
 }
 
-@if (TempData["DuplicateProduct"] != null && (bool)TempData["DuplicateProduct"])
-{
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        Product is already added to the cart.
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+
 <section class="cat1 pt-5" id="cat">
     <div class="container ">
+        <h2>Results for "@Model.SearchItem"</h2>
+        <br />
         <div class="row g-3">
-            @foreach (var product in Model)
+            @foreach (var product in Model.Products)
             {
                 <div class="col-md-4 col-xl-4 col-xxl-3">
-                    <div class="card me-2">
+                    <div class="card me-2 bg-secondary bg-opacity-10">
                         <div class="card1">
-                            <img src="@product.ImgUrl" class="card-img w-100" alt="...">
+                            <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="card-img w-100" alt="...">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">Price:<span class="text-success">$@product.Price</span></p>
-@*                            <div>
-                                @for (int i = 0; i < Math.Round(product.Rating); i++)
+                            <h5 class="card-title" style="height:65px;">@product.Name</h5>
+                            @if (product.OnSale)
+                            {
+                                var price = @product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage);
+                                <div class="price-discount d-flex">
+                                    <del>@product.Price</del>
+                                    <p class="fw-semibold fs-5 mx-3 text-danger">@price EGP</p>
+                                </div>
+                            }
+                            else
+                            {
+                                <p class="fw-semibold fs-5 text-success">@product.Price EGP</p>
+                            }
+
+                            @{
+                                decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                            }
+                            <div>
+                                @for (int i = 0; i < Math.Round(rating); i++)
                                 {
                                     <i class="fas fa-star" style="color:gold"></i>
                                 }
-                                @for (int i = (int)Math.Round(product.Rating); i < 5; i++)
+                                @for (int i = (int)Math.Round(rating); i < 5; i++)
                                 {
                                     <i class="fas fa-star" style="color:darkgray"></i>
                                 }
-                            </div>*@
-                            <a asp-route-productId="@product.Id" asp-controller="Cart" asp-action="AddToCart" class="btn btn-outline-success">Add To Cart</a>
+                            </div>
+                            <button data-product-id="@product.Id" class="btn btn-success add-cart">Add To Cart</button>
                             <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">Details</a>
                         </div>
                     </div>

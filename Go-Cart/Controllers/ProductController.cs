@@ -65,7 +65,6 @@ namespace Go_Cart.Controllers
                 IsActive = true,
             };
 
-            _productImage.SaveImage(model.ImgFile, product);
             _productDateService.SetDatesToNow(product);
 
             await _context.Products.AddAsync(product);
@@ -239,6 +238,20 @@ namespace Go_Cart.Controllers
                 .ToListAsync();
 
             return Json(matchingProducts);
+        }
+        public async Task<IActionResult> IsPurchased(int productId)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var orderedProducts = await _context.OrderItems
+                .Where(p => p.Order.ApplicationUserId == user.Id)
+                .Select(p => p.ProductId).Distinct().ToListAsync();
+            
+            if (orderedProducts.FirstOrDefault() == productId)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
     }
 }

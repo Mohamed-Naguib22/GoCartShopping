@@ -24,13 +24,13 @@
                         @if (Model.PriceAfterDiscount.HasValue)
                         {
                             <div class="price-discount mt-2">
-                                <h5 class="text-danger fw-bold">$@Model.PriceAfterDiscount</h5>
-                                <del>$@Model.Price</del>
+                                <h5 class="text-danger fw-bold">@Model.PriceAfterDiscount EGP</h5>
+                                <del>@Model.Price EGP</del>
                             </div>
                         }
                         else
                         {
-                            <h5 class="mt-2 text-success">$@Model.Price</h5>
+                            <h5 class="mt-2 text-success">@Model.Price EGP</h5>
                         }
 
                     </div>
@@ -96,8 +96,8 @@
         var user = await _userManager.GetUserAsync(User);
     }
 
-    <div class="d-flex align-items-center w-50 bg-success contactimg bg-opacity-10 p-5">
-        <h2 class="mx-2 pt-1 font-monospace">Rate: </h2>
+    <div class="d-flex align-items-center">
+        <h2 class="mx-2 pt-3 font-monospace">Rate: </h2>
         <div class="star-rating ">
             @for (int i = 1; i <= 5; i++)
             {
@@ -109,7 +109,7 @@
 </section>
 
 
-<section class="my-5">
+<section class="pt-5">
     <input type="hidden" name="__RequestVerificationToken" value="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
     <input name="review" maxlength="200" id="coment" class="form-control w-75 mx-auto text-dark py-3" placeholder="Write a customer review" />
     <button class="addreview-btn d-none"></button>
