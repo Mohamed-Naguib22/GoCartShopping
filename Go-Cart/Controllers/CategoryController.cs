@@ -56,7 +56,7 @@ namespace Go_Cart.Controllers
             return View(categoryViewModel);
         }
         [HttpGet]
-        public async Task<IActionResult> NewArrivals(int page = 1, int pageSize = 12)
+        public async Task<IActionResult> NewArrivals(int page = 1, int pageSize = 8)
         {
             var products = await _context.Products
                 .Include(p => p.ProductImages)

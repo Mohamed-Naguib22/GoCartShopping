@@ -13,6 +13,7 @@ namespace Go_Cart.ViewModels
         public decimal Price { get; set; }
         public decimal? PriceAfterDiscount { get; set; }
         public decimal Rating { get; set; }
+        public int NumberOfRatings { get; set; }
         public string Description { get; set; }
         public string Category { get; set; }
         public string ImgUrl { get; set; }

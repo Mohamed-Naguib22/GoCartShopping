@@ -8,7 +8,9 @@ namespace Go_Cart.Services
     {
         public async Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var fromMail = "GoCartWebsite@outlook.com";
+            //var fromMail = "GoCartWebsite@outlook.com";
+            //var fromPassword = "M1692002m@";
+            var fromMail = "mohamednageb20172@outlook.com";
             var fromPassword = "M1692002m@";
 
             var message = new MailMessage();

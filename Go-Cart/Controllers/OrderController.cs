@@ -16,11 +16,21 @@ namespace Go_Cart.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private const string OrderSession = "_order";
 
         public OrderController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+        }
+        private Order GetOrderSession()
+        {
+            var order = HttpContext.Session.Get<Order>(OrderSession);
+            return order ?? new Order();
+        }
+        private void SetOrderSession(Order order)
+        {
+            HttpContext.Session.Set(OrderSession, order);
         }
         public async Task<IActionResult> PlaceOrder()
         {
@@ -32,11 +42,10 @@ namespace Go_Cart.Controllers
                 TotalCost = totalCost,
                 Status = "Shipped",
                 PlacedOn = DateTime.Now,
-                ApplicationUserId = user.Id
+                ApplicationUserId = user.Id,
+                ProductOrders = new List<OrderItem>()
             };
-
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
+            SetOrderSession(order);
 
             foreach (var cartItem in cart.Products)
             {
@@ -45,40 +54,39 @@ namespace Go_Cart.Controllers
                 if (cartItem.Quantity >= product.NumberOfItemsInStock)
                 {
                     TempData["ErrorMessage"] = $"{product.Name} is out of stock.";
-                    _context.Orders.Remove(order);
-                    await _context.SaveChangesAsync();
                     return RedirectToAction("Index", "Cart");
                 }
 
                 var orderItem = new OrderItem
                 {
                     ProductId = cartItem.Id,
-                    OrderId = order.Id,
                     Quantity = cartItem.Quantity,
                     Color = cartItem.SelecetdColor,
                     Size = cartItem.SelectedSize,
                     SubTotalPrice = cartItem.Price * cartItem.Quantity
                 };
-                await _context.OrderItems.AddAsync(orderItem);
+                order.ProductOrders.Add(orderItem);
+                SetOrderSession(order);
+
             }
 
-            await _context.SaveChangesAsync();
-
-            return RedirectToAction("AddAddress", new { orderId = order.Id });
+            return RedirectToAction("AddAddress");
         }
         [HttpGet]
-        public async Task<IActionResult> AddAddress(int orderId)
+        public async Task<IActionResult> AddAddress()
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
+            var order = GetOrderSession();
+            var orderItems = order.ProductOrders.ToList();
+            //var order = await _context.Orders.FirstOrDefaultAsync(o => o.Id == orderId);
 
-            var orderItems = await _context.OrderItems
-                .Include(oi => oi.Product)
-                .ThenInclude(p => p.ProductImages)
-                .Where(oi => oi.OrderId == orderId).ToListAsync();
+            //var orderItems = await _context.OrderItems
+            //    .Include(oi => oi.Product)
+            //    .ThenInclude(p => p.ProductImages)
+            //    .Where(oi => oi.OrderId == orderId).ToListAsync();
 
             var orderSubmitFormViewModel = new OrderSubmitFormViewModel
             {
-                Id = orderId,
+                //Id = orderId,
                 TotalCost = order.TotalCost,
                 PlacedOn = order.PlacedOn,
                 OrderItems = orderItems,
@@ -89,19 +97,45 @@ namespace Go_Cart.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddAddress(OrderSubmitFormViewModel model)
         {
+            var orderSession = GetOrderSession();
+
+            var order = new Order
+            {
+                TotalCost = orderSession.TotalCost,
+                Status = orderSession.Status,
+                PlacedOn = orderSession.PlacedOn,
+                ApplicationUserId = orderSession.ApplicationUserId,
+            };
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+
+            foreach (var orderItemSession in orderSession.ProductOrders)
+            {
+                var orderItem = new OrderItem
+                {
+                    ProductId = orderItemSession.ProductId,
+                    OrderId = order.Id,
+                    Size = orderItemSession.Size,
+                    Color = orderItemSession.Color,
+                    SubTotalPrice = orderItemSession.SubTotalPrice,
+                    Quantity = orderItemSession.Quantity,
+                };
+                await _context.OrderItems.AddAsync(orderItem);
+            }
+
             var address = new ShippingAddress
             {
-                OrderId = model.Id,
+                OrderId = order.Id,
                 ZipCode = model.ZipCode,
                 City = model.City,
                 Street = model.Street,
                 RecipientName = model.RecipientName,
                 RecipientPhone = model.RecipientPhone,
             };
-
+            HttpContext.Session.Remove("_order");
             await _context.ShippingAddresses.AddAsync(address);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Checkout", new { orderId = model.Id });
+            return RedirectToAction("Checkout", new { orderId = order.Id });
         }
         public async Task<IActionResult> Checkout(int orderId)
         {
@@ -195,6 +229,7 @@ namespace Go_Cart.Controllers
             var user = await _userManager.GetUserAsync(User);
             var orders = await _context.Orders
                 .Where(o => o.ApplicationUserId == user.Id)
+                .Where(o => o.IsPaid)
                 .Select(o => new OrderViewModel
                 {
                     OrderDate = o.PlacedOn,

@@ -330,6 +330,12 @@ $(document).ready(function () {
             submitReviewForm();
         }
     });
+
+    $(document).on('click', '.addreview-btn', function () {
+        submitReviewForm();
+    });
+
+    
     function submitReviewForm() {
         var review = $('#coment').val();
         $.ajax({
@@ -442,4 +448,24 @@ $(document).ready(function () {
             }
         });
     }
+
+    var clearButton = document.getElementById('clearFilters');
+
+    clearButton.addEventListener('click', function () {
+        sortBySelect.selectedIndex = 0;
+
+        priceRange.value = 5000;
+        selectedPrice.innerText = '5000';
+
+        sizeButtons.forEach(function (button) {
+            button.classList.remove('active');
+        });
+
+        colorButtons.forEach(function (button) {
+            button.classList.remove('active');
+        });
+
+        applyFilter(null, null, 'Sort by');
+    });
+
 });

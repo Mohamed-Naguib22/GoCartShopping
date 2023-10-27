@@ -5,7 +5,11 @@
   <section class="order mb-5">
     <div class="container">
             <form method="post" asp-controller="Order" asp-action="AddAddress" enctype="multipart/form-data">
-            <input type="hidden" name="Id" value="@Model.Id" />
+@*            <input type="hidden" name="Id" value="@Model.Id" />
+*@
+            @{
+                Order order = HttpContextAccessor.HttpContext.Session.Get<Order>("_order");
+            }
             <div class="row gap-5">
                 <div class="col-md-7  rounded-4">
                     <div class="p-4 mb-5 rounded-4 bg-opacity-10 bg-primary">
@@ -75,12 +79,13 @@
                 <div class="col-md-4  h-50 rounded-4  bg-opacity-10 bg-primary ">
                     <div class="P-4">
                         <h3 class="pt-3">Order Details<hr></h3>
-                        @foreach (var orderItem in Model.OrderItems)
+                        @foreach (var orderItem in order.ProductOrders)
                         {
+                            var product =  _context.Products.Include(p => p.ProductImages).FirstOrDefault(p => p.Id == orderItem.ProductId);
                             <div class="d-flex my-2">
-                                <img src="@orderItem.Product.ProductImages.Select(p => p.ImgUrl).FirstOrDefault()" class="" height="80" width="80" alt="">
+                                <img src=" @(product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault())" class="" height="80" width="80" alt="">
                                 <div class="col-md-8">
-                                    <p class="fs-5 fw-semibold mx-2">@orderItem.Product.Name</p>
+                                    <p class="fs-5 fw-semibold mx-2">@product.Name</p>
                                     <div class="d-flex justify-content-between ms-3 my-3">
                                         <div class=" border border-dark p-2 bg-secondary bg-opacity-25">@orderItem.Quantity</div>
                                         <div class="fs-3 fw-semibold text-success">@orderItem.SubTotalPrice EGP</div>

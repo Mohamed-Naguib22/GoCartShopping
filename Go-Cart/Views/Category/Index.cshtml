@@ -24,13 +24,17 @@
                          </select>
 
                         <hr />
-
+                        
                         <div class="form-group">
                             <p class="fs-5 fw-semibold" for="priceRange">Price Range</p>
-                            <input type="range" class="form-range" id="priceRange" min="0" max="10000" step="10" value="5000">
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="text-sucess"> 200 EGP</span>
+                                <span class="text-sucess"> 10000 EGP</span>
+                            </div>
+                            <input type="range" class="form-range" id="priceRange" min="200" max="10000" step="10" value="5000">
                         </div>
                         <div class="form-group">
-                            <label for="selectedPrice">Selected Price: $<span id="selectedPrice">5000</span></label>
+                            <label for="selectedPrice">Selected Price: <span id="selectedPrice">5000</span> EGP</label>
                         </div>
                         <hr />
                         <p class="fs-5 fw-semibold">Colors</p>
@@ -48,6 +52,11 @@
                                 <button data-size-id ="@size.Id">@size.Name</button>
                             }   
                         </div>
+                        
+                        <hr />
+
+                        <button id="clearFilters" class="btn w-100 btn-secondary">Clear</button>
+
                     </div>
                 </div>
             </div>

@@ -345,6 +345,14 @@ cursor: pointer;
   }
 /* end loading */
 /*Naguib//////////////////////////////////////////////*/
+.bg-Go-color{
+ background-color: var(--main-color);
+ color: white;
+}
+.addreview-btn {
+    right: 20px;
+    transform: translateY(-50px);
+}
 .pagination {
     display: flex;
     justify-content: center;
@@ -406,7 +414,9 @@ cursor: pointer;
 .form-range::-webkit-slider-thumb {
     background-color: rgb(35, 99, 112); /* Set the color of the thumb */
 }
-
+#clearFilters {
+    background-color: rgb(35, 99, 112); /* Set the color of the thumb */
+}
 .form-range::-moz-range-thumb {
     background-color: rgb(35, 99, 112);
 }
@@ -566,7 +576,7 @@ cursor: pointer;
     line-height: 25px;
 }
 .product-item .product-item-link{
- color: #000;
+    color: #000;
     font-weight: 500;
     font-size: 14px;
     text-decoration: none;
@@ -591,6 +601,9 @@ cursor: pointer;
     color: var(--parg-color);
     text-decoration: line-through;
     font-weight: 500;
+}
+.star1{
+    font-size:11px;
 }
 .product-item .countdown li{
     width: 60px;
@@ -1043,6 +1056,8 @@ border: none;
     background-color: #e4e4e4;
     transform: translateY(36px);
     z-index: 99899999;
+    overflow-y: scroll;
+    height:450px;
 }
 
     .cartList img {
@@ -1188,7 +1203,7 @@ opacity: 1;
 
 /* start OrderH */
 .orderh{
-    margin-top: 150px;
+    margin: 150px 0;
 }
 .ohimg{
     width: 200px;

@@ -72,7 +72,8 @@
   // });
 
 
-  $(document).ready(function(){
+      $(document).ready(function () {
+
     $('.slickSlider').slick({
         infinite: true,
         autoplay:true,
@@ -284,7 +285,5 @@ AOS.init();
       //    }
       //  }
       //  })
-      
+
   });
-let circleText = document.querySelector('.circle-text');
-circleText.innerHTML = circleText.textContent.split("").map((char, index) => `<span style= "transform:rotate(${index * 28.5}deg)"style="background-color:#555" >${char}</span>`).join("")

@@ -37,52 +37,77 @@
 
                     <div class="d-flex justify-content-between mb-1">
                         <span class="fw-bolder fs-4">@Model.Name</span>
-                        <div id="rating-container">
-                            @Html.Partial("_RatingPartial", Model.Rating)
+                        <div class="d-flex mt-2">
+                            <div id="rating-container">
+                                @Html.Partial("_RatingPartial", Model.Rating)
+                            </div>
+                            <p class="ms-1">(@Model.NumberOfRatings)</p>
                         </div>
                     </div>
                     <div class="mb-3">@Model.Description</div>
-                    @if (Model.AvailableColors.Any())
-                    {
-                        <div class="d-flex">
-                            <span class="fw-semibold mb-1 me-2">Available Colors: </span>
-                            <div class=" bg-primary bg-opacity-10">
-                                <div class="mx-2">
-                                    @for (int i = 0; i < Model.AvailableColors.Count; i++)
-                                    {
-                                        <i class="fa-solid fa-circle text-@(Model.AvailableColors.ElementAt(i))"></i>
-                                    }
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            @if (Model.AvailableColors.Any())
+                            {
+                                <div class="d-flex">
+                                    <span class="fw-semibold mb-1 me-2">Available Colors: </span>
+                                    <div class=" bg-primary bg-opacity-10">
+                                        <div class="mx-2">
+                                            @for (int i = 0; i < Model.AvailableColors.Count; i++)
+                                            {
+                                                <i class="fa-solid fa-circle text-@(Model.AvailableColors.ElementAt(i))"></i>
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            }
+
+                            @if (Model.AvailableSizes.Any())
+                            {
+
+                                <div class="d-flex justify-content-between">
+                                    <span class="fw-semibold">Available Sizes: </span>
+                                    <p class="mx-2">
+                                        @foreach (var size in Model.AvailableSizes)
+                                        {
+                                            @(size == Model.AvailableSizes.Last() ? size : size + ", ")
+                                        }
+                                    </p>
+                                </div>
+                            }
                         </div>
-                    }
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <ul class="product-action"><li class=" addToWL" data-product-id="@Model.Id"><i class="far fa-heart"></i></li></ul>
+                        }
+                    </div>
 
-                    @if (Model.AvailableSizes.Any())
-                    {
 
-                        <div class="d-flex">
-                            <span class="fw-semibold">Available Sizes: </span>
-                            <p class="mx-2">
-                                @foreach (var size in Model.AvailableSizes)
-                                {
-                                    @(size == Model.AvailableSizes.Last() ? size : size + ", ")
-                                }
-                            </p>
-                        </div>
-                    }
-
-                    @if (Model.NumberOfItemsInStock > 0)
-                    {
-                        <small class="fs-5 text-success my-2">In Stock</small>
-                    }
-                    else
+                    @if (Model.NumberOfItemsInStock == 0)
                     {
                         <small class="fs-5 text-danger my-2">Out Of Stock</small>
                     }
-
+                    else if (Model.NumberOfItemsInStock < 11)
+                    {
+                        <small class="fs-5 text-danger my-2">Only @(Model.NumberOfItemsInStock) Items In Stock</small>
+                    }
+                    else
+                    {
+                        <small class="fs-5 text-success my-2">In Stock</small>
+                    }
+                    @{
+                        Cart cart = HttpContextAccessor.HttpContext.Session.Get<Cart>("_cart");
+                    }
                     <div class="text-center">
                         <button data-product-id="@Model.Id" class="add-cart py-2 detailsBtn text-white border-0 w-50 px-5 rounded-0 my-4">
-                            ADD TO CART +
+                            @if (cart != null)
+                            {
+                                @(cart.Products.Any(p => p.Id == Model.Id) ? "Added To Cart" : "ADD TO CART +")
+                            }
+                            else
+                            {
+                                <span>ADD TO CART +</span>
+                            }
                         </button>
                     </div>
                 </div>
@@ -109,11 +134,11 @@
 </section>
 
 
-<section class="pt-5">
+<section class="pt-5 container position-relative ">
     <input type="hidden" name="__RequestVerificationToken" value="@Antiforgery.GetAndStoreTokens(Context).RequestToken" />
-    <input name="review" maxlength="200" id="coment" class="form-control w-75 mx-auto text-dark py-3" placeholder="Write a customer review" />
-    <button class="addreview-btn d-none"></button>
-    <div class="comment mx-auto w-75 mt-5" id="comments-container">
+    <input name="review" maxlength="200" id="coment" class=" form-control text-dark py-3" placeholder="Write a customer review" />
+    <button class="position-absolute px-2 rounded-2 bg-Go-color py-2 addreview-btn"> Send</button>
+    <div class="comment mt-5" id="comments-container">
         @Html.Partial("_CommentsPartial", Model.ProductReviews)
     </div>
 </section>

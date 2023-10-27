@@ -159,6 +159,7 @@ namespace Go_Cart.Controllers
                 Where(r => r.ProductId == productId).ToListAsync();
 
             decimal rating = ratings.Count > 0 ? ratings.Average(r => r.Value) : 5;
+            int numberOfRatings = ratings.Count();
             
             var productImages = product.ProductImages.Select(pi => pi.ImgUrl);
 
@@ -168,6 +169,7 @@ namespace Go_Cart.Controllers
                 Name = product.Name,
                 Price = product.Price,
                 Rating = rating,
+                NumberOfRatings = numberOfRatings,
                 Description = product.Description,
                 Category = product.Category.Name,
                 OnSale = product.OnSale,
@@ -232,7 +234,7 @@ namespace Go_Cart.Controllers
 
             var searchItemTrimed = searchTerm.Trim().ToLower();
             var matchingProducts = await _context.Products
-                .Where(p => p.Name.ToLower().Contains(searchItemTrimed))
+                .Where(p => p.Name.ToLower().StartsWith(searchItemTrimed))
                 .OrderBy(p => p.Name)
                 .Select(p => p.Name).Distinct()
                 .ToListAsync();

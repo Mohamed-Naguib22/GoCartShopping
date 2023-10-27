@@ -11,6 +11,6 @@
         public ApplicationUser ApplicationUser { get; set; }
         public Transaction Transaction { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
-        public IEnumerable<OrderItem> ProductOrders { get; set; }
+        public List<OrderItem> ProductOrders { get; set; }
     }
 }

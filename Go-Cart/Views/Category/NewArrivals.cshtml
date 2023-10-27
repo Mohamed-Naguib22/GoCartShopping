@@ -15,11 +15,11 @@
                     @foreach (var product in Model.Products)
                     {
                         <div class="col-md-3">
-                            <div class="card me-2 bg-primary bg-opacity-10 border border-2 rounded rounded-1">
+                            <div class="card me-2  border border-2 rounded rounded-1">
                                 <div class="card1">
-                                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="card-img w-100" alt="...">
+                                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="p-3 card-img w-100" alt="...">
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body bg-primary bg-opacity-10">
                                     <h5 style="height:65px;" class="card-title">@product.Name</h5>
                                     @if (product.OnSale)
                                     {

@@ -129,7 +129,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Color", b =>
@@ -150,7 +150,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Colors");
+                    b.ToTable("Colors", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Offer", b =>
@@ -178,7 +178,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("ProductId")
                         .IsUnique();
 
-                    b.ToTable("Offers");
+                    b.ToTable("Offers", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Order", b =>
@@ -210,7 +210,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
-                    b.ToTable("Orders");
+                    b.ToTable("Orders", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.OrderItem", b =>
@@ -237,7 +237,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderItems");
+                    b.ToTable("OrderItems", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Product", b =>
@@ -284,7 +284,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductColor", b =>
@@ -299,7 +299,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("ProductColors", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductImage", b =>
@@ -321,7 +321,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductImages");
+                    b.ToTable("ProductImages", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductReview", b =>
@@ -352,7 +352,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductReviews");
+                    b.ToTable("ProductReviews", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ProductSize", b =>
@@ -367,7 +367,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductSizes");
+                    b.ToTable("ProductSizes", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Rating", b =>
@@ -394,7 +394,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.ShippingAddress", b =>
@@ -433,7 +433,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("ShippingAddresses");
+                    b.ToTable("ShippingAddresses", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Size", b =>
@@ -450,7 +450,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sizes");
+                    b.ToTable("Sizes", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.Transaction", b =>
@@ -487,7 +487,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("OrderId")
                         .IsUnique();
 
-                    b.ToTable("Transactions");
+                    b.ToTable("Transactions", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.WishList", b =>
@@ -510,7 +510,7 @@ namespace Go_Cart.Data.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("WishLists");
+                    b.ToTable("WishLists", (string)null);
                 });
 
             modelBuilder.Entity("Go_Cart.Models.WishListItem", b =>
@@ -528,7 +528,7 @@ namespace Go_Cart.Data.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("WishListItems");
+                    b.ToTable("WishListItems", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

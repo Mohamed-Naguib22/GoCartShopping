@@ -22,7 +22,7 @@
     <title>@ViewData["Title"] - Go Cart</title>
 </head>
 
-<body id="body" class=" @(Context.Request.Path == "/Product/Details" ? "bodyBg" : "") @(Context.Request.Path == "/" ? "Color ofhiden" : "")">
+<body id="body" class=" bodyBg @(Context.Request.Path == "/" ? "Color ofhiden" : "")">
     <!-- start loading -->
     @if (Context.Request.Path == "/")
     {

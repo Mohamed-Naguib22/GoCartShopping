@@ -27,6 +27,8 @@ namespace Go_Cart.Areas.Identity.Pages.Account
             _userManager = userManager;
             _emailSender = emailSender;
         }
+        [TempData]
+        public string StatusMessage { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -58,7 +60,8 @@ namespace Go_Cart.Areas.Identity.Pages.Account
                 if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    StatusMessage = "Please check your email to reset your password.";
+                    return RedirectToPage();
                 }
 
                 // For more information on how to enable account confirmation and password reset please
@@ -76,7 +79,9 @@ namespace Go_Cart.Areas.Identity.Pages.Account
                     "Reset Password",
                     $"Please reset your password by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                //return RedirectToPage("./ForgotPasswordConfirmation");
+                StatusMessage = "Please check your email to reset your password.";
+                return RedirectToPage();
             }
 
             return Page();

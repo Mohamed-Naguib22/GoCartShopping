@@ -13,23 +13,25 @@
 *@
 <!-- start landing -->
 <header id="Home" class=" ">
-    <div class=" px-5 head  headerLayover">
-
-        <div class="headCaption w-100  " data-aos="fade-up">
+    <div class=" px-5 head  headerLayover ">
+        <div class="headCaption w-100  position-relative" data-aos="fade-up">
             <h1 class="fs-2 fw-bolder  ">Welcome To Go Cart</h1>
-            <p class="fs-3 n">
 
-                Exclusive collection for everyone...We are  One of The best E-commerce sites in The Middle East
+            <p class="fs-3 n">
+                Exclusive collection for everyone...We are One of The best E-Commerce sites in The Middle East
                 .... Try it now
             </p>
+
             <a class="text-decoration-none go-down-btn  text-black  ex">
                 <p class="circle-text ">EXPLORE NOW</p>
             </a>
         </div>
+
         <div class="headImg  mt-5 w-100" data-aos="fade-down">
             <img src="Assets/Image/logoo5.png" class="w-100 img" alt="">
         </div>
     </div>
+
     <button class="btn rounded-3" id="btnUp">
         <i class="fas fa-arrow-up btnUp"></i>
     </button>
@@ -105,8 +107,8 @@
 
 <section class="features my-5">
     <div class="container">
-        <div class="row">
-            <div class="col-md-2  p-3">
+        <div class="row mx-auto">
+            <div class="col-md-2 d-flex justify-content-center  p-3">
                 <div class="imgFeatures" data-aos="fade-right">
                     <div class="">
                         <img src="Assets/Image/features/f1.png" alt="">
@@ -114,7 +116,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2  p-3">
+            <div class="col-md-2 d-flex justify-content-center p-3">
                 <div class="imgFeatures" data-aos="fade-right">
                     <div class="">
                         <img src="Assets/Image/features/f2.png" alt="">
@@ -122,7 +124,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2  p-3">
+            <div class="col-md-2 d-flex justify-content-center p-3">
                 <div class="imgFeatures" data-aos="fade-right">
                     <div class="">
                         <img src="Assets/Image/features/f3.png" alt="">
@@ -130,7 +132,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2  p-3">
+            <div class="col-md-2 d-flex justify-content-center p-3">
                 <div class="imgFeatures" data-aos="fade-left">
                     <div class="">
                         <img src="Assets/Image/features/f4.png" alt="">
@@ -138,7 +140,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2  p-3">
+            <div class="col-md-2 d-flex justify-content-center  p-3">
                 <div class="imgFeatures " data-aos="fade-left">
                     <div class="">
                         <img src="Assets/Image/features/f5.png" alt="">
@@ -146,7 +148,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-2  p-3">
+            <div class="col-md-2 d-flex justify-content-center p-3">
                 <div class="imgFeatures" data-aos="fade-left">
                     <div class="">
                         <img src="Assets/Image/features/f6.png" alt="">
@@ -157,7 +159,6 @@
         </div>
     </div>
 </section>
-
 <section class="slider my-5">
     <div class="container">
         <div class="win  section-head">
@@ -183,14 +184,14 @@
     <div class="section-head" data-aos="fade-up">
         <h4>
             <span class="section-onsale">
-                On Sale
+                On
             </span>
-            Products
+            Sale
         </h4>
     </div>
 
     <div class="boxs swiper-wrapper">
-        @foreach (var product in Model.Products.Where(p => p.OnSale == true))
+        @foreach (var product in Model.Products.Where(p => p.OnSale))
         {
             <div class="box column product-item swiper-slide">
                 <div class="product-btn">
@@ -220,6 +221,74 @@
                         <div>
                             @for (int i = 0; i < rating; i++)
                             {
+                                <i class="fa-solid fa-star star"></i>
+                            }
+                            @for (int i = (int)Math.Round(rating); i < 5; i++)
+                            {
+                                <i class="fas fa-star star" style="color:darkgray"></i>
+                            }
+                        </div>
+
+                        <p class="ms-2">(@numOfRates)</p>
+                    </div>
+                    <div class="price">
+                        <span class="fs-6">$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
+                        <del>@product.Price EGP</del>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="">
+        <div class="swiper-button-next swiper-btn"></div>
+        <div class="swiper-button-prev swiper-btn"></div>
+    </div>
+</section>
+
+<section class="sale-sec container swiper mySwiper">
+    <div class="section-head" data-aos="fade-up">
+        <h4>
+            <span class="section-onsale">
+                Best
+            </span>
+            Sellers
+        </h4>
+    </div>
+
+    <div class="boxs swiper-wrapper">
+        @foreach (var product in Model.Products.OrderByDescending(p => p.NumberOfSales).Take(10))
+        {
+            <div class="box column product-item swiper-slide">
+                <div class="product-btn">
+                    <ul class="product-action">
+                        @if (_signInManager.IsSignedIn(User))
+                        {
+                            <li class="addToWL" data-product-id="@product.Id"><i class="far fa-heart"></i></li>
+                        }
+                        <li class="add-cart" data-product-id="@product.Id"><i class="fa-solid fa-cart-shopping"></i></li>
+                    </ul>
+                </div>
+                <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="div-img">
+                    @if (product.OnSale)
+                    {
+                        <span class="discount bg-danger">@((int)(product.Offer.DiscountPercentage * 100))%</span>
+                    }
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="img-product">
+                    <img src="@product.ProductImages.Select(pi => pi.ImgUrl).Skip(1).FirstOrDefault()" class="hover-img">
+                </a>
+                <div class="content">
+                    <a class="product-item-link" asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details">
+                        @product.Name
+                    </a>
+                    @{
+                        int numOfRates = product.Ratings.Count();
+                        decimal rating = numOfRates > 0 ? product.Ratings.Average(r => r.Value) : 5;
+                    }
+
+                    <div class="stars d-flex justify-content-center">
+                        <div>
+                            @for (int i = 0; i < rating; i++)
+                            {
                                 <i class="fa-solid fa-star"></i>
                             }
                             @for (int i = (int)Math.Round(rating); i < 5; i++)
@@ -231,8 +300,15 @@
                         <p class="ms-2">(@numOfRates)</p>
                     </div>
                     <div class="price">
-                        <span class="fs-6">$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
-                        <del>@product.Price EGP</del>
+                        @if (product.OnSale)
+                        {
+                            <span class="fs-6">$@(product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage))</span>
+                            <del>@product.Price EGP</del>
+                        }
+                        else
+                        {
+                            <span class="fs-6">@product.Price EGP</span>
+                        }
                     </div>
                 </div>
             </div>

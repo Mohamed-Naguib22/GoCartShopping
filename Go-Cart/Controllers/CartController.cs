@@ -1,6 +1,7 @@
 ﻿using Go_Cart.Data;
 using Go_Cart.Extensions;
 using Go_Cart.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics.CodeAnalysis;

@@ -7,6 +7,8 @@
 
 <section class="signForm">
     <div class="container-fluid">
+        <partial name="_StatusMessage" for="StatusMessage" />
+
         <div class="row ">
             <div class="col-md-6 col-left ">
                 <div class="leftSideSignUp ">
@@ -49,8 +51,7 @@
 
                                 <input type="password" id="Re-password" asp-for="Input.ConfirmPassword" class="mt-3 form-control" placeholder="Re-Password">
                                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-
-                                <select asp-for="Input.Gender" class=" mt-3 form-control">
+                                <select asp-for="Input.Gender" class=" mt-3 w-100 py-2 border-0 rounded-2">
                                     <option value="">Gender</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>

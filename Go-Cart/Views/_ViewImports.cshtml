@@ -8,6 +8,7 @@
 @inject UserManager<ApplicationUser> _userManager
 @inject IHttpContextAccessor HttpContextAccessor
 @inject ApplicationDbContext _context
+@using Microsoft.EntityFrameworkCore;
 @using Microsoft.AspNetCore.Antiforgery
 @inject IAntiforgery Antiforgery
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

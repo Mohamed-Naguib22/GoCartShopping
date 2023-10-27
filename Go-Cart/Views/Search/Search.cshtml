@@ -12,13 +12,13 @@
         <div class="row g-3">
             @foreach (var product in Model.Products)
             {
-                <div class="col-md-4 col-xl-4 col-xxl-3">
-                    <div class="card me-2 bg-secondary bg-opacity-10">
+                <div class="col-md-3">
+                    <div class="card me-2  border border-2 rounded rounded-1">
                         <div class="card1">
-                            <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="card-img w-100" alt="...">
+                            <img src="@product.ProductImages.Select(pi => pi.ImgUrl).FirstOrDefault()" class="p-3 card-img w-100" alt="...">
                         </div>
-                        <div class="card-body">
-                            <h5 class="card-title" style="height:65px;">@product.Name</h5>
+                        <div class="card-body bg-primary bg-opacity-10">
+                            <h5 style="height:65px;" class="card-title">@product.Name</h5>
                             @if (product.OnSale)
                             {
                                 var price = @product.Price - Math.Round(product.Price * product.Offer.DiscountPercentage);
@@ -35,7 +35,7 @@
                             @{
                                 decimal rating = product.Ratings.Count() > 0 ? product.Ratings.Average(r => r.Value) : 5;
                             }
-                            <div>
+                            <div class="pb-3">
                                 @for (int i = 0; i < Math.Round(rating); i++)
                                 {
                                     <i class="fas fa-star" style="color:gold"></i>
@@ -46,7 +46,7 @@
                                 }
                             </div>
                             <button data-product-id="@product.Id" class="btn btn-success add-cart">Add To Cart</button>
-                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary my-2">Details</a>
+                            <a asp-route-productId="@product.Id" asp-controller="Product" asp-action="Details" class="btn btn-secondary ">Details</a>
                         </div>
                     </div>
                 </div>

@@ -2,7 +2,9 @@
 @{
     ViewData["Title"] = "Order History";
 }
-<div class="orderh container p-2">
+<div class="container">
+
+<div class="orderh  p-2">
     <div class="row bg-secondary bg-opacity-10 rounded-3 gap-4 justify-content-center p-5">
         <h2 class="text-center">Order History</h2>
         @foreach (var order in Model)
@@ -48,4 +50,5 @@
             </div>
         }
     </div>
+</div>
 </div>
